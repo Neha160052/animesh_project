@@ -8,7 +8,7 @@ public class Role {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int roleId;
+  private long roleId;
   private String authority;
 
   @ManyToMany

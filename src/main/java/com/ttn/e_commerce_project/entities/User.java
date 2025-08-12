@@ -3,9 +3,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.security.Identity;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,7 +16,7 @@ public class User {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long id;
+   private long id;
    private String firstName;
    private String middleName;
    private String lastName;
@@ -36,6 +38,6 @@ public class User {
    private Set<Role> roles;
 
    @OneToMany
-   @JoinColumn(name = "user_id")
+   @JoinColumn(name = "user_id", referencedColumnName = "id") //when not given reference column name it was creating extra table
    private List<Address> address;
 }
