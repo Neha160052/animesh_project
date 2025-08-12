@@ -1,6 +1,8 @@
 package com.ttn.e_commerce_project.entities;
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class Role {
 
@@ -13,5 +15,5 @@ public class Role {
   @JoinTable(name = "user_role",
           joinColumns = @JoinColumn(name ="user_id"),inverseJoinColumns = @JoinColumn(name = "role_id")
   )
-  private User user;
+  private Set<User> users;
 }
