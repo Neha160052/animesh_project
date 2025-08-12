@@ -1,5 +1,4 @@
-package com.ttn.demo_project.e_commerce_project.entities;
-
+package com.ttn.e_commerce_project.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,4 @@
-package com.ttn.demo_project.e_commerce_project.entities;
-
+package com.ttn.e_commerce_project.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
