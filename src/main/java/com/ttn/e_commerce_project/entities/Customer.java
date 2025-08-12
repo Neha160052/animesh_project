@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -17,5 +19,5 @@ public class Customer {
 
     @OneToMany
     @JoinColumn(name = "customer_user_id",referencedColumnName = "user_id")
-    private ProductReview productReview;
+    private List<ProductReview> productReview;
 }
