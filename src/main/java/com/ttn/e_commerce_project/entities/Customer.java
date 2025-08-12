@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.entities;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
@@ -12,6 +13,7 @@ public class Customer {
 
     private Long contact;
 
+    @Id
     @OneToOne
     @JoinColumn(name = " user_id")
     private User user;
