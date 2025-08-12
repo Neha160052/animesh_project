@@ -1,10 +1,9 @@
 package com.ttn.e_commerce_project.entities;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,4 +17,8 @@ public class Seller
     private String gst;
     private Long companyContact;
     private String companyName;
+
+    @OneToMany
+    @JoinColumn(name = "seller_user_id",referencedColumnName = "user_id")
+    private List<Product> product;
 }
