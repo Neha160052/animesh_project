@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,7 +32,10 @@ public class User {
    @OneToOne(mappedBy = "user")
    private Customer customer;
 
-   @ManyToMany
-   private Role role;
+   @ManyToMany(mappedBy = "users")
+   private Set<Role> roles;
 
+   @OneToMany
+   @JoinColumn(name = "user_id")
+   private List<Address> address;
 }
