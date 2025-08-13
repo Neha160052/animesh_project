@@ -11,6 +11,9 @@ import java.util.List;
 public class Seller
 {
     @Id
+    private long userid;
+
+    @MapsId
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
