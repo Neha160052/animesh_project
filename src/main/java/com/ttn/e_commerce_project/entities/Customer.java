@@ -10,9 +10,12 @@ import java.util.List;
 @Setter
 public class Customer {
 
-    private Long contact;
+    private long contact;
 
     @Id
+    private long userid;
+
+    @MapsId
     @OneToOne
     @JoinColumn(name = " user_id")
     private User user;
@@ -20,4 +23,9 @@ public class Customer {
     @OneToMany
     @JoinColumn(name = "customer_user_id",referencedColumnName = "user_id")
     private List<ProductReview> productReview;
+
+    @OneToMany
+    @JoinColumn(name = "customer_user_id",referencedColumnName = "user_id")
+    private List<Cart> cart;
+
 }
