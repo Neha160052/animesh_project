@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.security.Identity;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class User {
    private boolean isExpired;
    private boolean isLocked;
    private int invalidAttemptCount;
-   private Date passwordUpdateDate;
+   private ZonedDateTime passwordUpdateDate;
 
    @OneToOne(mappedBy = "user")
    private Seller seller;
