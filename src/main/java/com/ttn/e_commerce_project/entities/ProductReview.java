@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.entities;
 
+import com.ttn.e_commerce_project.enums.Rating;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,8 +17,8 @@ public class ProductReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String review;
-    public enum rating{
-        ONE,TWO,THREE,FOUR,FIVE
-    }
+
+    @Enumerated
+    Rating rating;
 
 }
