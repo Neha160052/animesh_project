@@ -14,10 +14,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
      long id;
-     String city;
-     String state;
-     String country;
-     String addressLine;
-     int zipCode;
-     String label;
+
+    @Embedded
+     AddressFields addressFields;
 }
