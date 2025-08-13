@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
@@ -24,5 +27,12 @@ public class ProductVariation {
 
     boolean isActive;
 
+    @OneToMany
+    @JoinColumn(name = "product_variation_id",referencedColumnName = "id")
+    List<Cart> cart;
+
+    @OneToMany
+    @JoinColumn(name = "product_variation_id",referencedColumnName = "id")
+    Set<OrderProduct> orderProducts;
 
 }
