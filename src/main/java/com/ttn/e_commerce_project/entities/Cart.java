@@ -16,6 +16,6 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     long quantity;
-    boolean isWishlistItem;
+    Boolean isWishlistItem;
 
 }
