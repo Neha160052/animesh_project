@@ -1,27 +1,30 @@
 package com.ttn.e_commerce_project.entities;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Seller
 {
     @Id
-    private long userid;
+    long userid;
 
     @MapsId
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User user;
-    private String gst;
-    private Long companyContact;
-    private String companyName;
+    User user;
+    String gst;
+    Long companyContact;
+    String companyName;
 
     @OneToMany
     @JoinColumn(name = "seller_user_id",referencedColumnName = "user_id")
-    private List<Product> product;
+    List<Product> product;
 }

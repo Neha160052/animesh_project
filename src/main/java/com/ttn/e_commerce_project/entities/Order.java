@@ -29,7 +29,7 @@ public class Order {
     @AttributeOverride(name = "zipCode", column = @Column(name = "customer_address_zipcode"))
     @AttributeOverride(name = "label", column = @Column(name = "customer_address_label"))
     @Embedded
-    public AddressFields address;
+    AddressFields address;
 
     @OneToMany
     @JoinColumn(name = "order_id",referencedColumnName = "id")

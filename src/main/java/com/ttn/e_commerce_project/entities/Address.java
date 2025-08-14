@@ -13,8 +13,8 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     long id;
+    long id;
 
     @Embedded
-     AddressFields addressFields;
+    AddressFields addressFields;
 }
