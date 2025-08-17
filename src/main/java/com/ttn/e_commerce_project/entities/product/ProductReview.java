@@ -1,24 +1,24 @@
-package com.ttn.e_commerce_project.entities;
+package com.ttn.e_commerce_project.entities.product;
 
+import com.ttn.e_commerce_project.enums.Rating;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-
 @Entity
 @Getter
 @Setter
-@FieldDefaults(level= AccessLevel.PRIVATE)
-public class OrderProduct {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ProductReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    int quantity;
-    double price;
+    String review;
 
-    @OneToOne(mappedBy = "orderProduct")
-    OrderStatusEntity orderStatus;
+    @Enumerated
+    Rating rating;
+
 }

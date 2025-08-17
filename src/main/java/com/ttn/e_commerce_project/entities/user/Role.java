@@ -1,4 +1,5 @@
-package com.ttn.e_commerce_project.entities;
+package com.ttn.e_commerce_project.entities.user;
+import com.ttn.e_commerce_project.entities.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -7,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role extends Auditable{
+public class Role extends Auditable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

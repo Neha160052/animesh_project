@@ -1,4 +1,5 @@
-package com.ttn.e_commerce_project.entities;
+package com.ttn.e_commerce_project.entities.cart;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,12 +10,12 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Address {
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+    long quantity;
+    Boolean isWishlistItem;
 
-    @Embedded
-    AddressFields addressFields;
 }

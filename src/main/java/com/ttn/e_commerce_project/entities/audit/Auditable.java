@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.entities;
+package com.ttn.e_commerce_project.entities.audit;
 
 import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;

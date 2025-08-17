@@ -1,6 +1,4 @@
-package com.ttn.e_commerce_project.entities;
-
-import com.ttn.e_commerce_project.enums.Rating;
+package com.ttn.e_commerce_project.entities.address;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,14 +9,12 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductReview {
+public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    String review;
 
-    @Enumerated
-    Rating rating;
-
+    @Embedded
+    AddressFields addressFields;
 }

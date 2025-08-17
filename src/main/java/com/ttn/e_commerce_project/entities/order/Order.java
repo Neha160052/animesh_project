@@ -1,5 +1,7 @@
-package com.ttn.e_commerce_project.entities;
+package com.ttn.e_commerce_project.entities.order;
 
+import com.ttn.e_commerce_project.entities.audit.Auditable;
+import com.ttn.e_commerce_project.entities.address.AddressFields;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "orders")
-public class Order extends Auditable{
+public class Order extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

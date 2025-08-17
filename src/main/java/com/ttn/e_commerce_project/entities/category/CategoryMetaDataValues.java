@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.entities;
+package com.ttn.e_commerce_project.entities.category;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
