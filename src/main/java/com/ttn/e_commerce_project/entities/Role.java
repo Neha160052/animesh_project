@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class Role extends Auditable{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

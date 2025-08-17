@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "orders")
-public class Order {
+public class Order extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

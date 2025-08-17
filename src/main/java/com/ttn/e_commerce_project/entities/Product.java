@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
-public class Product {
+public class Product extends Auditable{
 
        @Id
        @GeneratedValue(strategy = GenerationType.IDENTITY)

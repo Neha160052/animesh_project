@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Seller
+public class Seller extends Auditable
 {
     @Id
     long userid;
