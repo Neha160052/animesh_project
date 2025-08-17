@@ -1,4 +1,5 @@
 package com.ttn.e_commerce_project.entities.user;
+import com.ttn.e_commerce_project.entities.audit.Auditable;
 import com.ttn.e_commerce_project.entities.cart.Cart;
 import com.ttn.e_commerce_project.entities.product.ProductReview;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Customer {
+public class Customer extends Auditable {
 
     long contact;
 
