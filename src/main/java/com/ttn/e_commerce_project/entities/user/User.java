@@ -20,6 +20,7 @@ public class User extends Auditable {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
      long id;
+     String email;
      String firstName;
      String middleName;
      String lastName;
