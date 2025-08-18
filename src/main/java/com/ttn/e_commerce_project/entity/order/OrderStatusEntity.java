@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.entities.order;
+package com.ttn.e_commerce_project.entity.order;
 
 import com.ttn.e_commerce_project.enums.OrderStatus;
 import jakarta.persistence.*;

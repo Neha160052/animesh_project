@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.services;
+package com.ttn.e_commerce_project.service;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

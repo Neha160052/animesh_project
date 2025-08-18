@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.entities.cart;
+package com.ttn.e_commerce_project.entity.cart;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

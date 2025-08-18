@@ -1,6 +1,6 @@
-package com.ttn.e_commerce_project.entities.user;
-import com.ttn.e_commerce_project.entities.audit.Auditable;
-import com.ttn.e_commerce_project.entities.address.Address;
+package com.ttn.e_commerce_project.entity.user;
+import com.ttn.e_commerce_project.entity.audit.Auditable;
+import com.ttn.e_commerce_project.entity.address.Address;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

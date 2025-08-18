@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.entities.address;
+package com.ttn.e_commerce_project.entity.address;
 
 import com.ttn.e_commerce_project.enums.Label;
 import jakarta.persistence.Embeddable;

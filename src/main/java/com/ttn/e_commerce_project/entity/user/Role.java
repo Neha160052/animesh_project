@@ -1,5 +1,4 @@
-package com.ttn.e_commerce_project.entities.user;
-import com.ttn.e_commerce_project.entities.audit.Auditable;
+package com.ttn.e_commerce_project.entity.user;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

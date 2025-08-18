@@ -1,7 +1,7 @@
-package com.ttn.e_commerce_project.entities.user;
-import com.ttn.e_commerce_project.entities.audit.Auditable;
-import com.ttn.e_commerce_project.entities.cart.Cart;
-import com.ttn.e_commerce_project.entities.product.ProductReview;
+package com.ttn.e_commerce_project.entity.user;
+import com.ttn.e_commerce_project.entity.audit.Auditable;
+import com.ttn.e_commerce_project.entity.cart.Cart;
+import com.ttn.e_commerce_project.entity.product.ProductReview;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
