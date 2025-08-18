@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ public class ProductVariation extends Auditable {
     long quantityAvailable;
     double price;
     @Column(columnDefinition = "json")
-    String metadata;
+    Map<String, Object> metadata;
 
     String primaryImageName;
 
