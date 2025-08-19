@@ -3,11 +3,13 @@ package com.ttn.e_commerce_project.entity.product;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
 import com.ttn.e_commerce_project.entity.cart.Cart;
 import com.ttn.e_commerce_project.entity.order.OrderProduct;
+import com.ttn.e_commerce_project.util.MapToJsonConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ConverterRegistrations;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ public class ProductVariation extends Auditable {
     long quantityAvailable;
     double price;
     @Column(columnDefinition = "json")
+    @Convert(converter = MapToJsonConverter.class)
     Map<String, Object> metadata;
 
     String primaryImageName;
