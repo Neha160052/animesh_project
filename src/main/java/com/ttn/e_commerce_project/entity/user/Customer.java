@@ -16,7 +16,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Customer extends Auditable {
 
-    long contact;
+    String contact;
 
     @Id
     long userid;
