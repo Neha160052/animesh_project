@@ -13,10 +13,8 @@ public class CustomerCo {
     @Email(message = "Invalid email format")
     String email;
 
-    @NotBlank(message = "Phone number is required")
-    @Min(value=10)
-    @Max(value=10)
-    long phoneNumber;
+
+    String  phoneNumber;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
