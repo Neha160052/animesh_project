@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         userRepository.save(user);
         Customer customer = new Customer();
         customer.setUser(user);
-        customer.setContact(Long.parseLong(customerCo.getPhoneNumber()));
+        customer.setContact(customerCo.getPhoneNumber());
         customerRepository.save(customer);
         return ResponseEntity.ok("Customer registered successfully");
     }
