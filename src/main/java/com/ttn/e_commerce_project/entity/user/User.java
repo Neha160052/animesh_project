@@ -2,6 +2,8 @@ package com.ttn.e_commerce_project.entity.user;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
 import com.ttn.e_commerce_project.entity.address.Address;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +24,7 @@ public class User extends Auditable {
      long id;
      String email;
      String firstName;
+     @NotBlank
      String middleName;
      String lastName;
      String password;
@@ -39,7 +42,7 @@ public class User extends Auditable {
      Customer customer;
 
    @ManyToMany(mappedBy = "users")
-     Set<Role> roles;
+     Set<Role> role;
 
    @OneToMany
    @JoinColumn(name = "user_id", referencedColumnName = "id") //when not given reference column name it was creating extra table
