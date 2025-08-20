@@ -74,7 +74,10 @@ public class CustomerServiceImpl implements CustomerService {
     public void resendActivationLink(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException("No account found with email: " + email));
-
+        if (user.isActive()) {
+            throw new IllegalStateException("User is already active. Activation link cannot be resent.");
+        }
+        tokenRepository.deleteByUser(user);
         VerificationToken token = verificationTokenService.createToken(user);
         emailService.sendJavaActivationEmail(email, activationLink(token));
     }
