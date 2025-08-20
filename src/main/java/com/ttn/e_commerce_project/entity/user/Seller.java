@@ -1,6 +1,5 @@
 package com.ttn.e_commerce_project.entity.user;
 
-import com.ttn.e_commerce_project.entity.address.Address;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
 import com.ttn.e_commerce_project.entity.product.Product;
 import jakarta.persistence.*;
@@ -31,5 +30,5 @@ public class Seller extends Auditable
     @OneToMany
     @JoinColumn(name = "seller_user_id",referencedColumnName = "user_id")
     List<Product> product;
-    
+
 }
