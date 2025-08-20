@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
+@AllArgsConstructor
 public class VerificationTokenServiceImpl implements VerificationTokenService {
 
     TokenRepository tokenRepository;
