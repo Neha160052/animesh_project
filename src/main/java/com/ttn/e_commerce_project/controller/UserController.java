@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     CustomerServiceImpl customerService;
+    SellerServiceImpl sellerService;
 
     @PostMapping("/customer")
     public ResponseEntity<String> registerCustomer(@Valid @RequestBody CustomerCo customerCo) {
