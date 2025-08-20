@@ -6,7 +6,6 @@ import com.ttn.e_commerce_project.respository.TokenRepository;
 import com.ttn.e_commerce_project.service.VerificationTokenService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
