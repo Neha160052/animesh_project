@@ -24,8 +24,9 @@ public class ActivationController {
         return customerService.activateCustomer(token);
     }
 
-    @GetMapping("/resendToken")
-    public ResponseEntity<String> reSendActivationToken(@RequestParam("token") String token) {
-        return setCustomerActiveHelper.activateCustomer(token);
+    @GetMapping("/resendActivationLink")
+    public ResponseEntity<String> reSendActivationToken(@RequestParam String email) {
+        customerService.resendActivationLink(email);
+        return ResponseEntity.ok("link sent");
     }
 }
