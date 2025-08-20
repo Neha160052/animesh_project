@@ -28,7 +28,6 @@ public class SellerServiceImpl implements SellerService {
     SellerRepository sellerRepository;
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
-    ModelMapper modelMapper;
 
     @Override
     public void register(SellerCo sellerCo) {
