@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
+    @Async
     public void sendJavaActivationEmail(String toEmail,String activationLink )
     {
         SimpleMailMessage message = new SimpleMailMessage();
