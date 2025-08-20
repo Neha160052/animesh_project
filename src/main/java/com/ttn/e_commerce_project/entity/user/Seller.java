@@ -31,8 +31,5 @@ public class Seller extends Auditable
     @OneToMany
     @JoinColumn(name = "seller_user_id",referencedColumnName = "user_id")
     List<Product> product;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    Address address;
+    
 }
