@@ -43,7 +43,7 @@ public class User extends Auditable {
    @ManyToMany(mappedBy = "users")
      Set<Role> role;
 
-   @OneToMany
-   @JoinColumn(name = "user_id", referencedColumnName = "id") //when not given reference column name it was creating extra table
-     List<Address> address;
+   @OneToMany(cascade = CascadeType.ALL)
+   @JoinColumn(name = "user_id", referencedColumnName = "id")
+   List<Address> address;
 }
