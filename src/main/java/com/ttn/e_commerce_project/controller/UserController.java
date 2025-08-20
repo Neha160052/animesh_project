@@ -26,5 +26,12 @@ public class UserController {
         customerService.register(customerCo);
         return ResponseEntity.ok("Customer registered Successfully");
     }
+
+    @PostMapping("/seller")
+    public ResponseEntity<String> registerSeller(@Valid @RequestBody SellerCo sellerCo) {
+        sellerService.register(sellerCo);
+        return ResponseEntity.ok("Seller Registered Successfully");
+    }
+
 }
 
