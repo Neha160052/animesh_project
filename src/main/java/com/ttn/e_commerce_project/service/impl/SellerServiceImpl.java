@@ -47,6 +47,7 @@ public class SellerServiceImpl implements SellerService {
         user.setMiddleName(sellerCo.getMiddleName());
         user.setLastName(sellerCo.getLastName());
         user.setRole(Set.of(sellerRole));
+        user.setAddress(List.of(mapToAddress(sellerCo.getCompanyAddress())));
         userRepository.save(user);
         saveSeller(sellerCo,user);
     }
