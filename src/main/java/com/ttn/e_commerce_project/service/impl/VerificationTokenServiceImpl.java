@@ -19,7 +19,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class VerificationTokenServiceImpl implements VerificationTokenService {
 
-    @Autowired
     TokenRepository tokenRepository;
 
     @Override
