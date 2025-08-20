@@ -23,7 +23,7 @@ public class Seller extends Auditable
     @JoinColumn(name = "user_id")
     User user;
     String gst;
-    Long companyContact;
+    String companyContact;
     String companyName;
 
     @OneToMany
