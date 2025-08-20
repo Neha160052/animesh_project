@@ -39,6 +39,14 @@ public class SellerServiceImpl implements SellerService {
         if (!sellerCo.getPassword().equals(sellerCo.getConfirmPassword())) {
             throw new IllegalArgumentException("Passwords do not match");
         }
+
+        if (sellerRepository.existsByGst(sellerCo.getGst())) {
+            throw new IllegalArgumentException("GST already exists provide unique one");
+        }
+
+        if (sellerRepository.existsByCompanyNameIgnoreCase(sellerCo.getCompanyName())) {
+            throw new IllegalArgumentException("Company name already exists provide a unique name.");
+        }
         User user = new User();
         Role sellerRole = roleRepository.findByAuthority(RoleAuthority.SELLER).get();
         user.setEmail(sellerCo.getEmail());
