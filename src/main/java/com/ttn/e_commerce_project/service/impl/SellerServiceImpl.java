@@ -24,11 +24,11 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class SellerServiceImpl implements SellerService {
 
-      UserRepository userRepository;
-      SellerRepository sellerRepository;
-      RoleRepository roleRepository;
-      PasswordEncoder passwordEncoder;
-      ModelMapper modelMapper;
+    UserRepository userRepository;
+    SellerRepository sellerRepository;
+    RoleRepository roleRepository;
+    PasswordEncoder passwordEncoder;
+    ModelMapper modelMapper;
 
     @Override
     public void register(SellerCo sellerCo) {
