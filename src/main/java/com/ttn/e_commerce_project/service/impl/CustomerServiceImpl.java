@@ -9,6 +9,7 @@ import com.ttn.e_commerce_project.enums.RoleAuthority;
 import com.ttn.e_commerce_project.exceptionhandling.EmailNotFoundException;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.RoleRepository;
+import com.ttn.e_commerce_project.respository.TokenRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.EmailService;
