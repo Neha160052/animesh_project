@@ -1,10 +1,6 @@
 package com.ttn.e_commerce_project.controller;
 
-import com.ttn.e_commerce_project.entity.VerificationToken;
-import com.ttn.e_commerce_project.entity.user.User;
-import com.ttn.e_commerce_project.helper.SetCustomerActiveHelper;
-import com.ttn.e_commerce_project.respository.UserRepository;
-import com.ttn.e_commerce_project.service.impl.VerificationTokenServiceImpl;
+import com.ttn.e_commerce_project.service.impl.CustomerServiceImpl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
