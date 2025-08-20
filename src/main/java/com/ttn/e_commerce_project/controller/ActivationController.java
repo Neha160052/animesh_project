@@ -24,7 +24,7 @@ public class ActivationController {
 
     @GetMapping
     public ResponseEntity<String> activate(@RequestParam("token") String token) {
-        return setCustomerActiveHelper.activateCustomer(token);
+        return customerService.activateCustomer(token);
     }
 
     @GetMapping("/resendToken")
