@@ -23,7 +23,8 @@ public class UserController {
 
     @PostMapping("/customer")
     public ResponseEntity<String> registerCustomer(@Valid @RequestBody CustomerCo customerCo) {
-        return customerService.register(customerCo);
+        customerService.register(customerCo);
+        return ResponseEntity.ok("Customer registered Successfully");
     }
 }
 
