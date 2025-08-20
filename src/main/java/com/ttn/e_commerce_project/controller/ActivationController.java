@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/activate")
 public class ActivationController {
 
-    VerificationTokenServiceImpl verificationTokenService;
-    UserRepository userRepository;
-    SetCustomerActiveHelper setCustomerActiveHelper;
+    CustomerServiceImpl customerService;
 
     @GetMapping
     public ResponseEntity<String> activate(@RequestParam("token") String token) {
