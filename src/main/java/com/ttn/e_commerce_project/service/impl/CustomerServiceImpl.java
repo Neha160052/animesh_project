@@ -6,7 +6,7 @@ import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
-import com.ttn.e_commerce_project.helper.ActivationHelper;
+import com.ttn.e_commerce_project.exceptionhandling.EmailNotFoundException;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.RoleRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
@@ -32,11 +32,10 @@ public class CustomerServiceImpl implements CustomerService {
       PasswordEncoder passwordEncoder;
       VerificationTokenServiceImpl verificationTokenService;
       EmailService emailService;
-      ActivationHelper activationHelper;
 
 
     @Override
-    public ResponseEntity<String> register(CustomerCo customerCo) {
+    public void register(CustomerCo customerCo) {
 
         if (userRepository.existsByEmail(customerCo.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
@@ -58,8 +57,30 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setContact(customerCo.getPhoneNumber());
         customerRepository.save(customer);
         VerificationToken token = verificationTokenService.createToken(user);
-        emailService.sendJavaActivationEmail(user.getEmail(),activationHelper.sendActivationLink(token));
-        return ResponseEntity.ok("Customer registered successfully");
+        emailService.sendJavaActivationEmail(user.getEmail(), activationLink(token));
+    }
+
+
+    public ResponseEntity<String> activateCustomer(String token) {
+        return verificationTokenService.validateToken(token)
+                .map(verificationToken -> {
+                    User user = verificationToken.getUser();
+                    user.setActive(true);
+                    userRepository.save(user);
+                    return ResponseEntity.ok("Account activated Successfully");
+                }).orElse(ResponseEntity.badRequest().body("Invalid or expired token"));
+    }
+
+    public void resendActivationLink(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException("No account found with email: " + email));
+
+        VerificationToken token = verificationTokenService.createToken(user);
+        emailService.sendJavaActivationEmail(email, activationLink(token));
+    }
+
+    public String activationLink(VerificationToken token) {
+        return "http://localhost:8080/activate?token=" + token.getToken();
     }
 
 }
