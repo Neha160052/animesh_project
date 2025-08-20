@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.entity.order;
 
+import com.ttn.e_commerce_project.entity.address.AddressFields;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
 import com.ttn.e_commerce_project.entity.address.AddressFields;
 import jakarta.persistence.*;
