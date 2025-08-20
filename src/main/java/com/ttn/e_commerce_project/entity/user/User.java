@@ -24,7 +24,6 @@ public class User extends Auditable {
      long id;
      String email;
      String firstName;
-     @NotBlank
      String middleName;
      String lastName;
      String password;
@@ -35,10 +34,10 @@ public class User extends Auditable {
      int invalidAttemptCount;
      ZonedDateTime passwordUpdateDate;
 
-   @OneToOne(mappedBy = "user")
+   @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
      Seller seller;
 
-   @OneToOne(mappedBy = "user")
+   @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
      Customer customer;
 
    @ManyToMany(mappedBy = "users")
