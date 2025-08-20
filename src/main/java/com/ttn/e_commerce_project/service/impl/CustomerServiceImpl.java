@@ -6,6 +6,7 @@ import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.helper.ActivationHelper;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.RoleRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
@@ -31,6 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
       PasswordEncoder passwordEncoder;
       VerificationTokenServiceImpl verificationTokenService;
       EmailService emailService;
+      ActivationHelper activationHelper;
 
 
     @Override
@@ -56,8 +58,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setContact(customerCo.getPhoneNumber());
         customerRepository.save(customer);
         VerificationToken token = verificationTokenService.createToken(user);
-        String activationLink = "http://localhost:8080/activate?token=" + token.getToken();
-        emailService.sendJavaActivationEmail(user.getEmail(),activationLink);
+        emailService.sendJavaActivationEmail(user.getEmail(),activationHelper.sendActivationLink(token));
         return ResponseEntity.ok("Customer registered successfully");
     }
 
