@@ -67,6 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(verificationToken -> {
                     User user = verificationToken.getUser();
                     user.setActive(true);
+                    user.setPasswordUpdateDate(ZonedDateTime.now());
                     userRepository.save(user);
                     return ResponseEntity.ok("Account activated Successfully");
                 }).orElse(ResponseEntity.badRequest().body("Invalid or expired token"));
