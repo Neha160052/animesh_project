@@ -48,7 +48,7 @@ public class SellerServiceImpl implements SellerService {
             throw new IllegalArgumentException("Company name already exists provide a unique name.");
         }
         User user = new User();
-        Role sellerRole = roleRepository.findByAuthority(RoleAuthority.SELLER).get();
+        Role sellerRole = commonService.findRoleByAuthority(RoleAuthority.SELLER);
         user.setEmail(sellerCo.getEmail());
         user.setPassword(passwordEncoder.encode(sellerCo.getPassword()));
         user.setFirstName(sellerCo.getFirstName());
