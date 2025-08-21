@@ -82,7 +82,12 @@ public class SellerServiceImpl implements SellerService {
         fields.setLabel(dto.getLabel());
 
         Address address = new Address();
-        address.setAddressFields(fields);
+        address.setCity(addressCo.getCity());
+        address.setState(addressCo.getState());
+        address.setCountry(addressCo.getCountry());
+        address.setAddressLine(addressCo.getAddressLine());
+        address.setZipCode(addressCo.getZipCode());
+        address.setLabel(addressCo.getLabel());
         return address;
     }
 }
