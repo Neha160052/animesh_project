@@ -27,13 +27,14 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CustomerServiceImpl implements CustomerService {
 
-      UserRepository userRepository;
-      CustomerRepository customerRepository;
-      RoleRepository roleRepository;
-      PasswordEncoder passwordEncoder;
-      VerificationTokenServiceImpl verificationTokenService;
-      EmailService emailService;
-
+    UserRepository userRepository;
+    CustomerRepository customerRepository;
+    RoleRepository roleRepository;
+    PasswordEncoder passwordEncoder;
+    ActivationTokenServiceImpl verificationTokenService;
+    EmailService emailService;
+    TokenRepository tokenRepository;
+    UserCommonService commonService;
 
     @Override
     public void register(CustomerCo customerCo) {
