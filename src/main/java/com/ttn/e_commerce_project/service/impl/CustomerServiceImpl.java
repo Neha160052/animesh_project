@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new IllegalArgumentException("Passwords do not match");
         }
         User user = new User();
-        Role customerRole = roleRepository.findByAuthority(RoleAuthority.CUSTOMER).get();
+        Role customerRole = commonService.findRoleByAuthority(RoleAuthority.CUSTOMER);
         user.setEmail(customerCo.getEmail());
         user.setPassword(passwordEncoder.encode(customerCo.getPassword()));
         user.setFirstName(customerCo.getFirstName());
