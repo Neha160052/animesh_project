@@ -1,10 +1,16 @@
 package com.ttn.e_commerce_project.config;
 
+import com.ttn.e_commerce_project.service.impl.UserDetailServiceImpl;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,22 +28,21 @@ public class SecurityConfig{
 
 //    @Autowired
 //    JwtFilter jwtFilter;
-//
-//    @Autowired
-//    UserServiceImpl userService;
+
+    @Autowired
+    UserDetailServiceImpl userDetailService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.authorizeHttpRequests(request->request
-                                .requestMatchers("/register/**", "/activate/**", "/customer/login", "/seller/login").permitAll()
+        return httpSecurity
+                .authorizeHttpRequests(request->request
+                                .requestMatchers("/register/**", "/activate/**", "/auth/login").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // generate token filter
-//                .addFilterAfter(jwtValidationFilter, JWTAuthenticationFilter.class) // validate token filter
-//                .addFilterAfter(jwtRefreshFilter, JwtValidationFilter.class) // refresh token filter
+                //.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // generate token filter
                 .build();
     }
 
@@ -46,6 +51,17 @@ public class SecurityConfig{
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailService);
+        return provider;
+    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
 }
