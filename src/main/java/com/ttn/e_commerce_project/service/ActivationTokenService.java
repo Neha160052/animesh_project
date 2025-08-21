@@ -5,7 +5,7 @@ import com.ttn.e_commerce_project.entity.user.User;
 
 import java.util.Optional;
 
-public interface VerificationTokenService {
+public interface ActivationTokenService {
 
     public VerificationToken createToken(User user);
     Optional<VerificationToken> validateToken(String token);
