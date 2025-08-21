@@ -6,7 +6,7 @@ import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
-import com.ttn.e_commerce_project.exceptionhandling.EmailNotFoundException;
+import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.RoleRepository;
 import com.ttn.e_commerce_project.respository.TokenRepository;
