@@ -42,7 +42,10 @@ public class User extends Auditable {
    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
      Customer customer;
 
-   @ManyToMany(mappedBy = "users")
+     @ManyToMany
+     @JoinTable(name = "user_role",
+             joinColumns = @JoinColumn(name ="user_id"),inverseJoinColumns = @JoinColumn(name = "role_id")
+     )
      Set<Role> role;
 
    @OneToMany(cascade = CascadeType.ALL)
