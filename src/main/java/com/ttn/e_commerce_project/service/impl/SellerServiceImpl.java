@@ -72,15 +72,7 @@ public class SellerServiceImpl implements SellerService {
         sellerRepository.save(seller);
     }
 
-    private Address mapToAddress(AddressCo dto) {
-        AddressFields fields = new AddressFields();
-        fields.setCity(dto.getCity());
-        fields.setState(dto.getState());
-        fields.setCountry(dto.getCountry());
-        fields.setAddressLine(dto.getAddressLine());
-        fields.setZipCode(dto.getZipCode());
-        fields.setLabel(dto.getLabel());
-
+    private Address mapToAddress(AddressCo addressCo) {
         Address address = new Address();
         address.setCity(addressCo.getCity());
         address.setState(addressCo.getState());
