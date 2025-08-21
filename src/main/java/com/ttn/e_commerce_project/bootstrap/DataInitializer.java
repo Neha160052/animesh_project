@@ -48,6 +48,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode(password));
             admin.setFirstName("admin");
             admin.setRole(Set.of(adminRole));
+            admin.setActive(true);
             userRepository.save(admin);
         }
     }
