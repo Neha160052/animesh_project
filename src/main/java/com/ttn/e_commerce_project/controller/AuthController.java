@@ -51,6 +51,6 @@ public class AuthController {
         String password = resetPasswordCo.getPassword();
         String confirmPassword = resetPasswordCo.getConfirmPassword();
         authServiceImpl.resetUserPassword(email,password,confirmPassword);
-        return ResponseEntity.ok("Password has reset successful");
+        return ResponseEntity.ok("Password reset successful");
     }
 }
