@@ -1,4 +1,4 @@
-package com.ttn.e_commerce_project.entity;
+package com.ttn.e_commerce_project.entity.token;
 
 import com.ttn.e_commerce_project.entity.user.User;
 import jakarta.persistence.*;
