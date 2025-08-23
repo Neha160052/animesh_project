@@ -40,8 +40,22 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiryMins))//in milliseconds
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + expiryMins))
+                .setId(UUID.randomUUID().toString())
+                .claim("type", "access")
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String generateRefreshToken(CustomUserDetails userDetails) {
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>> {}",userDetails.getUsername());
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiry))
+                .setId(UUID.randomUUID().toString())
+                .claim("type", "refresh")
+                .signWith(secretKey)
                 .compact();
     }
 }
