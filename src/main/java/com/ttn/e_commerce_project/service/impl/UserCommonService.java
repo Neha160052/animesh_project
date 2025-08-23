@@ -16,6 +16,10 @@ import static lombok.AccessLevel.PRIVATE;
 public class UserCommonService {
 
     RoleRepository roleRepository;
+    UserRepository userRepository;
+    ActivationTokenServiceImpl verificationTokenService;
+    EmailService emailService;
+    TokenRepository tokenRepository;
 
     public Role findRoleByAuthority(RoleAuthority authority) {
         return roleRepository.findByAuthority(authority)
