@@ -28,10 +28,10 @@ public class AuthController {
       }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String bearerAccessToken,
-                                         @RequestParam("refreshToken") String refreshToken)
-    {
-        String accessToken = bearerAccessToken.replace("Bearer ", "");
+    public ResponseEntity<String> logout(@RequestBody AuthTokenVo authTokenVo) {
+
+        String accessToken = authTokenVo.getAccessToken();
+        String refreshToken = authTokenVo.getRefreshToken();
         userCommonService.logout(accessToken, refreshToken);
 
         return ResponseEntity.ok("Logged out successfully");
