@@ -26,4 +26,14 @@ public class AuthController {
       {
            return userCommonService.login(userLoginCo);
       }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String bearerAccessToken,
+                                         @RequestParam("refreshToken") String refreshToken)
+    {
+        String accessToken = bearerAccessToken.replace("Bearer ", "");
+        userCommonService.logout(accessToken, refreshToken);
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
 }
