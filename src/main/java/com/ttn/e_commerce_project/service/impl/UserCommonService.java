@@ -1,18 +1,29 @@
 package com.ttn.e_commerce_project.service.impl;
 
+import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Role;
+import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.RoleRepository;
+import com.ttn.e_commerce_project.respository.TokenRepository;
+import com.ttn.e_commerce_project.respository.UserRepository;
+import com.ttn.e_commerce_project.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.time.ZonedDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = PRIVATE, makeFinal = true)
+@FieldDefaults(level = PRIVATE,makeFinal = true)
 public class UserCommonService {
 
     RoleRepository roleRepository;
@@ -26,63 +37,36 @@ public class UserCommonService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No role found for authority : %s", authority)));
     }
 
-    public AuthTokenVo login(UserLoginCo userLoginCo) {
-        log.info("hello i am running");
+    public User findUserByEmail(String email)
+    {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("No account found with email: " + email));
+    }
 
-        User user = userRepository.findByEmail(userLoginCo.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public ResponseEntity<String> activateUser(String token) {
+        return verificationTokenService.validateToken(token)
+                .map(verificationToken -> {
+                    User user = verificationToken.getUser();
+                    user.setActive(true);
+                    user.setPasswordUpdateDate(ZonedDateTime.now());
+                    userRepository.save(user);
+                    return ResponseEntity.ok("Account activated Successfully");
+                }).orElse(ResponseEntity.badRequest().body("Invalid or expired token"));
+    }
 
-        if(!user.isActive())
-            throw  new AccountNotActiveException("Account not active");
-
-        if (user.isLocked()) {
-            if (unlockWhenTimeExpired(user)) {
-                user.setLocked(false);
-                user.setInvalidAttemptCount(0);
-                userRepository.save(user);
-            } else {
-                throw new AccountLockedException("Account is locked. Please try again after sometime");
-            }
+    public void resendActivationLink(String email) {
+        User user = findUserByEmail(email);
+        if (user.isActive()) {
+            throw new InvalidArgumentException("User is already active. Activation link cannot be resent.");
         }
-
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginCo.getEmail(),userLoginCo.getPassword()));
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            resetFailedAttempts(user);
-            String token = jwtUtil.generateAccessToken(userDetails);
-            String refreshToken = jwtUtil.generateRefreshToken(userDetails);
-            return AuthTokenVo.builder().refreshToken(refreshToken).accessToken(token).build();
-        } catch (BadCredentialsException e) {
-            increaseFailedAttempts(user);
-            throw new BadCredentialsException("You have reached the maximum limit of login attempts");
-        }
+        tokenRepository.deleteByUser(user);
+        VerificationToken token = verificationTokenService.createToken(user);
+        emailService.sendJavaActivationEmail(email, activationLink(token));
     }
 
-    public void increaseFailedAttempts(User user) {
-        int invalidAttempts = user.getInvalidAttemptCount()+1;
-        user.setInvalidAttemptCount(invalidAttempts);
-
-        if(invalidAttempts >= 3)
-        {
-            user.setLocked(true);
-            user.setLockTime(LocalDateTime.now());
-            userRepository.save(user);
-        }
-    }
-//  To Do : send email to the user to stating that the account has been locked
-
-    public void resetFailedAttempts(User user) {
-        user.setInvalidAttemptCount(0);
-        userRepository.save(user);
+    public String activationLink(VerificationToken token) {
+        return "http://localhost:8080/activate?token=" + token.getToken();
     }
 
-    public boolean unlockWhenTimeExpired(User user) {
-        if(user.getLockTime()==null)
-            return false;
-        LocalDateTime unlockTime = user.getLockTime().plusSeconds(Long.parseLong(lockTimeDuration));
-      if(LocalDateTime.now().isAfter(unlockTime))
-          return true;
-      else
-          return false;
-    }
 }
+
