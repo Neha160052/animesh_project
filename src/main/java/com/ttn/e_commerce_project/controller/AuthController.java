@@ -1,13 +1,13 @@
 package com.ttn.e_commerce_project.controller;
 
+import com.ttn.e_commerce_project.dto.co.AuthTokenCo;
+import com.ttn.e_commerce_project.dto.co.ResetPasswordCo;
 import com.ttn.e_commerce_project.dto.co.UserLoginCo;
-import com.ttn.e_commerce_project.service.impl.CustomerServiceImpl;
+import com.ttn.e_commerce_project.dto.vo.AuthTokenVo;
+import com.ttn.e_commerce_project.service.impl.AuthServiceImpl;
 import com.ttn.e_commerce_project.service.impl.UserCommonService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController{
 
-    UserCommonService userCommonService;
+    AuthServiceImpl authServiceImpl;
 
       @PostMapping("/login")
-      public String login(@Valid @RequestBody UserLoginCo userLoginCo)
+      public ResponseEntity<AuthTokenVo> login(@Valid @RequestBody UserLoginCo userLoginCo)
       {
-          AuthTokenVo token  = userCommonService.login(userLoginCo);
+          AuthTokenVo token  = authServiceImpl.login(userLoginCo);
           return  ResponseEntity.ok(token);
       }
 
@@ -33,7 +33,7 @@ public class AuthController {
 
         String accessToken = authTokenVo.getAccessToken();
         String refreshToken = authTokenVo.getRefreshToken();
-        userCommonService.logout(accessToken, refreshToken);
+        authServiceImpl.logout(accessToken, refreshToken);
 
         return ResponseEntity.ok("Logged out successfully");
     }

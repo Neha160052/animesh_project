@@ -5,8 +5,6 @@ import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +21,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws ResourceNotFoundException {
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("No account found with email: "));
+        User user = userRepository.findByEmail(email).get();
         return new CustomUserDetails(user);
     }
 }

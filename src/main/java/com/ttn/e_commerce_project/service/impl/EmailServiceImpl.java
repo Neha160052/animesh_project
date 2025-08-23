@@ -1,6 +1,8 @@
-package com.ttn.e_commerce_project.service;
+package com.ttn.e_commerce_project.service.impl;
 
+import com.ttn.e_commerce_project.service.EmailService;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,19 +16,13 @@ public class EmailServiceImpl  implements EmailService {
 
     JavaMailSender javaMailSender;
 
-    EmailService(JavaMailSender javaMailSender)
-    {
-        this.javaMailSender = javaMailSender;
-    }
-
     @Async
-    public void sendJavaActivationEmail(String toEmail,String activationLink )
+    public void sendJavaActivationEmail(String toEmail,String activationLink)
     {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject("To activate your account click on the link below: ");
         message.setText(activationLink);
-
         javaMailSender.send(message);
     }
 

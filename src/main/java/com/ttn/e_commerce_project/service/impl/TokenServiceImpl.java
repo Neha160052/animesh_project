@@ -1,9 +1,9 @@
 package com.ttn.e_commerce_project.service.impl;
 
-import com.ttn.e_commerce_project.entity.VerificationToken;
+import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.respository.TokenRepository;
-import com.ttn.e_commerce_project.service.VerificationTokenService;
+import com.ttn.e_commerce_project.service.TokenService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -2,5 +2,6 @@ package com.ttn.e_commerce_project.service;
 
 public interface EmailService {
 
-    void sendJavaActivationEmail(String toEmail,String activationLink );
+    void sendJavaActivationEmail(String email,String activationLink);
+    void sendResetPasswordEmail(String email,String activationLink);
 }

@@ -1,9 +1,11 @@
 package com.ttn.e_commerce_project.dto.vo;
 
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter

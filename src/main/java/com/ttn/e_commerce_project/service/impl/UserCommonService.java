@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -28,9 +31,10 @@ public class UserCommonService {
 
     RoleRepository roleRepository;
     UserRepository userRepository;
-    ActivationTokenServiceImpl verificationTokenService;
+    TokenServiceImpl verificationTokenService;
     EmailService emailService;
     TokenRepository tokenRepository;
+
 
     public Role findRoleByAuthority(RoleAuthority authority) {
         return roleRepository.findByAuthority(authority)
@@ -67,6 +71,8 @@ public class UserCommonService {
     public String activationLink(VerificationToken token) {
         return "http://localhost:8080/activate?token=" + token.getToken();
     }
+
+
 
 }
 

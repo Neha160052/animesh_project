@@ -1,6 +1,7 @@
 package com.ttn.e_commerce_project.controller;
 
 import com.ttn.e_commerce_project.service.impl.CustomerServiceImpl;
+import com.ttn.e_commerce_project.service.impl.UserCommonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/activate")
 public class ActivationController {
 
-    CustomerServiceImpl customerService;
+    UserCommonService customerService;
 
     @GetMapping
-    public ResponseEntity<String> activate(@RequestParam("token") String token) {
-        return customerService.activateCustomer(token);
+    public ResponseEntity<String> activate(@RequestParam String token) {
+        return customerService.activateUser(token);
     }
 
     @GetMapping("/resendActivationLink")

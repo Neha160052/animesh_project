@@ -1,22 +1,20 @@
 package com.ttn.e_commerce_project.service.impl;
 
 import com.ttn.e_commerce_project.dto.co.CustomerCo;
-import com.ttn.e_commerce_project.entity.VerificationToken;
+import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
-import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
+import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
-import com.ttn.e_commerce_project.respository.RoleRepository;
-import com.ttn.e_commerce_project.respository.TokenRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.EmailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,23 +25,21 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CustomerServiceImpl implements CustomerService {
 
-    UserRepository userRepository;
     CustomerRepository customerRepository;
-    RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
-    ActivationTokenServiceImpl verificationTokenService;
-    EmailService emailService;
-    TokenRepository tokenRepository;
+    UserRepository userRepository;
     UserCommonService commonService;
+    TokenServiceImpl verificationTokenService;
+    EmailService emailService;
 
     @Override
     public void register(CustomerCo customerCo) {
 
         if (userRepository.existsByEmail(customerCo.getEmail())) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new InvalidArgumentException("Email already in use");
         }
         if (!customerCo.getPassword().equals(customerCo.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+            throw new PasswordMismatchException("Password and Confirm Password should match");
         }
         User user = new User();
         Role customerRole = commonService.findRoleByAuthority(RoleAuthority.CUSTOMER);
@@ -61,32 +57,4 @@ public class CustomerServiceImpl implements CustomerService {
         VerificationToken token = verificationTokenService.createToken(user);
         emailService.sendJavaActivationEmail(user.getEmail(), commonService.activationLink(token));
     }
-
-
-    public ResponseEntity<String> activateCustomer(String token) {
-        return verificationTokenService.validateToken(token)
-                .map(verificationToken -> {
-                    User user = verificationToken.getUser();
-                    user.setActive(true);
-                    user.setPasswordUpdateDate(ZonedDateTime.now());
-                    userRepository.save(user);
-                    return ResponseEntity.ok("Account activated Successfully");
-                }).orElse(ResponseEntity.badRequest().body("Invalid or expired token"));
-    }
-
-    public void resendActivationLink(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("No account found with email: " + email));
-        if (user.isActive()) {
-            throw new IllegalStateException("User is already active. Activation link cannot be resent.");
-        }
-        tokenRepository.deleteByUser(user);
-        VerificationToken token = verificationTokenService.createToken(user);
-        emailService.sendJavaActivationEmail(email, activationLink(token));
-    }
-
-    public String activationLink(VerificationToken token) {
-        return "http://localhost:8080/activate?token=" + token.getToken();
-    }
-
 }

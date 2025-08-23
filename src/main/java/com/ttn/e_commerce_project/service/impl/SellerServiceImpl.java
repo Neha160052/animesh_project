@@ -1,19 +1,18 @@
 package com.ttn.e_commerce_project.service.impl;
 
+import com.ttn.e_commerce_project.dto.co.AddressCo;
 import com.ttn.e_commerce_project.dto.co.SellerCo;
 import com.ttn.e_commerce_project.entity.address.Address;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
-import com.ttn.e_commerce_project.respository.RoleRepository;
 import com.ttn.e_commerce_project.respository.SellerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.SellerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ public class SellerServiceImpl implements SellerService {
 
     UserRepository userRepository;
     SellerRepository sellerRepository;
-    RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
     UserCommonService commonService;
 
@@ -65,11 +63,9 @@ public class SellerServiceImpl implements SellerService {
     {
         Seller seller = new Seller();
         seller.setUser(user);
-        Address address = modelMapper.map(sellerCo.getCompanyAddress(), Address.class);
         seller.setCompanyContact(sellerCo.getCompanyContact());
         seller.setCompanyName(sellerCo.getCompanyName());
         seller.setGst(sellerCo.getGst());
-        seller.setAddress(address);
         sellerRepository.save(seller);
     }
 

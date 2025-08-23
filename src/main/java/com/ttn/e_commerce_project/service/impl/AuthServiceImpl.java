@@ -3,14 +3,16 @@ package com.ttn.e_commerce_project.service.impl;
 import com.ttn.e_commerce_project.dto.co.UserLoginCo;
 import com.ttn.e_commerce_project.dto.vo.AuthTokenVo;
 import com.ttn.e_commerce_project.entity.token.TokenBlacklist;
+import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.CustomUserDetails;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.exceptionhandling.AccountLockedException;
 import com.ttn.e_commerce_project.exceptionhandling.AccountNotActiveException;
-import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
+import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
 import com.ttn.e_commerce_project.respository.TokenBlacklistRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.AuthService;
+import com.ttn.e_commerce_project.service.EmailService;
 import com.ttn.e_commerce_project.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +31,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = PRIVATE,makeFinal = true)
+@FieldDefaults(level = PRIVATE)
 public class AuthServiceImpl implements AuthService {
 
     final AuthenticationManager authenticationManager;
@@ -46,8 +48,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthTokenVo login(UserLoginCo userLoginCo) {
         log.info("hello i am running");
 
-        User user = userRepository.findByEmail(userLoginCo.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = userCommonService.findUserByEmail(userLoginCo.getEmail());
 
         if(!user.isActive())
             throw  new AccountNotActiveException("Account not active");

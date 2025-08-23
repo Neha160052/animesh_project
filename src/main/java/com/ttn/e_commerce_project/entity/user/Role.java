@@ -6,13 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role{
+public class Role {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +19,4 @@ public class Role{
 
   @Enumerated(value = EnumType.STRING)
   RoleAuthority authority;
-
-  @ManyToMany
-  @JoinTable(name = "user_role",
-          joinColumns = @JoinColumn(name ="user_id"),inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
-  Set<User> users;
 }

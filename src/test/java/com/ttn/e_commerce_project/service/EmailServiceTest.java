@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.service;
 
+import com.ttn.e_commerce_project.service.impl.EmailServiceImpl;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class EmailServiceTest {
 
     @Autowired
-    EmailService emailService;
+    EmailServiceImpl emailService;
 
     @Test
     void testSendMail()

@@ -3,6 +3,7 @@ package com.ttn.e_commerce_project.bootstrap;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.RoleRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import lombok.AccessLevel;

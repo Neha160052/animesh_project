@@ -2,15 +2,13 @@ package com.ttn.e_commerce_project.entity.user;
 
 import com.ttn.e_commerce_project.entity.address.Address;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
-import com.ttn.e_commerce_project.entity.address.Address;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -34,12 +32,13 @@ public class User extends Auditable {
      boolean isExpired;
      boolean isLocked;
      int invalidAttemptCount;
+     LocalDateTime lockTime;
      ZonedDateTime passwordUpdateDate;
 
-   @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
      Seller seller;
 
-   @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
      Customer customer;
 
      @ManyToMany
