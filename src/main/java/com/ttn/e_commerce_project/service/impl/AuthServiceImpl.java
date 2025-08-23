@@ -36,6 +36,9 @@ public class AuthServiceImpl implements AuthService {
     final JwtUtil jwtUtil;
     final UserRepository userRepository;
     final TokenBlacklistRepository tokenBlacklistRepository;
+    final UserCommonService userCommonService;
+    final EmailService emailService;
+    final TokenServiceImpl tokenService;
 
     @Value("${account.lock.time}")
     String lockTimeDuration;
