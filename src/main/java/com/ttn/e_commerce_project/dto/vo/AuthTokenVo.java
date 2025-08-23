@@ -8,7 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AuthTokenVo {
-    private String accessToken;
-    private String refreshToken;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class AuthTokenVo{
+
+       String accessToken;
+       String refreshToken;
 }
