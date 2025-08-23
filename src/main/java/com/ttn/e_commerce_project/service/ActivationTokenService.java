@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface ActivationTokenService {
 
-    public VerificationToken createToken(User user);
+    VerificationToken createToken(User user);
     Optional<VerificationToken> validateToken(String token);
 }
