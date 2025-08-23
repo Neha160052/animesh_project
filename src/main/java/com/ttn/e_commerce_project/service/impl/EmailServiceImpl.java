@@ -8,8 +8,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmailService {
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+public class EmailServiceImpl  implements EmailService {
 
     JavaMailSender javaMailSender;
 
