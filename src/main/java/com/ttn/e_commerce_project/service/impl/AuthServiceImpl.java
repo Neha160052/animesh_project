@@ -82,6 +82,26 @@ public class AuthServiceImpl implements AuthService {
         log.info("Token with jti={} refreshJti={} has been blacklisted", jti,refreshJti);
     }
 
+    @Override
+    public void initiatePasswordReset(String email) {
+        User user = userCommonService.findUserByEmail(email);
+        if(!user.isActive())
+            throw  new AccountNotActiveException("Account not active");
+        VerificationToken token = tokenService.createToken(user);
+        emailService.sendResetPasswordEmail(email, userCommonService.activationLink(token));
+    }
+
+    @Override
+    public void resetUserPassword(String email,String password, String confirmPassword)
+    {
+        try {
+            if(password.matches(confirmPassword))
+                userRepository.updatePassword(email,password);
+        } catch (PasswordMismatchException e) {
+            throw new PasswordMismatchException("Password and Confirm password should match");
+        }
+    }
+
     public void increaseFailedAttempts(User user) {
         int invalidAttempts = user.getInvalidAttemptCount()+1;
         user.setInvalidAttemptCount(invalidAttempts);
