@@ -1,0 +1,113 @@
+package com.ttn.e_commerce_project.service.impl;
+
+import com.ttn.e_commerce_project.dto.co.UserLoginCo;
+import com.ttn.e_commerce_project.dto.vo.AuthTokenVo;
+import com.ttn.e_commerce_project.entity.token.TokenBlacklist;
+import com.ttn.e_commerce_project.entity.user.CustomUserDetails;
+import com.ttn.e_commerce_project.entity.user.User;
+import com.ttn.e_commerce_project.exceptionhandling.AccountLockedException;
+import com.ttn.e_commerce_project.exceptionhandling.AccountNotActiveException;
+import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
+import com.ttn.e_commerce_project.respository.TokenBlacklistRepository;
+import com.ttn.e_commerce_project.respository.UserRepository;
+import com.ttn.e_commerce_project.service.AuthService;
+import com.ttn.e_commerce_project.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
+import static lombok.AccessLevel.PRIVATE;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = PRIVATE,makeFinal = true)
+public class AuthServiceImpl implements AuthService {
+
+    final AuthenticationManager authenticationManager;
+    final JwtUtil jwtUtil;
+    final UserRepository userRepository;
+    final TokenBlacklistRepository tokenBlacklistRepository;
+
+    @Value("${account.lock.time}")
+    String lockTimeDuration;
+
+    public AuthTokenVo login(UserLoginCo userLoginCo) {
+        log.info("hello i am running");
+
+        User user = userRepository.findByEmail(userLoginCo.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if(!user.isActive())
+            throw  new AccountNotActiveException("Account not active");
+
+        if (user.isLocked()) {
+            if (unlockWhenTimeExpired(user)) {
+                user.setLocked(false);
+                user.setInvalidAttemptCount(0);
+                userRepository.save(user);
+            } else {
+                throw new AccountLockedException("Account is locked. Please try again after sometime");
+            }
+        }
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginCo.getEmail(),userLoginCo.getPassword()));
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            resetFailedAttempts(user);
+            String token = jwtUtil.generateAccessToken(userDetails);
+            String refreshToken = jwtUtil.generateRefreshToken(userDetails);
+            return AuthTokenVo.builder().refreshToken(refreshToken).accessToken(token).build();
+        } catch (BadCredentialsException e) {
+            increaseFailedAttempts(user);
+            throw new BadCredentialsException("You have reached the maximum limit of login attempts");
+        }
+    }
+
+    public void logout(String accessToken,String refreshToken) {
+
+        String jti = jwtUtil.getJtiFromToken(accessToken);
+        String refreshJti = jwtUtil.getJtiFromToken(refreshToken);
+        TokenBlacklist blacklist = new TokenBlacklist(jti,refreshJti);
+        tokenBlacklistRepository.save(blacklist);
+
+        log.info("Token with jti={} refreshJti={} has been blacklisted", jti,refreshJti);
+    }
+
+    public void increaseFailedAttempts(User user) {
+        int invalidAttempts = user.getInvalidAttemptCount()+1;
+        user.setInvalidAttemptCount(invalidAttempts);
+
+        if(invalidAttempts >= 3)
+        {
+            user.setLocked(true);
+            user.setLockTime(LocalDateTime.now());
+            userRepository.save(user);
+        }
+    }
+//  To Do : send email to the user to stating that the account has been locked
+
+    public void resetFailedAttempts(User user) {
+        user.setInvalidAttemptCount(0);
+        userRepository.save(user);
+    }
+
+    public boolean unlockWhenTimeExpired(User user) {
+        if(user.getLockTime()==null)
+            return false;
+        LocalDateTime unlockTime = user.getLockTime().plusSeconds(Long.parseLong(lockTimeDuration));
+        if(LocalDateTime.now().isAfter(unlockTime))
+            return true;
+        else
+            return false;
+    }
+}
+
