@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setContact(customerCo.getPhoneNumber());
         customerRepository.save(customer);
         VerificationToken token = verificationTokenService.createToken(user);
-        emailService.sendJavaActivationEmail(user.getEmail(), activationLink(token));
+        emailService.sendJavaActivationEmail(user.getEmail(), commonService.activationLink(token));
     }
 
 
