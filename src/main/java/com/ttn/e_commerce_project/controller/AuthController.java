@@ -24,7 +24,8 @@ public class AuthController {
       @PostMapping("/login")
       public String login(@Valid @RequestBody UserLoginCo userLoginCo)
       {
-           return userCommonService.login(userLoginCo);
+          AuthTokenVo token  = userCommonService.login(userLoginCo);
+          return  ResponseEntity.ok(token);
       }
 
     @PostMapping("/logout")
