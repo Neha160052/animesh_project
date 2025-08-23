@@ -37,4 +37,20 @@ public class AuthController {
 
         return ResponseEntity.ok("Logged out successfully");
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> initiateResetPassword(@RequestBody String email)
+    {
+      authServiceImpl.initiatePasswordReset(email);
+      return ResponseEntity.ok("reset password email has been sent");
+    }
+
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordCo resetPasswordCo)
+    {
+        String email = resetPasswordCo.getEmail();
+        String password = resetPasswordCo.getPassword();
+        String confirmPassword = resetPasswordCo.getConfirmPassword();
+        authServiceImpl.resetUserPassword(email,password,confirmPassword);
+        return ResponseEntity.ok("Password has reset successful");
+    }
 }
