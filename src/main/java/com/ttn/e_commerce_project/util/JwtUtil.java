@@ -58,4 +58,13 @@ public class JwtUtil {
                 .signWith(secretKey)
                 .compact();
     }
+
+    public String getJtiFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getId();
+    }
 }
