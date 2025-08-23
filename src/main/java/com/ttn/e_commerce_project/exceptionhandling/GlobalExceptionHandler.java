@@ -17,4 +17,28 @@ public class GlobalExceptionHandler {
         response.put("error", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<Map<String,String>> handleAccountLockedException(AccountLockedException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.LOCKED);
+    }
+
+    @ExceptionHandler(AccountNotActiveException.class)
+    public ResponseEntity<Map<String,String>> handleAccountNotActiveException(AccountNotActiveException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.LOCKED);
+    }
+
+    @ExceptionHandler(InvalidArgumentException.class)
+    public ResponseEntity<Map<String,String>> handleAccountNotActiveException(InvalidArgumentException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.LOCKED);
+    }
 }
