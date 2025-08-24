@@ -36,9 +36,9 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(request->request
-                                .requestMatchers("/register/**", "/activate/**", "/auth/login").permitAll()
+                .requestMatchers("/register/**", "/activate/**", "/auth/login","auth/forgot-password","auth/generate-token").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/auth/logout").authenticated()
+                .requestMatchers("/auth/logout").authenticated()
                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

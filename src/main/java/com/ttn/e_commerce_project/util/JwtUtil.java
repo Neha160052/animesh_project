@@ -1,9 +1,10 @@
 package com.ttn.e_commerce_project.util;
 
 import com.ttn.e_commerce_project.entity.user.CustomUserDetails;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -73,38 +74,4 @@ public class JwtUtil {
         return claims.getId();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)   // your secret key for verification
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            Date expiration = claims.getExpiration();
-            if (expiration.before(new Date())) {
-                return true;
-            }
-            return false;
-
-        } catch (JwtException | IllegalArgumentException e) {
-            return true;
-        }
-
-    }
-
-    public String getUsername(String token) {
-
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            return claims.getSubject(); // username is stored in subject
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidArgumentException("Invalid or expired token");
-        }
-    }
 }

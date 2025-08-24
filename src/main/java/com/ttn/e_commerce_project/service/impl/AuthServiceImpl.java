@@ -8,6 +8,7 @@ import com.ttn.e_commerce_project.entity.user.CustomUserDetails;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.exceptionhandling.AccountLockedException;
 import com.ttn.e_commerce_project.exceptionhandling.AccountNotActiveException;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
 import com.ttn.e_commerce_project.respository.TokenBlacklistRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
@@ -36,11 +37,13 @@ public class AuthServiceImpl implements AuthService {
 
     final AuthenticationManager authenticationManager;
     final JwtUtil jwtUtil;
+    final JwtService jwtService;
     final UserRepository userRepository;
     final TokenBlacklistRepository tokenBlacklistRepository;
     final UserCommonService userCommonService;
     final EmailService emailService;
     final TokenServiceImpl tokenService;
+    final UserDetailServiceImpl userDetailService;
 
     @Value("${account.lock.time}")
     String lockTimeDuration;
@@ -78,8 +81,8 @@ public class AuthServiceImpl implements AuthService {
 
     public void logout(String accessToken,String refreshToken) {
 
-        jwtUtil.validateToken(accessToken);
-        jwtUtil.validateToken(refreshToken);
+        jwtService.validateToken(accessToken);
+        jwtService.validateToken(refreshToken);
         String jti = jwtUtil.getJtiFromToken(accessToken);
         String refreshJti = jwtUtil.getJtiFromToken(refreshToken);
         TokenBlacklist blacklist = new TokenBlacklist(jti,refreshJti);
@@ -138,7 +141,7 @@ public class AuthServiceImpl implements AuthService {
 
     public String generateNewAccessToken(String refreshToken)
     {
-        if (jwtUtil.validateToken(refreshToken)) {
+        if (jwtService.validateToken(refreshToken)) {
             throw new InvalidArgumentException("Invalid or expired refresh token");
         }
 
@@ -146,7 +149,7 @@ public class AuthServiceImpl implements AuthService {
         if (tokenBlacklistRepository.existsByJti(refreshJti)) {
             throw new InvalidArgumentException("Refresh token blacklisted please login again");
         }
-        String username = jwtUtil.getUsername(refreshToken);
+        String username = jwtService.getUsername(refreshToken);
         CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(username);
         return jwtUtil.generateAccessToken(userDetails);
     }

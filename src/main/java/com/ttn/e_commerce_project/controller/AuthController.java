@@ -1,11 +1,10 @@
 package com.ttn.e_commerce_project.controller;
 
-import com.ttn.e_commerce_project.dto.co.AuthTokenCo;
 import com.ttn.e_commerce_project.dto.co.ResetPasswordCo;
 import com.ttn.e_commerce_project.dto.co.UserLoginCo;
 import com.ttn.e_commerce_project.dto.vo.AuthTokenVo;
 import com.ttn.e_commerce_project.service.impl.AuthServiceImpl;
-import com.ttn.e_commerce_project.service.impl.UserCommonService;
+import com.ttn.e_commerce_project.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController{
 
     AuthServiceImpl authServiceImpl;
-
+    JwtUtil jwtUtil;
       @PostMapping("/login")
       public ResponseEntity<AuthTokenVo> login(@Valid @RequestBody UserLoginCo userLoginCo)
       {
@@ -29,12 +28,8 @@ public class AuthController{
       }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody AuthTokenVo authTokenVo) {
-
-        String accessToken = authTokenVo.getAccessToken();
-        String refreshToken = authTokenVo.getRefreshToken();
+    public ResponseEntity<String> logout(@RequestHeader String accessToken,@RequestBody String refreshToken) {
         authServiceImpl.logout(accessToken, refreshToken);
-
         return ResponseEntity.ok("Logged out successfully");
     }
 
@@ -45,6 +40,7 @@ public class AuthController{
       return ResponseEntity.ok("reset password email has been sent");
     }
 
+    @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordCo resetPasswordCo)
     {
         String email = resetPasswordCo.getEmail();
@@ -52,5 +48,12 @@ public class AuthController{
         String confirmPassword = resetPasswordCo.getConfirmPassword();
         authServiceImpl.resetUserPassword(email,password,confirmPassword);
         return ResponseEntity.ok("Password reset successful");
+    }
+
+    @PostMapping("/generate-new-access-token")
+    public ResponseEntity<String> generateToken(@RequestBody String token)
+    {
+        String newAccessToken = authServiceImpl.generateNewAccessToken(token);
+        return ResponseEntity.ok(newAccessToken);
     }
 }

@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
 
-    UserRepository userRepository;
+    UserCommonService userCommonService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws ResourceNotFoundException {
+    public UserDetails loadUserByUsername(String email){
 
-        User user = userRepository.findByEmail(email).get();
+        User user = userCommonService.findUserByEmail(email);
         return new CustomUserDetails(user);
     }
 }
