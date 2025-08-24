@@ -72,4 +72,39 @@ public class JwtUtil {
                 .getBody();
         return claims.getId();
     }
+
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)   // your secret key for verification
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            Date expiration = claims.getExpiration();
+            if (expiration.before(new Date())) {
+                return true;
+            }
+            return false;
+
+        } catch (JwtException | IllegalArgumentException e) {
+            return true;
+        }
+
+    }
+
+    public String getUsername(String token) {
+
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.getSubject(); // username is stored in subject
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidArgumentException("Invalid or expired token");
+        }
+    }
 }
