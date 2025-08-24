@@ -135,5 +135,20 @@ public class AuthServiceImpl implements AuthService {
         else
             return false;
     }
+
+    public String generateNewAccessToken(String refreshToken)
+    {
+        if (jwtUtil.validateToken(refreshToken)) {
+            throw new InvalidArgumentException("Invalid or expired refresh token");
+        }
+
+        String refreshJti = jwtUtil.getJtiFromToken(refreshToken);
+        if (tokenBlacklistRepository.existsByJti(refreshJti)) {
+            throw new InvalidArgumentException("Refresh token blacklisted please login again");
+        }
+        String username = jwtUtil.getUsername(refreshToken);
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(username);
+        return jwtUtil.generateAccessToken(userDetails);
+    }
 }
 
