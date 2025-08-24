@@ -21,7 +21,7 @@ import java.io.IOException;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 
-
+@Component
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE,makeFinal = true)
 public class JwtFilter extends OncePerRequestFilter {

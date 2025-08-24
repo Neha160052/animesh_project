@@ -29,7 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class SecurityConfig{
 
-
+    JwtFilter jwtFilter;
     UserDetailServiceImpl userDetailService;
 
     @Bean
@@ -43,7 +43,7 @@ public class SecurityConfig{
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
