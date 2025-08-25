@@ -1,0 +1,46 @@
+package com.ttn.e_commerce_project.entities.user;
+import com.ttn.e_commerce_project.entities.audit.Auditable;
+import com.ttn.e_commerce_project.entities.address.Address;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
+
+@Entity
+@Getter
+@Setter
+@FieldDefaults(level= AccessLevel.PRIVATE)
+public class User extends Auditable {
+
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+     long id;
+     String firstName;
+     String middleName;
+     String lastName;
+     String password;
+     boolean isDeleted;
+     boolean isActive;
+     boolean isExpired;
+     boolean isLocked;
+     int invalidAttemptCount;
+     ZonedDateTime passwordUpdateDate;
+
+   @OneToOne(mappedBy = "user")
+     Seller seller;
+
+   @OneToOne(mappedBy = "user")
+     Customer customer;
+
+   @ManyToMany(mappedBy = "users")
+     Set<Role> roles;
+
+   @OneToMany
+   @JoinColumn(name = "user_id", referencedColumnName = "id") //when not given reference column name it was creating extra table
+     List<Address> address;
+}
