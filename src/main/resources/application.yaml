@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: e-commerce-project
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecom
+    username: root
+    password: Rootuser@023
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: animesh.pro02@gmail.com
+    password: exgxdjvialourfgl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  profiles:
+    active: dev

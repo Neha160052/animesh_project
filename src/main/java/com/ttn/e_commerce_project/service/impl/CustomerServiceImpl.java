@@ -1,0 +1,60 @@
+package com.ttn.e_commerce_project.service.impl;
+
+import com.ttn.e_commerce_project.dto.co.CustomerCo;
+import com.ttn.e_commerce_project.entity.token.VerificationToken;
+import com.ttn.e_commerce_project.entity.user.Customer;
+import com.ttn.e_commerce_project.entity.user.Role;
+import com.ttn.e_commerce_project.entity.user.User;
+import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
+import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
+import com.ttn.e_commerce_project.respository.CustomerRepository;
+import com.ttn.e_commerce_project.respository.UserRepository;
+import com.ttn.e_commerce_project.service.CustomerService;
+import com.ttn.e_commerce_project.service.EmailService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+public class CustomerServiceImpl implements CustomerService {
+
+    CustomerRepository customerRepository;
+    PasswordEncoder passwordEncoder;
+    UserRepository userRepository;
+    UserCommonService commonService;
+    TokenServiceImpl verificationTokenService;
+    EmailService emailService;
+
+    @Override
+    public void register(CustomerCo customerCo) {
+
+        if (userRepository.existsByEmail(customerCo.getEmail())) {
+            throw new InvalidArgumentException("Email already in use");
+        }
+        if (!customerCo.getPassword().equals(customerCo.getConfirmPassword())) {
+            throw new PasswordMismatchException("Password and Confirm Password should match");
+        }
+        User user = new User();
+        Role customerRole = commonService.findRoleByAuthority(RoleAuthority.CUSTOMER);
+        user.setEmail(customerCo.getEmail());
+        user.setPassword(passwordEncoder.encode(customerCo.getPassword()));
+        user.setFirstName(customerCo.getFirstName());
+        user.setMiddleName(customerCo.getMiddleName());
+        user.setLastName(customerCo.getLastName());
+        user.setRole(Set.of(customerRole));
+        userRepository.save(user);
+        Customer customer = new Customer();
+        customer.setUser(user);
+        customer.setContact(customerCo.getPhoneNumber());
+        customerRepository.save(customer);
+        VerificationToken token = verificationTokenService.createToken(user);
+        emailService.sendJavaActivationEmail(user.getEmail(), commonService.activationLink(token));
+    }
+}
