@@ -63,7 +63,7 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody();
 
-            return claims.get("roles", List.class); // extract roles as List<String>
+            return claims.get("roles",String.class);
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidArgumentException("Invalid or expired token");
         }
