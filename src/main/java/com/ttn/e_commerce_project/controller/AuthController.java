@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController{
 
     AuthServiceImpl authServiceImpl;
-    JwtUtil jwtUtil;
+
       @PostMapping("/login")
       public ResponseEntity<AuthTokenVo> login(@Valid @RequestBody UserLoginCo userLoginCo)
       {
