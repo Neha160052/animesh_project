@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
     String lockTimeDuration;
 
     public AuthTokenVo login(UserLoginCo userLoginCo) {
-        log.info("hello i am running");
+        log.info("login initiated");
 
         User user = userCommonService.findUserByEmail(userLoginCo.getEmail());
 
@@ -64,6 +64,7 @@ public class AuthServiceImpl implements AuthService {
             } else {
                 throw new AccountLockedException("Account is locked. Please try again after sometime");
             }
+            log.info("login successful");
         }
 
         try {
