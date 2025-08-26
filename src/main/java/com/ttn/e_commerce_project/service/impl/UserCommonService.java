@@ -73,6 +73,11 @@ public class UserCommonService {
     }
 
 
-
+    public String  findUserEmailById(Long id)
+    {
+        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User with user id not found:"+id));
+        user.setPasswordUpdateDate(ZonedDateTime.now());
+        return user.getEmail();
+    }
 }
 
