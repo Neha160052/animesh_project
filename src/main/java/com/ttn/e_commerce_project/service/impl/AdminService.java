@@ -74,7 +74,7 @@ public class AdminService {
             updated = customerRepository.activateCustomerIfNotActive(id);
             if (updated == 1) {
                 String email = userCommonService.findUserEmailById(id);
-                emailService.sendAcknowlegmentMail(id, email);
+                emailService.sendAcknowledgementMail(email,"Dear Customer your account has been activated by the admin now you can login");
             }
             return (updated == 1);
         }
