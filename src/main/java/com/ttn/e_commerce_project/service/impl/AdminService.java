@@ -89,7 +89,7 @@ public class AdminService {
                 updated = sellerRepository.activateSellerIfNotActive(id);
                 if (updated == 1)
                 { String email = userCommonService.findUserEmailById(id);
-                  emailService.sendAcknowlegmentMail(id, email);}
+                  emailService.sendAcknowledgementMail(email,"Dear seller you account has be activated by the admin now you can login");}
                 return (updated == 1);
             }
         }
