@@ -5,12 +5,15 @@ import com.ttn.e_commerce_project.dto.co.UserLoginCo;
 import com.ttn.e_commerce_project.dto.vo.AuthTokenVo;
 import com.ttn.e_commerce_project.service.impl.AuthServiceImpl;
 import com.ttn.e_commerce_project.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static java.util.Objects.nonNull;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,7 +31,12 @@ public class AuthController{
       }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader String accessToken,@RequestBody String refreshToken) {
+    public ResponseEntity<String> logout(HttpServletRequest request, @RequestParam String refreshToken) {
+        String authHeader = request.getHeader("Authorization");
+        String accessToken = null;
+        if (nonNull(authHeader) && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
         authServiceImpl.logout(accessToken, refreshToken);
         return ResponseEntity.ok("Logged out successfully");
     }

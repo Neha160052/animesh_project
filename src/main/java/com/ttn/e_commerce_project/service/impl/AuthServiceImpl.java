@@ -23,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     final EmailService emailService;
     final TokenServiceImpl tokenService;
     final UserDetailServiceImpl userDetailService;
+    final PasswordEncoder passwordEncoder;
 
     @Value("${account.lock.time}")
     String lockTimeDuration;
@@ -81,7 +83,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public void logout(String accessToken,String refreshToken) {
-
         jwtService.validateToken(accessToken);
         jwtService.validateToken(refreshToken);
         String jti = jwtUtil.getJtiFromToken(accessToken);
@@ -106,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
     {
         try {
             if(password.matches(confirmPassword))
-                userRepository.updatePassword(email,password);
+                userRepository.updatePassword(email,passwordEncoder.encode(password));
         } catch (PasswordMismatchException e) {
             throw new PasswordMismatchException("Password and Confirm password should match");
         }
