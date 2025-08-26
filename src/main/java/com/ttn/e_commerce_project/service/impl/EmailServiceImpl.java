@@ -36,5 +36,13 @@ public class EmailServiceImpl  implements EmailService {
         javaMailSender.send(message);
     }
 
+    @Async
+    public void sendAcknowlegmentMail(Long id,String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Your account has been activated by the admin now you can login");
+        javaMailSender.send(message);
+    }
+
 
 }
