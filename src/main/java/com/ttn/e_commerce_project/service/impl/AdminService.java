@@ -69,7 +69,7 @@ public class AdminService {
     public boolean activeCustomer(Long id) {
         int updated;
         if (!customerRepository.existsById(id))
-            throw new ResourceNotFoundException("User with the given user id does not exist" + id);
+            throw new ResourceNotFoundException("Customer with the given id does not exist" + id);
         else {
             updated = customerRepository.activateCustomerIfNotActive(id);
             if (updated == 1) {
@@ -84,7 +84,7 @@ public class AdminService {
         {
             int updated;
             if (!sellerRepository.existsById(id))
-                throw new ResourceNotFoundException("User with the given user id does not exist" + id);
+                throw new ResourceNotFoundException("Seller with the given id does not exist" + id);
             else {
                 updated = sellerRepository.activateSellerIfNotActive(id);
                 if (updated == 1)
@@ -100,7 +100,6 @@ public class AdminService {
         } else {
             updated = customerRepository.deactivateCustomerIfActive(id);
             if (updated == 1) {
-                String email = userCommonService.findUserEmailById(id);
                 return true; // Successfully deactivated
             }
             return false; // Already deactivated
@@ -114,7 +113,6 @@ public class AdminService {
         } else {
             updated = sellerRepository.deactivateSellerIfActive(id);
             if (updated == 1) {
-                String email = userCommonService.findUserEmailById(id);
                 return true; // Successfully deactivated
             }
             return false; // Already deactivated
