@@ -17,30 +17,20 @@ public class EmailServiceImpl  implements EmailService {
     JavaMailSender javaMailSender;
 
     @Async
-    public void sendJavaActivationEmail(String toEmail,String activationLink)
+    public void sendJavaActivationEmail(String toEmail,String activationLink,String subject)
     {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
-        message.setSubject("To activate your account click on the link below: ");
+        message.setSubject(subject);
         message.setText(activationLink);
         javaMailSender.send(message);
     }
 
     @Async
-    public void sendResetPasswordEmail(String email,String activationLink )
-    {
+    public void sendAcknowlegmentMail(String email,String subject) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Click on the link below to reset you password: ");
-        message.setText(activationLink);
-        javaMailSender.send(message);
-    }
-
-    @Async
-    public void sendAcknowlegmentMail(Long id,String email) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Your account has been activated by the admin now you can login");
+        message.setSubject(subject);
         javaMailSender.send(message);
     }
 
