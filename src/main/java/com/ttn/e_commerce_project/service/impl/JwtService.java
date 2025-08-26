@@ -39,7 +39,7 @@ public class JwtService {
             return true;
 
         } catch (JwtException | IllegalArgumentException e) {
-            return true;
+            return false;
         }
 
     }
