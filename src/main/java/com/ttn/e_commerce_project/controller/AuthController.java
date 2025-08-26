@@ -51,7 +51,7 @@ public class AuthController{
     }
 
     @PostMapping("/generate-new-access-token")
-    public ResponseEntity<String> generateToken(@RequestBody String token)
+    public ResponseEntity<String> generateToken(@RequestParam String token)
     {
         String newAccessToken = authServiceImpl.generateNewAccessToken(token);
         return ResponseEntity.ok(newAccessToken);

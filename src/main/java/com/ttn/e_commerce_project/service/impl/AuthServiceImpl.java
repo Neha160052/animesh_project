@@ -142,7 +142,7 @@ public class AuthServiceImpl implements AuthService {
 
     public String generateNewAccessToken(String refreshToken)
     {
-        if (jwtService.validateToken(refreshToken)) {
+        if (!(jwtService.validateToken(refreshToken))) {
             throw new InvalidArgumentException("Invalid or expired refresh token");
         }
 

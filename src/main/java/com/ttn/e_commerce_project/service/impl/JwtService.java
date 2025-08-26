@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class JwtService {
 
     Key secretKey;
@@ -26,19 +28,23 @@ public class JwtService {
 
     public boolean validateToken(String token) {
         try {
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> validating the jwt token");
             Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)   // your secret key for verification
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
             Date expiration = claims.getExpiration();
-            if (expiration.before(new Date())) {
-                return false;
+            if (!(expiration.before(new Date()))) {
+                log.info(">>>>>>>>>>>>>>>>> returning true as the token is valid");
+                return true;
             }
-            return true;
+            log.info(">>>>>>>>>>>>>>>>>> returning false because the token in not valid");
+            return false;
 
         } catch (JwtException | IllegalArgumentException e) {
+            log.info(">>>>>>>>>>>>>>>>>>>> throwing exception because the token is not valid or it is expired");
             return false;
         }
 
@@ -47,6 +53,7 @@ public class JwtService {
     public String getUsername(String token) {
 
         try {
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> retrieving username from  the jwt token");
             Claims claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .build()
@@ -55,21 +62,21 @@ public class JwtService {
 
             return claims.getSubject(); // username is stored in subject
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidArgumentException("Invalid or expired token");
+            throw new InvalidArgumentException("username does not exist");
         }
     }
-    public String getRoles(String token) {
+    public List<String> getRoles(String token) {
         try {
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> retrieving roles from  the jwt token");
             Claims claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
-            return claims.get("roles",String.class);
+            return claims.get("roles",List.class);
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidArgumentException("Invalid or expired token");
+            throw new InvalidArgumentException("Role does not exist");
         }
     }
-
 }

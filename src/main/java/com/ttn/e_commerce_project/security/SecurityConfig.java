@@ -3,6 +3,7 @@ package com.ttn.e_commerce_project.security;
 import com.ttn.e_commerce_project.service.impl.UserDetailServiceImpl;
 import com.ttn.e_commerce_project.util.JwtUtil;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,12 +37,18 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(request->request
-                .requestMatchers("/register/**", "/activate/**", "/auth/login","auth/forgot-password","auth/generate-token").permitAll()
+                .requestMatchers("/register/**", "/activate/**", "/auth/login","auth/forgot-password","auth/generate-new-access-token").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/auth/logout").authenticated()
                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler((request, response, ex) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Access Denied\"}");
+                        })
+                )
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
