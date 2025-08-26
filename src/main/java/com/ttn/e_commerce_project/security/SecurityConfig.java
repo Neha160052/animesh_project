@@ -32,6 +32,7 @@ public class SecurityConfig{
 
     JwtFilter jwtFilter;
     UserDetailServiceImpl userDetailService;
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
