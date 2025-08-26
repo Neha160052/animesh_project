@@ -64,6 +64,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setInvalidAttemptCount(0);
                 userRepository.save(user);
             } else {
+                emailService.sendAcknowledgementMail(userLoginCo.getEmail(),"Dear user you account has been locked due to many failed login attempts");
                 throw new AccountLockedException("Account is locked. Please try again after sometime");
             }
             log.info("login successful");
