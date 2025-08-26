@@ -36,15 +36,26 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
     ) throws ServletException, IOException {
         String authHeader = request.getHeader(AUTHORIZATION_HEADER);
-        if (nonNull(authHeader) && authHeader.startsWith(BEARER_HEADER)) {
-            String jwt = authHeader.substring(7);
-            if (jwtService.validateToken(jwt)) {
-                String username = jwtService.getUsername(jwt);
-                String role = jwtService.getRoles(jwt);
-                var authorities = singletonList(new SimpleGrantedAuthority("ROLE_" + role));
-                var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+        try {
+            if (nonNull(authHeader) && authHeader.startsWith(BEARER_HEADER)) {
+                String jwt = authHeader.substring(7);
+                if (jwtService.validateToken(jwt)) {
+                    String username = jwtService.getUsername(jwt);
+                    List<String> roles = jwtService.getRoles(jwt);
+                    var authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .toList();
+
+                    var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
             }
+        } catch (Exception e) {
+            logger.error("JWT Filter Error");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+            return; // stop filter chain here
         }
         filterChain.doFilter(request, response);
     }
