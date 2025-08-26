@@ -47,7 +47,7 @@ public class AdminController {
     ResponseEntity<String> activateCustomer(@PathVariable Long id)
     {
         boolean update = adminService.activeCustomer(id);
-        if(update)
+        if(!update)
             return ResponseEntity.ok("customer already active");
         else
             return ResponseEntity.ok("customer activated successfully");
