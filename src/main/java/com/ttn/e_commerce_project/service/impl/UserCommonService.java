@@ -41,9 +41,8 @@ public class UserCommonService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No role found for authority : %s", authority)));
     }
 
-    public User findUserByEmail(String email)
-    {
-        return userRepository.findByEmail(email)
+    public User findUserByEmail(String email) {
+        User user =  userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("No account found with email: " + email));
 
         log.info(user.getEmail());
