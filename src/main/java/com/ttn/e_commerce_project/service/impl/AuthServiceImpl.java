@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
         if(!user.isActive())
             throw  new AccountNotActiveException("Account not active");
         VerificationToken token = tokenService.createToken(user);
-        emailService.sendResetPasswordEmail(email, userCommonService.activationLink(token));
+        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token),"Click on the link below to reset you password:");
     }
 
     @Override
