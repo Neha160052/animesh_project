@@ -17,7 +17,7 @@ public class EmailServiceImpl  implements EmailService {
     JavaMailSender javaMailSender;
 
     @Async
-    public void sendJavaActivationEmail(String toEmail,String activationLink,String subject)
+    public void sendLinkWithSubjectEmail(String toEmail, String activationLink, String subject)
     {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
