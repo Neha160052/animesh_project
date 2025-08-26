@@ -4,4 +4,5 @@ public interface EmailService {
 
     void sendJavaActivationEmail(String email,String activationLink);
     void sendResetPasswordEmail(String email,String activationLink);
+    void sendAcknowlegmentMail(Long id,String email);
 }
