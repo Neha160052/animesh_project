@@ -34,9 +34,9 @@ public class JwtService {
 
             Date expiration = claims.getExpiration();
             if (expiration.before(new Date())) {
-                return true;
+                return false;
             }
-            return false;
+            return true;
 
         } catch (JwtException | IllegalArgumentException e) {
             return true;
