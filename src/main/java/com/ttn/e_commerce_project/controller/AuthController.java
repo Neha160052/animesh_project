@@ -41,12 +41,11 @@ public class AuthController{
         return ResponseEntity.ok("Logged out successfully");
     }
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<String> initiateResetPassword(@RequestBody String email)
-    {
-      authServiceImpl.initiatePasswordReset(email);
-      return ResponseEntity.ok("reset password email has been sent");
-    }
+    @GetMapping("/forgot-password")
+    public ResponseEntity<String> initiateResetPassword(@RequestParam String email) {
+            authServiceImpl.initiatePasswordReset(email);
+            return ResponseEntity.ok("reset password email has been sent");
+        }
 
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordCo resetPasswordCo)
