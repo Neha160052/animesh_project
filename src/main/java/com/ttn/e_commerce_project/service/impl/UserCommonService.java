@@ -45,6 +45,9 @@ public class UserCommonService {
     {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("No account found with email: " + email));
+
+        log.info(user.getEmail());
+        return user;
     }
 
     public ResponseEntity<String> activateUser(String token) {
