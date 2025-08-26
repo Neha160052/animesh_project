@@ -65,7 +65,7 @@ public class UserCommonService {
         }
         tokenRepository.deleteByUser(user);
         VerificationToken token = verificationTokenService.createToken(user);
-        emailService.sendJavaActivationEmail(email, activationLink(token));
+        emailService.sendLinkWithSubjectEmail(email, activationLink(token),"Please click on the link below to activate your account");
     }
 
     public String activationLink(VerificationToken token) {
