@@ -106,8 +106,11 @@ public class AuthServiceImpl implements AuthService {
     public void resetUserPassword(String email,String password, String confirmPassword)
     {
         try {
-            if(password.matches(confirmPassword))
-                userRepository.updatePassword(email,passwordEncoder.encode(password));
+            if(password.matches(confirmPassword)) {
+                userRepository.updatePassword(email, passwordEncoder.encode(password));
+                User user = userCommonService.findUserByEmail(email);
+                user.setPasswordUpdateDate(ZonedDateTime.now());
+            }
         } catch (PasswordMismatchException e) {
             throw new PasswordMismatchException("Password and Confirm password should match");
         }
