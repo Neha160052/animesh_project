@@ -62,4 +62,25 @@ public class AdminController {
             return ResponseEntity.ok("seller activated successfully");
     }
 
+    @PutMapping("/deactivate-customer/{id}")
+    public ResponseEntity<String> deactivateCustomer(@PathVariable Long id) {
+        boolean deactivated = adminService.deactivateCustomer(id);
+        if (deactivated) {
+            return ResponseEntity.ok("Customer deactivated successfully with ID: " + id);
+        } else {
+            return ResponseEntity.ok("Customer was already deactivated with ID: " + id);
+        }
+    }
+
+    @PutMapping("/deactivate-seller/{id}")
+    public ResponseEntity<String> deactivateSeller(@PathVariable Long id) {
+        boolean deactivated = adminService.deactivateSeller(id);
+        if (deactivated) {
+            return ResponseEntity.ok("Seller deactivated successfully with ID: " + id);
+        } else {
+            return ResponseEntity.ok("Seller was already deactivated with ID: " + id);
+        }
+    }
+}
+
 }
