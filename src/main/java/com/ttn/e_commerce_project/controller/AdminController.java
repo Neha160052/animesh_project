@@ -62,7 +62,7 @@ public class AdminController {
             return ResponseEntity.ok("seller activated successfully");
     }
 
-    @PutMapping("/deactivate-customer/{id}")
+    @PatchMapping("/deactivate-customer/{id}")
     public ResponseEntity<String> deactivateCustomer(@PathVariable Long id) {
         boolean deactivated = adminService.deactivateCustomer(id);
         if (deactivated) {
