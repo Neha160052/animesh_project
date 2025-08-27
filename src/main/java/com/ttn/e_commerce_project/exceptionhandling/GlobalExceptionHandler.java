@@ -42,4 +42,29 @@ public class GlobalExceptionHandler {
         response.put("error",ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.LOCKED);
     }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateEntryException(SQLIntegrityConstraintViolationException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Map<String,String>> handleNullPointerException(SQLIntegrityConstraintViolationException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<Map<String,String>> handlePasswordMismatchException(PasswordMismatchException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
 }
