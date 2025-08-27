@@ -72,7 +72,7 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/deactivate-seller/{id}")
+    @PatchMapping("/deactivate-seller/{id}")
     public ResponseEntity<String> deactivateSeller(@PathVariable Long id) {
         boolean deactivated = adminService.deactivateSeller(id);
         if (deactivated) {
