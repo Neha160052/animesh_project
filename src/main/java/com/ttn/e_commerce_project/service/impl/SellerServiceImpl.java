@@ -102,5 +102,45 @@ public class SellerServiceImpl implements SellerService {
                    address.getZipCode()
            );
     }
+    public void updateMyProfile(String email, SellerProfileCo req)
+    {
+        Seller seller = sellerRepository.findByUserEmail(email)
+                                        .orElseThrow(()->new ResourceNotFoundException("seller not found"));
+        User user = seller.getUser();
+        List<Address> addresses = user.getAddress();
+
+        Address address;
+        if (addresses.isEmpty()) {    //To do : come back and read more how else this situation can be handled
+            address = new Address();
+            addresses.add(address);  // add first and only address
+        } else {
+            address = addresses.get(0);  // always take the first one
+        }
+        // these null checks are necessary because the data can be present or even not present due to patch type of request
+
+        if (req.getFirstName()!= null) user.setFirstName(req.getFirstName().trim());
+        if (req.getLastName()!= null) user.setLastName(req.getLastName().trim());
+
+        if (req.getCompanyContact() != null) seller.setCompanyContact(req.getCompanyContact().trim());
+        if (req.getCompanyName() != null) seller.setCompanyName(req.getCompanyName().trim());
+        if (req.getImage() != null) seller.setImage(req.getImage().trim());
+        if (req.getGst() != null)
+        {
+            if (sellerRepository.existsByGst(req.getGst())) {
+                throw new InvalidArgumentException("GST already exists provide unique one");
+            }
+            seller.setGst(req.getGst());
+        }
+
+        if (req.getAddress() != null) {
+            AddressCo a = req.getAddress();
+            if (a.getCity() != null) address.setCity(a.getCity().trim());
+            if (a.getState() != null) address.setState(a.getState().trim());
+            if (a.getCountry() != null) address.setCountry(a.getCountry().trim());
+            if (a.getAddressLine() != null) address.setAddressLine(a.getAddressLine().trim());
+            if (a.getZipCode() != 0) address.setZipCode(a.getZipCode());
+        }
+        sellerRepository.save(seller);
+    }
 
 }
