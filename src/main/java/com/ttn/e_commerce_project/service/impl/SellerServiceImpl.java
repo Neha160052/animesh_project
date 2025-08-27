@@ -143,4 +143,26 @@ public class SellerServiceImpl implements SellerService {
         sellerRepository.save(seller);
     }
 
+    @Override
+    public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
+
+        {
+            User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+
+            if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("Current password is incorrect");
+            }
+
+            if (!updatePasswordCo.getNewPassword().equals(updatePasswordCo.getConfirmPassword())) {
+                throw new IllegalArgumentException("New password and Confirm password should match");
+            }
+
+            user.setPassword(passwordEncoder.encode(updatePasswordCo.getNewPassword()));
+            userRepository.save(user);
+
+            emailService.sendAcknowledgementMail(username,"Dear Seller your password has been updated successfully");
+        }
+    }
+
 }
