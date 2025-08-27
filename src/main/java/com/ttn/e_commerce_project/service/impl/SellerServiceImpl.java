@@ -165,4 +165,20 @@ public class SellerServiceImpl implements SellerService {
         }
     }
 
+    @Override
+    public void updateAddress(String username, Long id, AddressCo addressCo)
+    {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+
+        Address address = user.getAddress().getFirst();
+        // update fields
+        address.setAddressLine(addressCo.getAddressLine());
+        address.setCity(addressCo.getCity());
+        address.setState(addressCo.getState());
+        address.setCountry(addressCo.getCountry());
+        address.setZipCode(addressCo.getZipCode());
+
+        addressRepository.save(address);
+    }
 }
