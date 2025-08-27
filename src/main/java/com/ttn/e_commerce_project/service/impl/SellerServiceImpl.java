@@ -79,4 +79,28 @@ public class SellerServiceImpl implements SellerService {
         address.setLabel(addressCo.getLabel());
         return address;
     }
+
+    @Override
+    public SellerProfileVo getSellerProfile(String email) {
+
+           Seller seller = sellerRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+           User user = seller.getUser();
+           Address address = user.getAddress().getFirst();
+           return new SellerProfileVo(
+                   user.getId(),
+                   user.getFirstName(),
+                   user.getLastName(),
+                   user.isActive(),
+                   seller.getCompanyContact(),
+                   seller.getCompanyName(),
+                   seller.getImage(),
+                   seller.getGst(),
+                   address.getCity(),
+                   address.getState(),
+                   address.getCountry(),
+                   address.getAddressLine(),
+                   address.getZipCode()
+           );
+    }
+
 }
