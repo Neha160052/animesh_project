@@ -30,7 +30,8 @@ public class EmailServiceImpl  implements EmailService {
     public void sendAcknowledgementMail(String email, String subject) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject(subject);
+        message.setSubject("This is a system generated mail do not reply to this mail");
+        message.setText(text);
         javaMailSender.send(message);
     }
 
