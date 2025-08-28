@@ -27,7 +27,7 @@ public class EmailServiceImpl  implements EmailService {
     }
 
     @Async
-    public void sendAcknowledgementMail(String email, String subject) {
+    public void sendAcknowledgementMail(String email, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("This is a system generated mail do not reply to this mail");
