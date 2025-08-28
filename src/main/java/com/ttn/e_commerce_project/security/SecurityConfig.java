@@ -40,6 +40,8 @@ public class SecurityConfig{
                 .authorizeHttpRequests(request->request
                 .requestMatchers("/register/**", "/activate/**", "/auth/login","auth/forgot-password","auth/reset-password","auth/generate-new-access-token").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/seller/**").hasRole("SELLER")
+                .requestMatchers("/customer/**").hasRole("CUSTOMER")
                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
