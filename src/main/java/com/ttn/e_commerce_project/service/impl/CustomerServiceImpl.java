@@ -93,10 +93,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String updateMyProfile(String email, CustomerProfileCo customerProfileCo) {
-
-        Customer customer = customerRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-
+        log.info("inside the update my profile service");
+        Customer customer = commonService.findCustomerByEmail(email);
         User user = customer.getUser();
 
         if (customerProfileCo.getFirstName() != null) {
