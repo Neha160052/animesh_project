@@ -76,8 +76,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     public AddressVo getMyAddress(String email,Long id){
 
-        Customer customer = customerRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        Customer customer = commonService.findCustomerByEmail(email);
+        List<Address> addresses = addressRepository.findByUserId(customer.getUser().getId());
 
        Address address = addressRepository.findByIdAndUserId(id, customer.getUserid())
                .orElseThrow(() -> new RuntimeException("Address not found for this customer"));
