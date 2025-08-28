@@ -114,6 +114,7 @@ public class CustomerServiceImpl implements CustomerService {
         return "Profile updated successfully";
     }
 
+    @Transactional
     @Override
     public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
         {
