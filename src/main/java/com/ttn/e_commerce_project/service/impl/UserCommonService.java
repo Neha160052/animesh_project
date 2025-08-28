@@ -49,6 +49,12 @@ public class UserCommonService {
         log.info(user.getEmail());
         return user;
     }
+    
+    public Customer findCustomerByEmail(String email)
+    {
+       return customerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+    }
 
     public ResponseEntity<String> activateUser(String token) {
         return verificationTokenService.validateToken(token)
