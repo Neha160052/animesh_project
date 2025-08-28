@@ -61,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerProfileVo getMyProfile(String email) {
 
-        Customer customer = customerRepository.findByUserEmail(email).orElseThrow(()-> new ResourceNotFoundException("Customer not found"));
+        Customer customer = commonService.findCustomerByEmail(email);
         User user = customer.getUser();
 
         return new CustomerProfileVo(
