@@ -2,14 +2,23 @@ package com.ttn.e_commerce_project.service.impl;
 
 import com.ttn.e_commerce_project.dto.co.AddressCo;
 import com.ttn.e_commerce_project.dto.co.SellerCo;
+import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
+import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
+import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
 import com.ttn.e_commerce_project.entity.address.Address;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
+import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
+import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
+import com.ttn.e_commerce_project.respository.AddressRepository;
 import com.ttn.e_commerce_project.respository.SellerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
+import com.ttn.e_commerce_project.service.EmailService;
 import com.ttn.e_commerce_project.service.SellerService;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,23 +37,26 @@ public class SellerServiceImpl implements SellerService {
     SellerRepository sellerRepository;
     PasswordEncoder passwordEncoder;
     UserCommonService commonService;
+    EmailService emailService;
+    AddressRepository addressRepository;
+
 
     @Override
     public void register(SellerCo sellerCo) {
 
         if (userRepository.existsByEmail(sellerCo.getEmail())) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new InvalidArgumentException("Email already in use");
         }
         if (!sellerCo.getPassword().equals(sellerCo.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+            throw new InvalidArgumentException("Passwords do not match");
         }
 
         if (sellerRepository.existsByGst(sellerCo.getGst())) {
-            throw new IllegalArgumentException("GST already exists provide unique one");
+            throw new InvalidArgumentException("GST already exists provide unique one");
         }
 
         if (sellerRepository.existsByCompanyNameIgnoreCase(sellerCo.getCompanyName())) {
-            throw new IllegalArgumentException("Company name already exists provide a unique name.");
+            throw new InvalidArgumentException("Company name already exists provide a unique name.");
         }
         User user = new User();
         Role sellerRole = commonService.findRoleByAuthority(RoleAuthority.SELLER);
@@ -82,8 +94,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public SellerProfileVo getSellerProfile(String email) {
-
-           Seller seller = sellerRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+           Seller seller = commonService.findSellerByEmail(email);
            User user = seller.getUser();
            Address address = user.getAddress().getFirst();
            return new SellerProfileVo(
@@ -102,47 +113,32 @@ public class SellerServiceImpl implements SellerService {
                    address.getZipCode()
            );
     }
-    public void updateMyProfile(String email, SellerProfileCo req)
+    @Transactional
+    public void updateMyProfile(String email, SellerProfileCo sellerProfileCo)
     {
-        Seller seller = sellerRepository.findByUserEmail(email)
-                                        .orElseThrow(()->new ResourceNotFoundException("seller not found"));
+        Seller seller = commonService.findSellerByEmail(email);
         User user = seller.getUser();
-        List<Address> addresses = user.getAddress();
 
-        Address address;
-        if (addresses.isEmpty()) {    //To do : come back and read more how else this situation can be handled
-            address = new Address();
-            addresses.add(address);  // add first and only address
-        } else {
-            address = addresses.get(0);  // always take the first one
-        }
         // these null checks are necessary because the data can be present or even not present due to patch type of request
 
-        if (req.getFirstName()!= null) user.setFirstName(req.getFirstName().trim());
-        if (req.getLastName()!= null) user.setLastName(req.getLastName().trim());
+        if (sellerProfileCo.getFirstName()!= null) user.setFirstName(sellerProfileCo.getFirstName().trim());
+        if (sellerProfileCo.getLastName()!= null) user.setLastName(sellerProfileCo.getLastName().trim());
 
-        if (req.getCompanyContact() != null) seller.setCompanyContact(req.getCompanyContact().trim());
-        if (req.getCompanyName() != null) seller.setCompanyName(req.getCompanyName().trim());
-        if (req.getImage() != null) seller.setImage(req.getImage().trim());
-        if (req.getGst() != null)
+        if (sellerProfileCo.getCompanyContact() != null) seller.setCompanyContact(sellerProfileCo.getCompanyContact().trim());
+        if (sellerProfileCo.getCompanyName() != null) seller.setCompanyName(sellerProfileCo.getCompanyName().trim());
+        if (sellerProfileCo.getImage() != null) seller.setImage(sellerProfileCo.getImage().trim());
+        if (sellerProfileCo.getGst() != null)
         {
-            if (sellerRepository.existsByGst(req.getGst())) {
+            if (sellerRepository.existsByGst(sellerProfileCo.getGst())) {
                 throw new InvalidArgumentException("GST already exists provide unique one");
             }
-            seller.setGst(req.getGst());
+            seller.setGst(sellerProfileCo.getGst());
         }
 
-        if (req.getAddress() != null) {
-            AddressCo a = req.getAddress();
-            if (a.getCity() != null) address.setCity(a.getCity().trim());
-            if (a.getState() != null) address.setState(a.getState().trim());
-            if (a.getCountry() != null) address.setCountry(a.getCountry().trim());
-            if (a.getAddressLine() != null) address.setAddressLine(a.getAddressLine().trim());
-            if (a.getZipCode() != 0) address.setZipCode(a.getZipCode());
-        }
         sellerRepository.save(seller);
     }
 
+    @Transactional
     @Override
     public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
 
@@ -151,11 +147,11 @@ public class SellerServiceImpl implements SellerService {
                     .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
 
             if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
-                throw new IllegalArgumentException("Current password is incorrect");
+                throw new InvalidArgumentException("Current password is incorrect");
             }
 
             if (!updatePasswordCo.getNewPassword().equals(updatePasswordCo.getConfirmPassword())) {
-                throw new IllegalArgumentException("New password and Confirm password should match");
+                throw new PasswordMismatchException("New password and Confirm password should match");
             }
 
             user.setPassword(passwordEncoder.encode(updatePasswordCo.getNewPassword()));
@@ -165,20 +161,22 @@ public class SellerServiceImpl implements SellerService {
         }
     }
 
+    @Transactional
     @Override
     public void updateAddress(String username, Long id, AddressCo addressCo)
     {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
 
-        Address address = user.getAddress().getFirst();
+        Address address = addressRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found for this user"));
+
         // update fields
         address.setAddressLine(addressCo.getAddressLine());
         address.setCity(addressCo.getCity());
         address.setState(addressCo.getState());
         address.setCountry(addressCo.getCountry());
         address.setZipCode(addressCo.getZipCode());
-
         addressRepository.save(address);
     }
 }
