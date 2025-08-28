@@ -79,16 +79,16 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = commonService.findCustomerByEmail(email);
         List<Address> addresses = addressRepository.findByUserId(customer.getUser().getId());
 
-       Address address = addressRepository.findByIdAndUserId(id, customer.getUserid())
-               .orElseThrow(() -> new RuntimeException("Address not found for this customer"));
-        return new AddressVo(
-                address.getCity(),
-                address.getState(),
-                address.getCountry(),
-                address.getAddressLine(),
-                address.getZipCode(),
-                address.getLabel()
-        );
+        return addresses.stream()
+                .map(address -> new AddressVo(
+                        address.getCity(),
+                        address.getState(),
+                        address.getCountry(),
+                        address.getAddressLine(),
+                        address.getZipCode(),
+                        address.getLabel()
+                ))
+                .toList();
     }
 
     @Override
