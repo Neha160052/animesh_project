@@ -125,8 +125,8 @@ public class AuthServiceImpl implements AuthService {
         {
             user.setLocked(true);
             user.setLockTime(LocalDateTime.now());
-            userRepository.save(user);
         }
+        userRepository.save(user);
     }
 //  To Do : send email to the user to stating that the account has been locked
 
