@@ -74,7 +74,7 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
-    public AddressVo getMyAddress(String email,Long id){
+    public List<AddressVo> getMyAddresses(String email){
 
         Customer customer = commonService.findCustomerByEmail(email);
         List<Address> addresses = addressRepository.findByUserId(customer.getUser().getId());
