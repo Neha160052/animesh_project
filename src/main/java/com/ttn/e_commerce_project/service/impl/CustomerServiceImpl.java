@@ -55,6 +55,22 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setContact(customerCo.getPhoneNumber());
         customerRepository.save(customer);
         VerificationToken token = verificationTokenService.createToken(user);
-        emailService.sendJavaActivationEmail(user.getEmail(), commonService.activationLink(token));
+        emailService.sendLinkWithSubjectEmail(user.getEmail(), commonService.activationLink(token),"To activate your account click on the link below:");
+    }
+
+    @Override
+    public CustomerProfileVo getMyProfile(String email) {
+
+        Customer customer = customerRepository.findByUserEmail(email).orElseThrow(()-> new ResourceNotFoundException("Customer not found"));
+        User user = customer.getUser();
+
+        return new CustomerProfileVo(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.isActive(),
+                customer.getContact(),
+                customer.getImage()
+        );
     }
 }
