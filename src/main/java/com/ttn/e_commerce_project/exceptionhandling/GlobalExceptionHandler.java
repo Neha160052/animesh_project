@@ -2,9 +2,14 @@ package com.ttn.e_commerce_project.exceptionhandling;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +29,7 @@ public class GlobalExceptionHandler {
     {
         Map<String ,String > response = new HashMap<>();
         response.put("error",ex.getMessage());
-        return new ResponseEntity<>(response,HttpStatus.LOCKED);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccountNotActiveException.class)
@@ -32,7 +37,7 @@ public class GlobalExceptionHandler {
     {
         Map<String ,String > response = new HashMap<>();
         response.put("error",ex.getMessage());
-        return new ResponseEntity<>(response,HttpStatus.LOCKED);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidArgumentException.class)
@@ -40,7 +45,7 @@ public class GlobalExceptionHandler {
     {
         Map<String ,String > response = new HashMap<>();
         response.put("error",ex.getMessage());
-        return new ResponseEntity<>(response,HttpStatus.LOCKED);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
@@ -52,7 +57,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<Map<String,String>> handleNullPointerException(SQLIntegrityConstraintViolationException ex)
+    public ResponseEntity<Map<String,String>> handleNullPointerException(NullPointerException ex)
     {
         Map<String ,String > response = new HashMap<>();
         response.put("error",ex.getMessage());
@@ -76,7 +81,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String,String>> handleMethodArgumentTypeMismatchExceptionException(MethodArgumentTypeMismatchException ex)
+    public ResponseEntity<Map<String,String>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex)
     {
         Map<String ,String > response = new HashMap<>();
         response.put("error",ex.getMessage());
