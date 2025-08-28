@@ -9,4 +9,7 @@ public interface CustomerService {
     List<AddressVo> getMyAddresses(String email);
     String updateMyProfile(String email, CustomerProfileCo customerProfileCo);
     void updatePassword(String name, @Valid UpdatePasswordCo updatePasswordCo);
+    String addCustomerAddress(String email, AddressCo addressCo);
+    String deleteAddress(String email,Long id);
+    String updateAddress(Long id, AddressCo addressCo);
 }
