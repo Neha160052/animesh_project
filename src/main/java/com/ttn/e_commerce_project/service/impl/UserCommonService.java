@@ -56,6 +56,11 @@ public class UserCommonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
     }
 
+    public Seller findSellerByEmail(String email)
+    {
+         return sellerRepository.findByUserEmail(email)
+                                .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+    }
     public ResponseEntity<String> activateUser(String token) {
         return verificationTokenService.validateToken(token)
                 .map(verificationToken -> {
