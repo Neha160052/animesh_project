@@ -136,4 +136,50 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Transactional
+    public String addCustomerAddress(String email, AddressCo addressCo)
+    {
+        Customer customer = commonService.findCustomerByEmail(email);
+        Address address = new Address();
+        address.setCity(addressCo.getCity());
+        address.setState(addressCo.getState());
+        address.setCountry(addressCo.getCountry());
+        address.setAddressLine(addressCo.getAddressLine());
+        address.setLabel(addressCo.getLabel());
+        address.setZipCode(addressCo.getZipCode());
+        customer.getUser().getAddress().add(address);
+        userRepository.save(customer.getUser());
+        return "Address saved successfully for userId: " + customer.getUser().getId();
     }
+
+    @Transactional
+    @Override
+    public String deleteAddress(String email ,Long id) {
+        Customer customer = commonService.findCustomerByEmail(email);
+
+        Address address = addressRepository.findByIdAndUserId(id, customer.getUserid())
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+
+        addressRepository.delete(address);
+        return "Address deleted successfully";
+    }
+
+    @Transactional
+    @Override
+    public String updateAddress(Long id, AddressCo addressCo) {
+
+        Address address = addressRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("address not found"));
+
+        address.setAddressLine(addressCo.getAddressLine());
+        address.setCity(addressCo.getCity());
+        address.setState(addressCo.getState());
+        address.setCountry(addressCo.getCountry());
+        address.setZipCode(addressCo.getZipCode());
+        address.setLabel(addressCo.getLabel());
+        Address savedAddress = addressRepository.save(address);
+        if(savedAddress.getId() == id)
+            return "Address updated successfully";
+        else
+            return "Address could not be updated";
+    }
+}
