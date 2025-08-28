@@ -73,4 +73,67 @@ public class CustomerServiceImpl implements CustomerService {
                 customer.getImage()
         );
     }
-}
+
+    public AddressVo getMyAddress(String email,Long id){
+
+        Customer customer = customerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+       Address address = addressRepository.findByIdAndUserId(id, customer.getUserid())
+               .orElseThrow(() -> new RuntimeException("Address not found for this customer"));
+        return new AddressVo(
+                address.getCity(),
+                address.getState(),
+                address.getCountry(),
+                address.getAddressLine(),
+                address.getZipCode(),
+                address.getLabel()
+        );
+    }
+
+    @Override
+    public String updateMyProfile(String email, CustomerProfileCo customerProfileCo) {
+
+        Customer customer = customerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        User user = customer.getUser();
+
+        if (customerProfileCo.getFirstName() != null) {
+            user.setFirstName(customerProfileCo.getFirstName());
+        }
+        if (customerProfileCo.getLastName() != null) {
+            user.setLastName(customerProfileCo.getLastName());
+        }
+        if (customerProfileCo.getContact() != null) {
+            customer.setContact(customerProfileCo.getContact());
+        }
+        if (customerProfileCo.getImage() != null) {
+            customer.setImage(customerProfileCo.getImage());
+        }
+
+        customerRepository.save(customer);
+        return "Profile updated successfully";
+    }
+
+    @Override
+    public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
+        {
+            User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+
+            if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
+                throw new InvalidArgumentException("Current password is incorrect");
+            }
+
+            if (!updatePasswordCo.getNewPassword().equals(updatePasswordCo.getConfirmPassword())) {
+                throw new PasswordMismatchException("New password and Confirm password should match");
+            }
+            user.setPassword(passwordEncoder.encode(updatePasswordCo.getNewPassword()));
+            userRepository.save(user);
+
+            emailService.sendAcknowledgementMail(username,"Dear Customer your password has been updated successfully");
+        }
+    }
+
+    }
