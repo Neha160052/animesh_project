@@ -1,23 +1,19 @@
 package com.ttn.e_commerce_project.service.impl;
 
 import com.ttn.e_commerce_project.entity.token.VerificationToken;
+import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
+import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
-import com.ttn.e_commerce_project.respository.CustomerRepository;
-import com.ttn.e_commerce_project.respository.RoleRepository;
-import com.ttn.e_commerce_project.respository.TokenRepository;
-import com.ttn.e_commerce_project.respository.UserRepository;
+import com.ttn.e_commerce_project.respository.*;
 import com.ttn.e_commerce_project.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -32,6 +28,8 @@ public class UserCommonService {
 
     RoleRepository roleRepository;
     UserRepository userRepository;
+    SellerRepository sellerRepository;
+    CustomerRepository customerRepository;
     TokenServiceImpl verificationTokenService;
     EmailService emailService;
     TokenRepository tokenRepository;
@@ -49,7 +47,7 @@ public class UserCommonService {
         log.info(user.getEmail());
         return user;
     }
-    
+
     public Customer findCustomerByEmail(String email)
     {
        return customerRepository.findByUserEmail(email)

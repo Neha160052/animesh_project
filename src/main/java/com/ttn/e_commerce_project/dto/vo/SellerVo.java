@@ -1,6 +1,5 @@
 package com.ttn.e_commerce_project.dto.vo;
 
-import com.ttn.e_commerce_project.entity.address.Address;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

@@ -13,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -42,12 +43,13 @@ public class DataInitializer implements CommandLineRunner {
         }));
 
         Role adminRole = roleRepository.findByAuthority(RoleAuthority.ADMIN).orElseThrow(()-> new ResourceNotFoundException("Role not found"));
-        if(!userRepository.existsByEmail("admin@ecommerce.com"))
+        if(!userRepository.existsByEmail("animesh.yadav@tothenew.com"))
         {
             User admin = new User();
-            admin.setEmail("admin@ecommerce.com");
+            admin.setEmail("animesh.yadav@tothenew.com");
             admin.setPassword(passwordEncoder.encode(password));
             admin.setFirstName("admin");
+            admin.setPasswordUpdateDate(ZonedDateTime.now());
             admin.setRole(Set.of(adminRole));
             admin.setActive(true);
             userRepository.save(admin);

@@ -1,6 +1,12 @@
 package com.ttn.e_commerce_project.service.impl;
 
+import com.ttn.e_commerce_project.dto.co.AddressCo;
 import com.ttn.e_commerce_project.dto.co.CustomerCo;
+import com.ttn.e_commerce_project.dto.co.CustomerProfileCo;
+import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
+import com.ttn.e_commerce_project.dto.vo.AddressVo;
+import com.ttn.e_commerce_project.dto.vo.CustomerProfileVo;
+import com.ttn.e_commerce_project.entity.address.Address;
 import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
@@ -8,20 +14,26 @@ import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
+import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
+import com.ttn.e_commerce_project.respository.AddressRepository;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.EmailService;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CustomerServiceImpl implements CustomerService {
 
@@ -31,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     UserCommonService commonService;
     TokenServiceImpl verificationTokenService;
     EmailService emailService;
+    AddressRepository addressRepository;
 
     @Override
     public void register(CustomerCo customerCo) {
@@ -91,6 +104,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public String updateMyProfile(String email, CustomerProfileCo customerProfileCo) {
         log.info("inside the update my profile service");
@@ -111,6 +125,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customerRepository.save(customer);
+        log.info("persisted the customer in the db");
         return "Profile updated successfully";
     }
 

@@ -17,8 +17,8 @@ class EmailServiceTest {
     @Test
     void testSendMail()
     {
-        emailService.sendJavaActivationEmail(
-                "iamanimesh02@gmail.com","this is a test activation link : jsadfgjagfeffggf.fhfairkwe"
+        emailService.sendLinkWithSubjectEmail(
+                "iamanimesh02@gmail.com","this is a test activation link : jsadfgjagfeffggf.fhfairkwe","this is a test case to check mail service"
         );
     }
 

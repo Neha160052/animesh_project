@@ -17,7 +17,7 @@ import java.util.List;
 public class Customer extends Auditable {
 
     String contact;
-
+    String image;
     @Id
     long userid;
 

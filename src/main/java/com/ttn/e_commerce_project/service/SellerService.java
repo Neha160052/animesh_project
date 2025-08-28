@@ -1,6 +1,11 @@
 package com.ttn.e_commerce_project.service;
 
+import com.ttn.e_commerce_project.dto.co.AddressCo;
 import com.ttn.e_commerce_project.dto.co.SellerCo;
+import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
+import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
+import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
+import jakarta.validation.Valid;
 
 public interface SellerService {
 
