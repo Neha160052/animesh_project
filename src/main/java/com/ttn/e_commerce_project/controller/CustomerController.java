@@ -69,4 +69,14 @@ public class CustomerController {
                                                 @RequestBody AddressCo addressCo) {
         return ResponseEntity.ok(customerService.updateAddress(id, addressCo));
     }
+
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file,
+                                                                           Principal principal) throws IOException {
+        // ✅ Security check: ensure logged-in user is the owner
+        customerService.checkOwnership(id, principal.getName());
+        // Save image
+        String path = imageStorageUtil.saveImage("customer", id, file);
+        return ResponseEntity.ok("Image uploaded successfully at " + path);
+    }
 }
