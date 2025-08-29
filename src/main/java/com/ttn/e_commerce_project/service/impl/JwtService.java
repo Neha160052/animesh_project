@@ -46,7 +46,26 @@ public class JwtService {
         } catch (JwtException | IllegalArgumentException e) {
             log.info(">>>>>>>>>>>>>>>>>>>> throwing exception because the token is not valid or it is expired");
             return false;
-        }
+        }}
+
+        public boolean validateRefreshToken(String token) {
+            try {
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> validating the jwt token");
+                Claims claims = Jwts.parser()
+                        .setSigningKey(secretKey)
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+                Date expiration = claims.getExpiration();
+                boolean notExpired = expiration.after(new Date());
+                String tokenType = claims.get("type", String.class);
+                boolean isRefreshToken = "REFRESH".equalsIgnoreCase(tokenType);
+                if(notExpired && isRefreshToken){
+                    log.info(">>>>>>>>>>>>>>>>>>>>>>Returning true as the refresh token in valid");
+                    return true;}
+                log.warn(">>>>>>>>>>>>>>>>>>>>>>>Token is either expired or type mismatch");
+                return false;
 
     }
 
