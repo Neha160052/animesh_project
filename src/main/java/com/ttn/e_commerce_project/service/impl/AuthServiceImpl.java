@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
     public void logout(String accessToken,String refreshToken) {
         jwtService.validateToken(accessToken);
-        jwtService.validateToken(refreshToken);
+        jwtService.validateRefreshToken(refreshToken);
         String jti = jwtUtil.getJtiFromToken(accessToken);
         String refreshJti = jwtUtil.getJtiFromToken(refreshToken);
         TokenBlacklist blacklist = new TokenBlacklist(jti,refreshJti);
