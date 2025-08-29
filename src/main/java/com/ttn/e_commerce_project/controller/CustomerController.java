@@ -79,4 +79,16 @@ public class CustomerController {
         String path = imageStorageUtil.saveImage("customer", id, file);
         return ResponseEntity.ok("Image uploaded successfully at " + path);
     }
+
+    @GetMapping("{id}/get-profile-image")
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable Long id,Authentication authentication) throws IOException, RoleNotFoundException {
+        customerService.checkOwnership(id, authentication.getName());
+        String role = authentication.getAuthorities().stream()
+                .findFirst().map(auth->
+                        auth.getAuthority().replace("ROLE_","")).orElseThrow(RoleNotFoundException::new);
+        byte[] arr = imageStorageUtil.loadImage(role, id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(arr);
+    }
 }
