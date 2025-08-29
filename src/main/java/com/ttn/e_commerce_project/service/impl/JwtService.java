@@ -68,6 +68,10 @@ public class JwtService {
                 log.warn(">>>>>>>>>>>>>>>>>>>>>>>Token is either expired or type mismatch");
                 return false;
 
+            } catch (JwtException | InvalidArgumentException e) {
+                log.info(">>>>>>>>>>>>>>>>>>>> throwing exception because the token is not valid or it is expired");
+                return false;
+            }
     }
 
     public String getUsername(String token) {
