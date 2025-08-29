@@ -36,11 +36,13 @@ public class JwtService {
                     .getBody();
 
             Date expiration = claims.getExpiration();
-            if (!(expiration.before(new Date()))) {
-                log.info(">>>>>>>>>>>>>>>>> returning true as the token is valid");
-                return true;
-            }
-            log.info(">>>>>>>>>>>>>>>>>> returning false because the token in not valid");
+            boolean notExpired = expiration.after(new Date());
+            String tokenType = claims.get("type", String.class);
+            boolean isAccessToken = "ACCESS".equalsIgnoreCase(tokenType);
+            if(notExpired && isAccessToken){
+                log.info(">>>>>>>>>>>>>>>>>>>>>>Returning true as the access token in valid");
+                return true;}
+            log.warn(">>>>>>>>>>>>>>>>>>>>>>>Token is either expired or type mismatch");
             return false;
 
         } catch (JwtException | IllegalArgumentException e) {
