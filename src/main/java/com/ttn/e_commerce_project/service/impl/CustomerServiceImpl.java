@@ -20,14 +20,17 @@ import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.EmailService;
+import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
     TokenServiceImpl verificationTokenService;
     EmailService emailService;
     AddressRepository addressRepository;
+    ImageStorageUtil imageStorageUtil;
 
     @Override
     public void register(CustomerCo customerCo) {
@@ -76,14 +80,14 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = commonService.findCustomerByEmail(email);
         User user = customer.getUser();
-
+        String imagePath = imageStorageUtil.buildProfileImageUrl("customer", user.getId());
         return new CustomerProfileVo(
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.isActive(),
                 customer.getContact(),
-                customer.getImage()
+                imagePath
         );
     }
 
@@ -119,9 +123,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
         if (customerProfileCo.getContact() != null) {
             customer.setContact(customerProfileCo.getContact());
-        }
-        if (customerProfileCo.getImage() != null) {
-            customer.setImage(customerProfileCo.getImage());
         }
 
         customerRepository.save(customer);
@@ -195,5 +196,15 @@ public class CustomerServiceImpl implements CustomerService {
             return "Address updated successfully";
         else
             return "Address could not be updated";
+    }
+
+    @Override
+    public void checkOwnership(Long id, String email) {
+
+        Customer customer = commonService.findCustomerByEmail(email);
+        // Compare DB id with requested id
+        if (!(customer.getUserid()==id)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
     }
 }

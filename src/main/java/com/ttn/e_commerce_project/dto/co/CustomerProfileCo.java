@@ -12,5 +12,4 @@ public class CustomerProfileCo {
      String firstName;
      String lastName;
      String contact;
-     String image;
 }

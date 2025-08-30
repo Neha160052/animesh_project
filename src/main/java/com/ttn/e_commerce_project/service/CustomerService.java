@@ -20,4 +20,5 @@ public interface CustomerService {
     String addCustomerAddress(String email, AddressCo addressCo);
     String deleteAddress(String email,Long id);
     String updateAddress(Long id, AddressCo addressCo);
+    void checkOwnership(Long id, String email);
 }
