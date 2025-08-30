@@ -4,10 +4,13 @@ import com.ttn.e_commerce_project.dto.vo.AddressVo;
 import com.ttn.e_commerce_project.dto.vo.CustomerVo;
 import com.ttn.e_commerce_project.dto.vo.SellerFlatVo;
 import com.ttn.e_commerce_project.dto.vo.SellerVo;
+import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Seller;
+import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.SellerRepository;
+import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.EmailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +76,9 @@ public class AdminService {
             updated = customerRepository.activateCustomerIfNotActive(id);
             if (updated == 1) {
                 String email = userCommonService.findUserEmailById(id);
+                Customer customer = userCommonService.findCustomerByEmail(email);
+                customer.getUser().setPasswordUpdateDate(ZonedDateTime.now());
+                customerRepository.save(customer);
                 emailService.sendAcknowledgementMail(email,"Dear Customer your account has been activated by the admin now you can login");
             }
             return (updated == 1);
