@@ -1,9 +1,5 @@
 package com.ttn.e_commerce_project.util;
 
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,8 +50,6 @@ public class ImageStorageUtil {
         return filePath.toString();
     }
     public byte[] loadImage(String userType, Long userId) throws IOException {
-        String temp = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize().toString();
-        log.info("Animeshhhhhhhhhhhh >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + temp);
         Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
         log.info(folder.toString());
 
@@ -72,19 +66,6 @@ public class ImageStorageUtil {
         throw new FileNotFoundException("No image found for " + userType + " with id " + userId);
     }
 
-    public void deleteImage(String userType, Long userId) throws IOException {
-        Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
-
-        for (String ext : ALLOWED_EXTENSIONS) {
-            Path filePath = folder.resolve(userId + "." + ext);
-            if (Files.exists(filePath)) {
-                Files.delete(filePath);
-                log.info("Deleted image: {}", filePath);
-                return;
-            }
-        }
-        throw new FileNotFoundException("No image found to delete for " + userType + " with id " + userId);
-    }
     public String buildProfileImageUrl(String userType, Long id) {
         return "/" + userType + "/" + id + "/get-profile-image";
     }
