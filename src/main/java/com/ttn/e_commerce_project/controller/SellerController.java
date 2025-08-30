@@ -5,13 +5,21 @@ import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
 import com.ttn.e_commerce_project.service.SellerService;
+import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.management.relation.RoleNotFoundException;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class SellerController {
 
     SellerService sellerService;
+    ImageStorageUtil imageStorageUtil;
 
     @GetMapping("/profile")
     public ResponseEntity<SellerProfileVo> getMyProfile(Authentication authentication) {
@@ -52,5 +61,27 @@ public class SellerController {
         sellerService.updateAddress(authentication.getName(), id, addressCo);
 
         return ResponseEntity.ok("Address updated successfully");
+    }
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file,
+                                                Authentication  authentication) throws IOException, RoleNotFoundException {
+        sellerService.checkOwnership(id, authentication.getName());
+        String role = authentication.getAuthorities().stream()
+                .findFirst().map(auth->
+                        auth.getAuthority().replace("ROLE_","").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
+        String path = imageStorageUtil.saveImage(role, id, file);
+        return ResponseEntity.ok("Image uploaded successfully at " + path);
+    }
+
+    @GetMapping("{id}/get-profile-image")
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable Long id,Authentication authentication) throws IOException, RoleNotFoundException {
+        sellerService.checkOwnership(id, authentication.getName());
+        String role = authentication.getAuthorities().stream()
+                .findFirst().map(auth->
+                        auth.getAuthority().replace("ROLE_","").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
+        byte[] arr = imageStorageUtil.loadImage(role, id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(arr);
     }
 }

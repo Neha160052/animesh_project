@@ -6,6 +6,7 @@ import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
 import com.ttn.e_commerce_project.entity.address.Address;
+import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
@@ -18,10 +19,12 @@ import com.ttn.e_commerce_project.respository.SellerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.EmailService;
 import com.ttn.e_commerce_project.service.SellerService;
+import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,7 @@ public class SellerServiceImpl implements SellerService {
     UserCommonService commonService;
     EmailService emailService;
     AddressRepository addressRepository;
+    ImageStorageUtil imageStorageUtil;
 
 
     @Override
@@ -97,6 +101,7 @@ public class SellerServiceImpl implements SellerService {
            Seller seller = commonService.findSellerByEmail(email);
            User user = seller.getUser();
            Address address = user.getAddress().getFirst();
+           String imagePath = imageStorageUtil.buildProfileImageUrl("seller", user.getId());
            return new SellerProfileVo(
                    user.getId(),
                    user.getFirstName(),
@@ -104,7 +109,7 @@ public class SellerServiceImpl implements SellerService {
                    user.isActive(),
                    seller.getCompanyContact(),
                    seller.getCompanyName(),
-                   seller.getImage(),
+                   imagePath,
                    seller.getGst(),
                    address.getCity(),
                    address.getState(),
@@ -178,5 +183,14 @@ public class SellerServiceImpl implements SellerService {
         address.setCountry(addressCo.getCountry());
         address.setZipCode(addressCo.getZipCode());
         addressRepository.save(address);
+    }
+
+    @Override
+    public void checkOwnership(Long id, String email) {
+        Seller seller = commonService.findSellerByEmail(email);
+        // Compare DB id with requested id
+        if (!(seller.getUserid()==id)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
     }
 }

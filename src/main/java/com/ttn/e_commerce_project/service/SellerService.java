@@ -14,4 +14,5 @@ public interface SellerService {
     void updateMyProfile(String email, @Valid SellerProfileCo req);
     void updatePassword(String username, @Valid UpdatePasswordCo updatePasswordCo);
     void updateAddress(String name, Long id, @Valid AddressCo addressCo);
+    void checkOwnership(Long id, String name);
 }
