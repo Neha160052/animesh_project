@@ -26,6 +26,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+
 @RestController
 @RequestMapping("/customer")
 @RequiredArgsConstructor
@@ -59,7 +61,7 @@ public class CustomerController {
                                                          @Valid @RequestBody UpdatePasswordCo updatePasswordCo) {
 
         customerService.updatePassword(authentication.getName(), updatePasswordCo);
-        return ResponseEntity.ok("Password updated successfully");
+        return ResponseEntity.ok(PASSWORD_UPDATED);
     }
 
     @PostMapping("/add-address")
@@ -83,8 +85,8 @@ public class CustomerController {
     public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file,
                                               Principal principal) throws IOException {
         customerService.checkOwnership(id, principal.getName());
-        String path = imageStorageUtil.saveImage("customer", id, file);
-        return ResponseEntity.ok("Image uploaded successfully at " + path);
+        String path = imageStorageUtil.saveImage(CUSTOMER_USER_TYPE, id, file);
+        return ResponseEntity.ok(IMAGE_UPLOADED+ path);
     }
 
     @GetMapping("{id}/get-profile-image")
@@ -92,7 +94,7 @@ public class CustomerController {
         customerService.checkOwnership(id, authentication.getName());
         String role = authentication.getAuthorities().stream()
                 .findFirst().map(auth->
-                        auth.getAuthority().replace("ROLE_","").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
+                        auth.getAuthority().replace(ROLE_PREFIX,"").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
         byte[] arr = imageStorageUtil.loadImage(role, id);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)

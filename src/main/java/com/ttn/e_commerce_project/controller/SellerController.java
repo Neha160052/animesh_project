@@ -20,6 +20,7 @@ import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Locale;
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class SellerController {
                                                  @Valid @RequestBody SellerProfileCo sellerProfileCo)
     {
         sellerService.updateMyProfile(auth.getName(), sellerProfileCo);
-        return ResponseEntity.ok("Profile updated successfully");
+        return ResponseEntity.ok(PROFILE_UPDATED);
     }
 
     @PatchMapping("/update-password")
@@ -49,7 +50,7 @@ public class SellerController {
                                                  @Valid @RequestBody UpdatePasswordCo updatePasswordCo) {
 
         sellerService.updatePassword(authentication.getName(), updatePasswordCo);
-        return ResponseEntity.ok("Password updated successfully");
+        return ResponseEntity.ok(PASSWORD_UPDATED);
     }
 
     @PatchMapping("/address/{id}")
@@ -60,7 +61,7 @@ public class SellerController {
 
         sellerService.updateAddress(authentication.getName(), id, addressCo);
 
-        return ResponseEntity.ok("Address updated successfully");
+        return ResponseEntity.ok(ADDRESS_UPDATED);
     }
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file,
@@ -68,9 +69,9 @@ public class SellerController {
         sellerService.checkOwnership(id, authentication.getName());
         String role = authentication.getAuthorities().stream()
                 .findFirst().map(auth->
-                        auth.getAuthority().replace("ROLE_","").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
+                        auth.getAuthority().replace(ROLE_PREFIX,"").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
         String path = imageStorageUtil.saveImage(role, id, file);
-        return ResponseEntity.ok("Image uploaded successfully at " + path);
+        return ResponseEntity.ok(IMAGE_UPLOADED + path);
     }
 
     @GetMapping("{id}/get-profile-image")
@@ -78,7 +79,7 @@ public class SellerController {
         sellerService.checkOwnership(id, authentication.getName());
         String role = authentication.getAuthorities().stream()
                 .findFirst().map(auth->
-                        auth.getAuthority().replace("ROLE_","").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
+                        auth.getAuthority().replace(ROLE_PREFIX,"").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
         byte[] arr = imageStorageUtil.loadImage(role, id);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)

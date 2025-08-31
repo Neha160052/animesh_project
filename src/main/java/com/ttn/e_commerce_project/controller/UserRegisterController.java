@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.CUSTOMER_REGISTERED_SUCCESSFULLY;
+import static com.ttn.e_commerce_project.constants.UserConstants.SELLER_REGISTERED_SUCCESSFULLY;
+
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -26,13 +29,13 @@ public class UserRegisterController {
     @PostMapping("/customer")
     public ResponseEntity<String> registerCustomer(@Valid @RequestBody CustomerCo customerCo) {
         customerService.register(customerCo);
-        return ResponseEntity.ok("Customer registered Successfully");
+        return ResponseEntity.ok(CUSTOMER_REGISTERED_SUCCESSFULLY);
     }
 
     @PostMapping("/seller")
     public ResponseEntity<String> registerSeller(@Valid @RequestBody SellerCo sellerCo) {
         sellerService.register(sellerCo);
-        return ResponseEntity.ok("Seller Registered Successfully");
+        return ResponseEntity.ok(SELLER_REGISTERED_SUCCESSFULLY);
     }
 
 }

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class AdminController {
     ResponseEntity<Page<CustomerVo>> getAllCustomers(@RequestParam(defaultValue = "10") int pageSize,
                                                             @RequestParam(defaultValue = "0") int pageOffset,
                                                             @RequestParam(defaultValue = "id") String sort,
-                                                            @RequestParam(required = false) @Email(message="enter a valid email address") String email)
+                                                            @RequestParam(required = false) @Email(message=INVALID_EMAIL) String email)
     {
             Page<CustomerVo> response = adminService.listAllCustomers(pageSize, pageOffset, sort, email);
             return ResponseEntity.ok(response);
@@ -37,7 +39,7 @@ public class AdminController {
     ResponseEntity<Page<SellerVo>> getAllSellers(@RequestParam(defaultValue = "10") int pageSize,
                                                  @RequestParam(defaultValue = "0") int pageOffset,
                                                  @RequestParam(defaultValue = "id") String sort,
-                                                 @RequestParam(required = false)@Email(message="enter a valid email address") String email)
+                                                 @RequestParam(required = false)@Email(message=INVALID_EMAIL) String email)
     {
         Page<SellerVo> response = adminService.listAllSellers(pageSize,pageOffset,sort,email);
         return ResponseEntity.ok(response);
@@ -48,27 +50,27 @@ public class AdminController {
     {
         boolean update = adminService.activeCustomer(id);
         if(!update)
-            return ResponseEntity.ok("customer already active");
+            return ResponseEntity.ok(CUSTOMER_ALREADY_ACTIVE);
         else
-            return ResponseEntity.ok("customer activated successfully");
+            return ResponseEntity.ok(CUSTOMER_ACTIVATED_SUCCESSFULLY);
     }
     @PatchMapping("/activate-seller/{id}")
     ResponseEntity<String> activateSeller(@PathVariable Long id)
     {
         boolean update = adminService.activateSeller(id);
         if(!update)
-            return  ResponseEntity.ok("seller already active");
+            return  ResponseEntity.ok(SELLER_ALREADY_ACTIVE);
         else
-            return ResponseEntity.ok("seller activated successfully");
+            return ResponseEntity.ok(SELLER_ACTIVATED_SUCCESSFULLY);
     }
 
     @PatchMapping("/deactivate-customer/{id}")
     public ResponseEntity<String> deactivateCustomer(@PathVariable Long id) {
         boolean deactivated = adminService.deactivateCustomer(id);
         if (deactivated) {
-            return ResponseEntity.ok("Customer deactivated successfully with ID: " + id);
+            return ResponseEntity.ok(CUSTOMER_DEACTIVATED_SUCCESSFULLY + id);
         } else {
-            return ResponseEntity.ok("Customer was already deactivated with ID: " + id);
+            return ResponseEntity.ok(CUSTOMER_ALREADY_DEACTIVATED + id);
         }
     }
 
@@ -76,9 +78,9 @@ public class AdminController {
     public ResponseEntity<String> deactivateSeller(@PathVariable Long id) {
         boolean deactivated = adminService.deactivateSeller(id);
         if (deactivated) {
-            return ResponseEntity.ok("Seller deactivated successfully with ID: " + id);
+            return ResponseEntity.ok(SELLER_DEACTIVATED_SUCCESSFULLY + id);
         } else {
-            return ResponseEntity.ok("Seller was already deactivated with ID: " + id);
+            return ResponseEntity.ok(SELLER_ALREADY_DEACTIVATED + id);
         }
     }
 }

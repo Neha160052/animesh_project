@@ -1,12 +1,13 @@
 package com.ttn.e_commerce_project.controller;
 
-import com.ttn.e_commerce_project.service.impl.CustomerServiceImpl;
 import com.ttn.e_commerce_project.service.impl.UserCommonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.ttn.e_commerce_project.constants.UserConstants.ACTIVATION_EMAIL_RESPONSE;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +25,6 @@ public class ActivationController {
     @GetMapping("/resendActivationLink")
     public ResponseEntity<String> reSendActivationToken(@RequestParam String email) {
         customerService.resendActivationLink(email);
-        return ResponseEntity.ok("Activation link has been sent to your mail");
+        return ResponseEntity.ok(ACTIVATION_EMAIL_RESPONSE);
     }
 }

@@ -1,8 +1,10 @@
 package com.ttn.e_commerce_project.controller;
 
+import com.ttn.e_commerce_project.dto.co.RefreshTokenCo;
 import com.ttn.e_commerce_project.dto.co.ResetPasswordCo;
 import com.ttn.e_commerce_project.dto.co.UserLoginCo;
 import com.ttn.e_commerce_project.dto.vo.AuthTokenVo;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.service.impl.AuthServiceImpl;
 import com.ttn.e_commerce_project.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
 import static java.util.Objects.nonNull;
 
 @RestController
@@ -31,20 +34,20 @@ public class AuthController{
       }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, @RequestParam String refreshToken) {
-        String authHeader = request.getHeader("Authorization");
-        String accessToken = null;
-        if (nonNull(authHeader) && authHeader.startsWith("Bearer ")) {
-            accessToken = authHeader.substring(7);
+    public ResponseEntity<String> logout(HttpServletRequest request,@Valid @RequestBody RefreshTokenCo refreshToken) {
+        String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+        if ( authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+            throw new InvalidArgumentException(MISSING_OR_INVALID_AUTH_HEADER);
         }
-        authServiceImpl.logout(accessToken, refreshToken);
-        return ResponseEntity.ok("Logged out successfully");
+        String accessToken = authHeader.substring(7);
+        authServiceImpl.logout(accessToken, refreshToken.getRefreshToken());
+        return ResponseEntity.ok(LOGOUT_SUCCESS);
     }
 
     @GetMapping("/forgot-password")
     public ResponseEntity<String> initiateResetPassword(@RequestParam String email) {
             authServiceImpl.initiatePasswordReset(email);
-            return ResponseEntity.ok("reset password email has been sent");
+            return ResponseEntity.ok(RESET_PASSWORD_EMAIL_SENT);
         }
 
     @PostMapping("/reset-password")
@@ -54,7 +57,7 @@ public class AuthController{
         String password = resetPasswordCo.getPassword();
         String confirmPassword = resetPasswordCo.getConfirmPassword();
         authServiceImpl.resetUserPassword(email,password,confirmPassword);
-        return ResponseEntity.ok("Password reset successful");
+        return ResponseEntity.ok(PASSWORD_RESET_SUCCESS);
     }
 
     @PostMapping("/generate-new-access-token")
