@@ -112,4 +112,20 @@ public class GlobalExceptionHandler {
         response.put("error",ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String,String>> handleBadCrendentialsException(BadCredentialsException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Map<String,String>> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
 }
