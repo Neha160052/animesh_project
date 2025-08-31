@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -52,12 +53,12 @@ public class AuthServiceImpl implements AuthService {
     String lockTimeDuration;
 
     public AuthTokenVo login(UserLoginCo userLoginCo) {
-        log.info("login initiated");
+        log.info(LOGIN_INITIATED);
 
         User user = userCommonService.findUserByEmail(userLoginCo.getEmail());
 
         if(!user.isActive())
-            throw  new AccountNotActiveException("Account not active");
+            throw  new AccountNotActiveException(ACCOUNT_NOT_ACTIVE);
 
         if (user.isLocked()) {
             if (unlockWhenTimeExpired(user)) {
@@ -65,10 +66,10 @@ public class AuthServiceImpl implements AuthService {
                 user.setInvalidAttemptCount(0);
                 userRepository.save(user);
             } else {
-                emailService.sendAcknowledgementMail(userLoginCo.getEmail(),"Dear user you account has been locked due to many failed login attempts");
-                throw new AccountLockedException("Account is locked. Please try again after sometime");
+                emailService.sendAcknowledgementMail(userLoginCo.getEmail(), ACCOUNT_LOCKED_MAIL);
+                throw new AccountLockedException(ACCOUNT_LOCKED);
             }
-            log.info("login successful");
+            log.info(LOGIN_SUCCESSFUL);
         }
 
         try {
@@ -80,7 +81,9 @@ public class AuthServiceImpl implements AuthService {
             return AuthTokenVo.builder().refreshToken(refreshToken).accessToken(token).build();
         } catch (BadCredentialsException e) {
             increaseFailedAttempts(user);
-            throw new BadCredentialsException("You have reached the maximum limit of login attempts");
+            if(user.isLocked())
+                throw new AccountLockedException(ACCOUNT_LOCKED_LIMIT_REACHED);
+            throw new BadCredentialsException(INVALID_USERNAME_PASSWORD);
         }
     }
 
@@ -92,16 +95,16 @@ public class AuthServiceImpl implements AuthService {
         TokenBlacklist blacklist = new TokenBlacklist(jti,refreshJti);
         tokenBlacklistRepository.save(blacklist);
 
-        log.info("Token with jti={} refreshJti={} has been blacklisted", jti,refreshJti);
+        log.info(TOKEN_BLACKLISTED, jti,refreshJti);
     }
 
     @Override
     public void initiatePasswordReset(String email) {
         User user = userCommonService.findUserByEmail(email);
         if(!user.isActive())
-            throw  new AccountNotActiveException("Account not active");
+            throw  new AccountNotActiveException(ACCOUNT_NOT_ACTIVE);
         VerificationToken token = tokenService.createToken(user);
-        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token),"Click on the link below to reset you password:");
+        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token), PASSWORD_RESET_SUBJECT);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setPasswordUpdateDate(ZonedDateTime.now());
             }
         } catch (PasswordMismatchException e) {
-            throw new PasswordMismatchException("Password and Confirm password should match");
+            throw new PasswordMismatchException(PASSWORD_MISMATCH);
         }
     }
 
@@ -138,7 +141,8 @@ public class AuthServiceImpl implements AuthService {
 
     public boolean unlockWhenTimeExpired(User user) {
         if(user.getLockTime()==null)
-            return false;
+        { log.warn(LOCK_TIME_NULL);
+            return false;}
         LocalDateTime unlockTime = user.getLockTime().plusSeconds(Long.parseLong(lockTimeDuration));
         if(LocalDateTime.now().isAfter(unlockTime))
             return true;
@@ -149,12 +153,12 @@ public class AuthServiceImpl implements AuthService {
     public String generateNewAccessToken(String refreshToken)
     {
         if (!(jwtService.validateRefreshToken(refreshToken))) {
-            throw new InvalidArgumentException("Token is either expired or type mismatch");
+            throw new InvalidArgumentException(TOKEN_INVALID_OR_EXPIRED);
         }
 
         String refreshJti = jwtUtil.getJtiFromToken(refreshToken);
         if (tokenBlacklistRepository.existsByJti(refreshJti)) {
-            throw new InvalidArgumentException("Refresh token blacklisted please login again");
+            throw new InvalidArgumentException(REFRESH_TOKEN_BLACKLISTED);
         }
         String username = jwtService.getUsername(refreshToken);
         CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(username);
