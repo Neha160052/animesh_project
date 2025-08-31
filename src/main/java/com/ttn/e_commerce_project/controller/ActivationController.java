@@ -24,6 +24,6 @@ public class ActivationController {
     @GetMapping("/resendActivationLink")
     public ResponseEntity<String> reSendActivationToken(@RequestParam String email) {
         customerService.resendActivationLink(email);
-        return ResponseEntity.ok("link sent");
+        return ResponseEntity.ok("Activation link has been sent to your mail");
     }
 }
