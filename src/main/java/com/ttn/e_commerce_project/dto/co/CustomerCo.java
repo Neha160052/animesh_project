@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.dto.co;
 
+import com.ttn.e_commerce_project.customvalidation.ValidName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -32,9 +33,13 @@ public class CustomerCo {
     String confirmPassword;
 
     @NotBlank(message = "First name is required")
+    @ValidName(message = "firstName can only contain alphabets and spaces")
     String firstName;
 
+    @ValidName(message = "middleName can only contain alphabets and spaces")
     String middleName;
+
+    @ValidName(message = "Lastname can only contain alphabets and spaces")
     @NotBlank(message = "Last name is required")
     String lastName;
 
