@@ -9,6 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.EMAIL_SUBJECT;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
@@ -30,7 +32,7 @@ public class EmailServiceImpl  implements EmailService {
     public void sendAcknowledgementMail(String email, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("This is a system generated mail do not reply to this mail");
+        message.setSubject(EMAIL_SUBJECT);
         message.setText(text);
         javaMailSender.send(message);
     }

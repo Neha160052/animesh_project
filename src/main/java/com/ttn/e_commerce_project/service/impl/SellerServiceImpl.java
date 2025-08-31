@@ -31,6 +31,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
@@ -49,18 +51,18 @@ public class SellerServiceImpl implements SellerService {
     public void register(SellerCo sellerCo) {
 
         if (userRepository.existsByEmail(sellerCo.getEmail())) {
-            throw new InvalidArgumentException("Email already in use");
+            throw new InvalidArgumentException(EMAIL_ALREADY_IN_USE);
         }
         if (!sellerCo.getPassword().equals(sellerCo.getConfirmPassword())) {
-            throw new InvalidArgumentException("Passwords do not match");
+            throw new InvalidArgumentException(PASSWORD_MISMATCH);
         }
 
         if (sellerRepository.existsByGst(sellerCo.getGst())) {
-            throw new InvalidArgumentException("GST already exists provide unique one");
+            throw new InvalidArgumentException(GST_ALREADY_IN_USE);
         }
 
         if (sellerRepository.existsByCompanyNameIgnoreCase(sellerCo.getCompanyName())) {
-            throw new InvalidArgumentException("Company name already exists provide a unique name.");
+            throw new InvalidArgumentException(COMPANY_NAME_ALREADY_EXISTS);
         }
         User user = new User();
         Role sellerRole = commonService.findRoleByAuthority(RoleAuthority.SELLER);
@@ -101,7 +103,7 @@ public class SellerServiceImpl implements SellerService {
            Seller seller = commonService.findSellerByEmail(email);
            User user = seller.getUser();
            Address address = user.getAddress().getFirst();
-           String imagePath = imageStorageUtil.buildProfileImageUrl("seller", user.getId());
+           String imagePath = imageStorageUtil.buildProfileImageUrl(SELLER_USER_TYPE, user.getId());
            return new SellerProfileVo(
                    user.getId(),
                    user.getFirstName(),
@@ -135,7 +137,7 @@ public class SellerServiceImpl implements SellerService {
         if (sellerProfileCo.getGst() != null)
         {
             if (sellerRepository.existsByGst(sellerProfileCo.getGst())) {
-                throw new InvalidArgumentException("GST already exists provide unique one");
+                throw new InvalidArgumentException(GST_ALREADY_IN_USE);
             }
             seller.setGst(sellerProfileCo.getGst());
         }
@@ -149,20 +151,20 @@ public class SellerServiceImpl implements SellerService {
 
         {
             User user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(SELLER_NOT_FOUND));
 
             if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
-                throw new InvalidArgumentException("Current password is incorrect");
+                throw new InvalidArgumentException(CURRENT_PASSWORD_INCORRECT);
             }
 
             if (!updatePasswordCo.getNewPassword().equals(updatePasswordCo.getConfirmPassword())) {
-                throw new PasswordMismatchException("New password and Confirm password should match");
+                throw new PasswordMismatchException(NEW_PASSWORD_MISMATCH);
             }
 
             user.setPassword(passwordEncoder.encode(updatePasswordCo.getNewPassword()));
             userRepository.save(user);
 
-            emailService.sendAcknowledgementMail(username,"Dear Seller your password has been updated successfully");
+            emailService.sendAcknowledgementMail(username,EMAIL_BODY_SELLER);
         }
     }
 
@@ -171,10 +173,10 @@ public class SellerServiceImpl implements SellerService {
     public void updateAddress(String username, Long id, AddressCo addressCo)
     {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(SELLER_NOT_FOUND));
 
         Address address = addressRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address not found for this user"));
+                .orElseThrow(() -> new ResourceNotFoundException(ADDRESS_NOT_FOUND));
 
         // update fields
         address.setAddressLine(addressCo.getAddressLine());
@@ -190,7 +192,7 @@ public class SellerServiceImpl implements SellerService {
         Seller seller = commonService.findSellerByEmail(email);
         // Compare DB id with requested id
         if (!(seller.getUserid()==id)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(ACCESS_DENIED);
         }
     }
 }

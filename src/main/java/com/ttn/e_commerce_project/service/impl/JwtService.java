@@ -15,6 +15,9 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.ROLE_DOES_NOT_EXIST;
+import static com.ttn.e_commerce_project.constants.UserConstants.USERNAME_DOES_NOT_EXIST;
+
 @Service
 @Slf4j
 public class JwtService {
@@ -86,7 +89,7 @@ public class JwtService {
 
             return claims.getSubject(); // username is stored in subject
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidArgumentException("username does not exist");
+            throw new InvalidArgumentException(USERNAME_DOES_NOT_EXIST);
         }
     }
     public List<String> getRoles(String token) {
@@ -100,7 +103,7 @@ public class JwtService {
 
             return claims.get("roles",List.class);
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidArgumentException("Role does not exist");
+            throw new InvalidArgumentException(ROLE_DOES_NOT_EXIST);
         }
     }
 }
