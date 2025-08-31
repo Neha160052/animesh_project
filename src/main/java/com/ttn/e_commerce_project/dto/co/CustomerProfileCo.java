@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomerProfileCo {
 
-     @ValidName(message = "firstName can only contain alphabets and spaces")
+     @ValidName(message = "{first.name.invalid}")
      String firstName;
-     @ValidName(message = "Lastname can only contain alphabets and spaces")
+     @ValidName(message = "{last.name.invalid}")
      String lastName;
      String contact;
 }

@@ -13,11 +13,8 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class AddressCo {
-    @ValidName(message = "City name can only contain alphabets and spaces ")
     String city;
-    @ValidName(message = "State name can only contain alphabets and spaces")
     String state;
-    @ValidName(message = "country name can only contain alphabets and spaces")
     String country;
     String addressLine;
     int zipCode;

@@ -12,35 +12,33 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomerCo {
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "{email.required}")
+    @Email(message = "{email.invalid}")
     String email;
 
-    @NotBlank
-    @Size(min=10,max=10)
-    String  phoneNumber;
+    @NotBlank(message = "{phone.required}")
+    @Size(min = 10, max = 10, message = "{phone.size}")
+    String phoneNumber;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
-    message = "Password must be 8-20 characters and include at least one digit, one uppercase, one lowercase, and one special character")
+    @NotBlank(message = "{password.required}")
+    @Size(min = 8, message = "{password.size}")
+    @Pattern( regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
+              message = "{password.pattern}")
     String password;
 
-    @NotBlank(message = "Confirm password is required")
+    @NotBlank(message = "{confirm.password.required}")
     String confirmPassword;
 
-    @NotBlank(message = "First name is required")
-    @ValidName(message = "firstName can only contain alphabets and spaces")
+    @NotBlank(message = "{first.name.required}")
+    @ValidName(message = "{first.name.invalid}")
     String firstName;
-
-    @ValidName(message = "middleName can only contain alphabets and spaces")
     String middleName;
 
-    @ValidName(message = "Lastname can only contain alphabets and spaces")
-    @NotBlank(message = "Last name is required")
+    @NotBlank(message = "{last.name.required}")
+    @ValidName(message = "{last.name.invalid}")
     String lastName;
 
     boolean isDeleted;
