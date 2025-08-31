@@ -20,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 
 @Component
@@ -28,6 +27,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE,makeFinal = true)
 public class JwtFilter extends OncePerRequestFilter {
+
 
     JwtService jwtService;
 
