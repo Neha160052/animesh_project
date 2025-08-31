@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.dto.co;
 
+import com.ttn.e_commerce_project.customvalidation.ValidName;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +34,7 @@ public class SellerCo {
     private String gst;
 
     @NotBlank(message = "Company name is required")
+    @ValidName(message = "company name can only contain the alphabets and spaces")
     private String companyName;
 
     @Valid
@@ -43,11 +45,14 @@ public class SellerCo {
     private String companyContact;
 
     @NotBlank(message = "First name is required")
+    @ValidName(message = "first name can only contain alphabets and spaces")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
+    @ValidName(message="last name can only contain alphabet and spaces")
     private String lastName;
 
+    @ValidName(message = "middle name can only contain alphabet and spaces")
     private String middleName;
 }
 

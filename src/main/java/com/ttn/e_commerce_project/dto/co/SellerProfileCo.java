@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.dto.co;
 
+import com.ttn.e_commerce_project.customvalidation.ValidName;
 import com.ttn.e_commerce_project.entity.address.Address;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -15,8 +16,10 @@ import lombok.experimental.FieldDefaults;
 public class SellerProfileCo {
 
     @Size(min = 2, max = 50, message = "First name must be 2–50 chars")
+    @ValidName(message = "firstName can only contain alphabets and spaces")
     String firstName;
 
+    @ValidName(message = "Lastname can only contain alphabets and spaces")
     @Size(min = 2, max = 50, message = "Last name must be 2–50 chars")
     String lastName;
 
