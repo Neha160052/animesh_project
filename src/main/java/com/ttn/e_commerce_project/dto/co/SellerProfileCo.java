@@ -15,26 +15,26 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SellerProfileCo {
 
-    @Size(min = 2, max = 50, message = "First name must be 2–50 chars")
-    @ValidName(message = "firstName can only contain alphabets and spaces")
+    @Size(min = 2, max = 20, message = "{first.name.size}")
+    @ValidName(message = "{first.name.invalid}")
     String firstName;
 
-    @ValidName(message = "Lastname can only contain alphabets and spaces")
-    @Size(min = 2, max = 50, message = "Last name must be 2–50 chars")
+    @ValidName(message = "{last.name.invalid}")
+    @Size(min = 2, max = 20, message = "{last.name.size}")
     String lastName;
 
     // SELLER
-    @Pattern(regexp = "^[0-9]{7,15}$", message = "Company contact must be 7–15 digits")
+    @Pattern(regexp = "^[0-9]{7,15}$", message = "{company.contact.size}")
     String companyContact;
 
-    @Size(min = 2, max = 120, message = "Company name must be 2–120 chars")
+    @Size(min = 2, max = 60, message = "{company.name.size}")
     String companyName;
 
     String image;
 
     // Indian GSTIN (15 chars): 2 digits + 5 letters + 4 digits + 1 letter + 1 alnum + 'Z' + 1 alnum
     @Pattern(regexp = "^\\d{2}[A-Z]{5}\\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
-            message = "Invalid GST number")
+            message = "{gst.invalid}")
     String gst;
 
 }

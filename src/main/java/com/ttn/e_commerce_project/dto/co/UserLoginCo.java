@@ -12,10 +12,10 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 public class UserLoginCo {
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "{email.required}")
+    @Email(message = "{email.invalid}")
     String email;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "{password.required}")
     String password;
 }

@@ -12,16 +12,17 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class UpdatePasswordCo {
-
-    @NotBlank(message = "Current password is required")
+    @NotBlank(message = "{current.password.required}")
     private String currentPassword;
 
-    @NotBlank(message = "New password is required")
-    @Size(min = 8, message = "password should have minimum 8 characters")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
-            message = "Password must be 8-20 characters and include at least one digit, one uppercase, one lowercase, and one special character")
+    @NotBlank(message = "{new.password.required}")
+    @Size(min = 8, message = "{new.password.size}")
+    @Pattern(
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
+            message = "{new.password.pattern}"
+    )
     private String newPassword;
 
-    @NotBlank(message = "Confirm password is required")
+    @NotBlank(message = "{confirm.password.required}")
     private String confirmPassword;
 }
