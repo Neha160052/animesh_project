@@ -13,12 +13,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.Set;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.ALLOWED_EXTENSIONS;
+import static com.ttn.e_commerce_project.constants.UserConstants.BASE_PATH;
+
 @Slf4j
 @Component
 public class ImageStorageUtil {
 
-    private static final String BASE_PATH = "uploads";
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "bmp");
 
     public String saveImage(String userType, Long userId, MultipartFile file) throws IOException {
         // Create the subfolder for the userType (customers or sellers)
