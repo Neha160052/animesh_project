@@ -105,7 +105,7 @@ public class AdminService {
     public boolean deactivateCustomer(Long id) {
         int updated;
         if (!customerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Customer with the given id does not exist: " + id);
+            throw new ResourceNotFoundException(CUSTOMER_DOES_NOT_EXIST+ id);
         } else {
             updated = customerRepository.deactivateCustomerIfActive(id);
             if (updated == 1) {
