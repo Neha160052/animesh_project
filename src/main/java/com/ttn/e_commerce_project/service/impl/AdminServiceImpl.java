@@ -118,7 +118,7 @@ public class AdminService {
     public boolean deactivateSeller(Long id) {
         int updated;
         if (!sellerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Seller with the given id does not exist: " + id);
+            throw new ResourceNotFoundException(SELLER_DOES_NOT_EXIST + id);
         } else {
             updated = sellerRepository.deactivateSellerIfActive(id);
             if (updated == 1) {
