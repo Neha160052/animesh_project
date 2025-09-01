@@ -98,7 +98,7 @@ public class AdminService {
                   Seller seller = sellerRepository.findByUserEmail(email).get();
                   seller.getUser().setPasswordUpdateDate(ZonedDateTime.now());
                   sellerRepository.save(seller);
-                  emailService.sendAcknowledgementMail(email,"Dear seller you account has be activated by the admin now you can login");}
+                  emailService.sendAcknowledgementMail(email,SELLER_ACTIVATION_MAIL);}
                 return (updated == 1);
             }
         }
