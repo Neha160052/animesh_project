@@ -151,4 +151,57 @@ public class AdminServiceImpl implements AdminService {
             result = categoryMetadataRepo.findAll(pageable);
         return result.map(field -> new MetadataFieldVo(field.getId(), field.getName()));
     }
+
+
+    public String addCategory(CategoryCo categoryCo) {
+         String name = categoryCo.getName();
+         Category parent =null;
+         if(categoryCo.getParentId()!=null){
+             parent = categoryRepo.findById(categoryCo.getParentId()).orElseThrow(()->new ResourceNotFoundException("parent category not found"));
+         }
+         // 1. root category unique
+         if(parent ==null)
+         {
+             if(categoryRepo.existByNameAndParentIsNull(name))
+             {
+                 throw new InvalidArgumentException("Root category"+name+"already exists");
+             }
+         }else {
+             // tree wide uniqueness
+             Category root = findRoot(parent);
+             if(isNameExistsInTree(root.getId(),name)){
+                 throw new InvalidArgumentException("category name"+name+"already exists in tree root"+root.getName());
+             }
+         }
+         Category category = new Category();
+         category.setName(name);
+         category.setParentCategory(parent);
+         categoryRepo.save(category);
+         return "Category added successfully";
+    }
+
+     private Category findRoot(Category category) {
+     return category.getParentCategory()==null?category:findRoot(category.getParentCategory());
+    }
+
+    private boolean isNameExistsInTree(Long rootId,String name)
+    {
+        Queue<Long> queue = new LinkedList<>();
+        queue.add(rootId);
+        while (!queue.isEmpty()) {
+            Long currentId = queue.poll();
+
+            Category current = categoryRepo.findById(currentId)
+                    .orElseThrow(() -> new InvalidArgumentException("Category not found: " + currentId));
+
+
+            if (current.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+
+            List<Long> childIds = categoryRepo.findChildIdsByParentId(currentId);
+            queue.addAll(childIds);
+        }
+        return false;
+    }
 }
