@@ -9,6 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.EMAIL_SUBJECT;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
@@ -17,22 +19,21 @@ public class EmailServiceImpl  implements EmailService {
     JavaMailSender javaMailSender;
 
     @Async
-    public void sendJavaActivationEmail(String toEmail,String activationLink)
+    public void sendLinkWithSubjectEmail(String toEmail, String activationLink, String subject)
     {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
-        message.setSubject("To activate your account click on the link below: ");
+        message.setSubject(subject);
         message.setText(activationLink);
         javaMailSender.send(message);
     }
 
     @Async
-    public void sendResetPasswordEmail(String email,String activationLink )
-    {
+    public void sendAcknowledgementMail(String email, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Click on the link below to reset you password: ");
-        message.setText(activationLink);
+        message.setSubject(EMAIL_SUBJECT);
+        message.setText(text);
         javaMailSender.send(message);
     }
 

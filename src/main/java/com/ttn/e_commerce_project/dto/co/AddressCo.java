@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.dto.co;
 
+import com.ttn.e_commerce_project.customvalidation.ValidName;
 import com.ttn.e_commerce_project.enums.Label;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class AddressCo {
-
     String city;
     String state;
     String country;

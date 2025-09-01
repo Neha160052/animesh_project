@@ -26,6 +26,7 @@ public class Seller extends Auditable
     String gst;
     String companyContact;
     String companyName;
+    String image;
 
     @OneToMany
     @JoinColumn(name = "seller_user_id",referencedColumnName = "user_id")

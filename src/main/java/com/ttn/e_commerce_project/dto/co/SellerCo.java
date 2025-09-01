@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.dto.co;
 
+import com.ttn.e_commerce_project.customvalidation.ValidName;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,38 +17,40 @@ import lombok.experimental.FieldDefaults;
 public class SellerCo {
 
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
+    @Email(message = "{email.invalid}")
+    @NotBlank(message = "{email.required}")
     private String email;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "{password.required}")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
-                    message = "Password must be 8-20 characters and include at least one digit, one uppercase, one lowercase, and one special character")
+                    message = "{password.pattern}")
     private String password;
 
-    @NotBlank(message = "Confirm Password is required")
+    @NotBlank(message = "{confirm.password.required}")
     private String confirmPassword;
 
     @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9]{1}$",
-            message = "Invalid GST format")
+            message = "{gst.invalid}")
     private String gst;
 
-    @NotBlank(message = "Company name is required")
+    @NotBlank(message = "{company.name.required}")
+    @ValidName(message = "{company.name.invalid}")
     private String companyName;
 
     @Valid
-    @NotNull(message = "Company address is required")
+    @NotNull(message = "{company.address.required}")
     private AddressCo companyAddress;
 
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid company contact number")
+    @Pattern(regexp = "^[6-9]\\d{9}$", message = "{company.contact.invalid}")
     private String companyContact;
 
-    @NotBlank(message = "First name is required")
+    @NotBlank(message = "{first.name.required}")
+    @ValidName(message = "{first.name.invalid}")
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
+    @NotBlank(message = "{last.name.required}")
+    @ValidName(message="{last.name.invalid}")
     private String lastName;
 
     private String middleName;
 }
-

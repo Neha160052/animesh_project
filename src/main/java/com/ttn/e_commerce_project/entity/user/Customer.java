@@ -17,7 +17,6 @@ import java.util.List;
 public class Customer extends Auditable {
 
     String contact;
-
     @Id
     long userid;
 

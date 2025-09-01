@@ -21,6 +21,6 @@ public class Address {
     String country;
     String addressLine;
     int zipCode;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     Label label;
 }
