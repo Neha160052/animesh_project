@@ -28,7 +28,7 @@ import java.time.ZonedDateTime;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AdminService {
+public class AdminServiceImpl implements AdminService {
 
     CustomerRepository customerRepository;
     SellerRepository sellerRepository;
