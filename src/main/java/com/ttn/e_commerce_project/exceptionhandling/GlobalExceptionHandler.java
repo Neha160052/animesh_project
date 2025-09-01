@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.exceptionhandling;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -129,5 +130,12 @@ public class GlobalExceptionHandler {
         Map<String ,String > response = new HashMap<>();
         response.put("error",ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<Map<String,String>> handleJwtException(JwtException ex)
+    {
+        Map<String ,String > response = new HashMap<>();
+        response.put("error",ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
     }
 }
