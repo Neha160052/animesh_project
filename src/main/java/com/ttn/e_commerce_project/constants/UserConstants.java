@@ -1,6 +1,8 @@
 package com.ttn.e_commerce_project.constants;
 
 
+import java.util.Set;
+
 public final class UserConstants {
     private UserConstants() {
     }
@@ -21,6 +23,9 @@ public final class UserConstants {
     public static final String CUSTOMER_DEACTIVATED_SUCCESSFULLY = "Customer deactivated successfully with ID: ";
     public static final String CUSTOMER_ALREADY_DEACTIVATED = "Customer was already deactivated with ID: ";
     public static final String CUSTOMER_REGISTERED_SUCCESSFULLY = "Customer registered Successfully";
+    public static final String CUSTOMER_DOES_NOT_EXIST = "Customer with the given id does not exist: ";
+    public static final String CUSTOMER_ACTIVATION_MAIL = "Dear Customer your account has been activated by the admin, now you can login";
+
 
     // Seller
     public static final String SELLER_NOT_FOUND = "Seller not found";
@@ -32,6 +37,8 @@ public final class UserConstants {
     public static final String SELLER_DEACTIVATED_SUCCESSFULLY = "Seller deactivated successfully with ID: ";
     public static final String SELLER_ALREADY_DEACTIVATED = "Seller was already deactivated with ID: ";
     public static final String SELLER_REGISTERED_SUCCESSFULLY = "Seller Registered Successfully";
+    public static final String SELLER_DOES_NOT_EXIST = "Seller with the given id does not exist: ";
+    public static final String SELLER_ACTIVATION_MAIL = "Dear Seller your account has been activated by the admin, now you can login";
 
     // Role Prefix
     public static final String ROLE_PREFIX = "ROLE_";
@@ -77,6 +84,9 @@ public final class UserConstants {
 
     // Links
     public static final String ACTIVATION_LINK_BASE = "http://localhost:8080/activate?token=";
+    public static final String BASE_PATH = "uploads";
+    public static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "bmp");
+
 
 
     // Headers
@@ -99,6 +109,8 @@ public final class UserConstants {
     public static final String ADDRESS_NOT_FOUND = "Address not found";
     public static final String ADDRESS_COULD_NOT_BE_UPDATED = "Address could not be updated";
     public static final String ACCESS_DENIED = "You are not allowed to access this resource";
+    public static final String FIELD_NAME_ALREADY_EXISTS = "field name already exists";
+    public static final String ACCESS_TOKEN_EXPIRED = "access token expired";
 
     // Success Messages
     public static final String PROFILE_UPDATED_SUCCESSFULLY = "Profile updated successfully";
@@ -106,6 +118,8 @@ public final class UserConstants {
     public static final String ADDRESS_SAVED_SUCCESSFULLY = "Address saved successfully for userId: ";
     public static final String ADDRESS_DELETED_SUCCESSFULLY = "Address deleted successfully";
     public static final String ADDRESS_UPDATED_SUCCESSFULLY = "Address updated successfully";
+    public static final String METADATA_FIELD_ADDED_SUCCESSFULLY = "Metadata field created successfully with ID: %d";
+
 
 
 }
