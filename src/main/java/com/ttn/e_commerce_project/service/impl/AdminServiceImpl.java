@@ -127,4 +127,28 @@ public class AdminService {
             return false; // Already deactivated
         }
     }
+
+    // Phase 4
+
+    public CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo){
+
+        categoryMetadataRepo.findByNameIgnoreCase(metadataFieldCo.getName()).ifPresent(field-> {throw new InvalidArgumentException(FIELD_NAME_ALREADY_EXISTS);});
+
+        CategoryMetaDataField field = new CategoryMetaDataField();
+        field.setName(metadataFieldCo.getName());
+        return categoryMetadataRepo.save(field);
     }
+
+    public Page<MetadataFieldVo> getAllMetadataFields(int offset, int max, String sortBy, String order, String query)
+    {
+        Sort sort = order.equalsIgnoreCase("DESC")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(offset,max,sort);
+        Page<CategoryMetaDataField> result;
+        if(query!=null && !query.trim().isEmpty())
+            result = categoryMetadataRepo.findByNameContainingIgnoreCase(query, pageable);
+        else
+            result = categoryMetadataRepo.findAll(pageable);
+        return result.map(field -> new MetadataFieldVo(field.getId(), field.getName()));
+    }
+}
