@@ -15,8 +15,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
-import static com.ttn.e_commerce_project.constants.UserConstants.ROLE_DOES_NOT_EXIST;
-import static com.ttn.e_commerce_project.constants.UserConstants.USERNAME_DOES_NOT_EXIST;
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
 @Service
 @Slf4j
@@ -44,12 +43,13 @@ public class JwtService {
             boolean isAccessToken = "ACCESS".equalsIgnoreCase(tokenType);
             if(notExpired && isAccessToken){
                 log.info(">>>>>>>>>>>>>>>>>>>>>>Returning true as the access token in valid");
-                return true;}
+                return true;
+            }
             log.warn(">>>>>>>>>>>>>>>>>>>>>>>Token is either expired or type mismatch");
             return false;
         } catch (JwtException | InvalidArgumentException e) {
             log.info(">>>>>>>>>>>>>>>>>>>> throwing exception because the token is not valid or it is expired");
-            return false;
+            throw new JwtException(ACCESS_TOKEN_EXPIRED);
         }}
 
         public boolean validateRefreshToken(String token) {
