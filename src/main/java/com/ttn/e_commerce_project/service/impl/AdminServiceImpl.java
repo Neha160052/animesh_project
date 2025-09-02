@@ -27,9 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
@@ -43,8 +41,6 @@ public class AdminServiceImpl implements AdminService {
     SellerRepository sellerRepository;
     EmailService emailService;
     UserCommonService userCommonService;
-    CategoryMetadataFieldRepository categoryMetadataRepo;
-    CategoryRepository categoryRepo;
 
     public Page<CustomerVo> listAllCustomers(int pageSize, int pageOffset, String sort, String email) {
         Pageable pageable = PageRequest.of(pageOffset, pageSize, Sort.by(sort));
@@ -139,82 +135,5 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    // Phase 4
-
-    public CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo) {
-
-        categoryMetadataRepo.findByNameIgnoreCase(metadataFieldCo.getName()).ifPresent(field -> {
-            throw new InvalidArgumentException(FIELD_NAME_ALREADY_EXISTS);
-        });
-
-        CategoryMetaDataField field = new CategoryMetaDataField();
-        field.setName(metadataFieldCo.getName());
-        return categoryMetadataRepo.save(field);
-    }
-
-    public Page<MetadataFieldVo> getAllMetadataFields(int offset, int max, String sortBy, String order, String query) {
-        Sort sort = order.equalsIgnoreCase("DESC") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(offset, max, sort);
-        Page<CategoryMetaDataField> result;
-        if (query != null && !query.trim().isEmpty())
-            result = categoryMetadataRepo.findByNameContainingIgnoreCase(query, pageable);
-        else
-            result = categoryMetadataRepo.findAll(pageable);
-        return result.map(field -> new MetadataFieldVo(field.getId(), field.getName()));
-    }
-
-
-    public CategoryVo addCategory(CategoryCo categoryCo) {
-        String name = categoryCo.getName();
-        Category parent =null;
-        if(categoryCo.getParentId()!=null){
-            parent = categoryRepo.findById(categoryCo.getParentId()).orElseThrow(()->new ResourceNotFoundException("parent category not found"));
-        }
-        // 1. root category unique
-        if(parent ==null)
-        {
-            if(categoryRepo.existsByNameAndParentIsNull(name))
-            {
-                throw new InvalidArgumentException("Root category "+name+" already exists");
-            }
-        }else {
-            // tree wide uniqueness
-            Category root = findRoot(parent);
-            if(categoryRepo.existsByNameAndParent(name, parent)){
-                throw new InvalidArgumentException("category name \t"+name+" \t already exists in tree root \t "+root.getName());
-            }
-        }
-        Category category = new Category();
-        category.setName(name);
-        category.setParent(parent);
-        Category saved = categoryRepo.save(category);
-        return new CategoryVo(saved.getId(), saved.getName(),"Category created successfully");
-    }
-
-
-    private Category findRoot(Category category) {
-        return category.getParent()==null?category:findRoot(category.getParent());
-    }
-
-//    private boolean isNameExistsInTree(Long rootId,String name)
-//    {
-//        Queue<Long> queue = new LinkedList<>();
-//        queue.add(rootId);
-//        while (!queue.isEmpty()) {
-//            Long currentId = queue.poll();
-//
-//            Category current = categoryRepo.findById(currentId)
-//                    .orElseThrow(() -> new InvalidArgumentException("Category not found: " + currentId));
-//
-//            if (current.getName().equalsIgnoreCase(name)) {
-//                return true;
-//            }
-//
-//            List<Long> childIds = categoryRepo.findChildIdsByParentId(currentId);
-//            queue.addAll(childIds);
-//        }
-//        return false;
-//    }
 }
 
