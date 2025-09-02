@@ -194,4 +194,6 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(newName);
 
 
+        return ResponseEntity.ok("Category updated successfully");
+    }
 }
