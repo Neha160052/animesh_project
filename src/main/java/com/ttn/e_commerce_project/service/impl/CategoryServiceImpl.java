@@ -12,6 +12,7 @@ import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CategoryMetadataFieldRepository;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.service.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -157,23 +159,13 @@ public class CategoryServiceImpl implements CategoryService {
                 children
         );
     }
-    @Override
-    public List<Category> getAllCategories(String query) {
 
-        List<Category> allCategories = categoryRepo.findAll();
+    public ResponseEntity<String> updateCategory(Long id, CategoryCo categoryCo) {
 
-        List<Category> filteredList = allCategories.stream()
-                .filter(category -> {
-                    if (query == null || query.isEmpty()) {
-                        return true;
-                    }
-                    final String lowerCaseQuery = query.toLowerCase();
-                    return category.getName().toLowerCase().contains(lowerCaseQuery);
-                })
-                .collect(Collectors.toList());
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category ID not found"));
 
-        return buildCategoryTree(filteredList);
-    }
+        String newName = categoryCo.getName();
 
         // Check uniqueness based on parent
         if (category.getParent() == null) {
