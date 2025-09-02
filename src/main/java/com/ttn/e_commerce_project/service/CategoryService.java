@@ -8,6 +8,8 @@ import com.ttn.e_commerce_project.dto.vo.MetadataFieldVo;
 import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface CategoryService {
 
     CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo);
