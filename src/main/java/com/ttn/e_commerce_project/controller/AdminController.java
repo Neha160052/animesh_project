@@ -2,19 +2,20 @@ package com.ttn.e_commerce_project.controller;
 
 import com.ttn.e_commerce_project.dto.co.CategoryCo;
 import com.ttn.e_commerce_project.dto.co.MetadataFieldCo;
-import com.ttn.e_commerce_project.dto.vo.CategoryVo;
-import com.ttn.e_commerce_project.dto.vo.CustomerVo;
-import com.ttn.e_commerce_project.dto.vo.MetadataFieldVo;
-import com.ttn.e_commerce_project.dto.vo.SellerVo;
+import com.ttn.e_commerce_project.dto.vo.*;
 import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
 import com.ttn.e_commerce_project.service.AdminService;
+import com.ttn.e_commerce_project.service.CategoryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,7 @@ import static com.ttn.e_commerce_project.constants.UserConstants.*;
 public class AdminController {
 
     AdminService adminService;
+    CategoryService categoryService;
 
     //api to list all the customers
     @GetMapping("/list-customers")
@@ -99,7 +101,7 @@ public class AdminController {
     @PostMapping("/add/metadata-fields")
     public ResponseEntity<String> createMetadataField(@Valid @RequestBody MetadataFieldCo metadataFieldCo)
     {
-        CategoryMetaDataField savedField = adminService.addMetaDataField(metadataFieldCo);
+        CategoryMetaDataField savedField = categoryService.addMetaDataField(metadataFieldCo);
         return ResponseEntity.ok(String.format(METADATA_FIELD_ADDED_SUCCESSFULLY,savedField.getId()));
     }
 
@@ -110,12 +112,35 @@ public class AdminController {
                                                              @RequestParam(defaultValue = "ASC") String order,
                                                              @RequestParam(required = false) String query)
     {
-        List<MetadataFieldVo> fields = adminService.getAllMetadataFields(offset, max, sort, order, query).getContent();
+        List<MetadataFieldVo> fields = categoryService.getAllMetadataFields(offset, max, sort, order, query).getContent();
         return ResponseEntity.ok(fields);
     }
     @PostMapping("/add-category")
     public ResponseEntity<CategoryVo> addCategory(@Valid @RequestBody CategoryCo categoryCo) {
-        CategoryVo categoryVo = adminService.addCategory(categoryCo);
+        CategoryVo categoryVo = categoryService.addCategory(categoryCo);
         return ResponseEntity.ok(categoryVo);
+    }
+
+    @GetMapping("/get-category/{id}")
+    public ResponseEntity<ListCategoryVo> getCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    }
+
+    @GetMapping("/get-all-categories")
+    public Page<ListCategoryVo> getAllCategories(
+            @RequestParam(defaultValue = "10") int max,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam(required = false) String query) {
+
+        return categoryService.getAllCategories(max, offset, sort, order, query);
+    }
+
+    @PatchMapping("/update-category/{id}")
+    public ResponseEntity<String> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryCo categoryCo)
+    {
+        categoryService.updateCategory(id,categoryCo);
+        return ResponseEntity.ok("category updated successfully");
     }
 }
