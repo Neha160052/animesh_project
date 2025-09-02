@@ -119,5 +119,41 @@ public class CategoryServiceImpl implements CategoryService {
                 children
         );
     }
+    @Override
+    public List<Category> getAllCategories(String query) {
+
+        List<Category> allCategories = categoryRepo.findAll();
+
+        List<Category> filteredList = allCategories.stream()
+                .filter(category -> {
+                    if (query == null || query.isEmpty()) {
+                        return true;
+                    }
+                    final String lowerCaseQuery = query.toLowerCase();
+                    return category.getName().toLowerCase().contains(lowerCaseQuery);
+                })
+                .collect(Collectors.toList());
+
+        return buildCategoryTree(filteredList);
+    }
+
+    private List<Category> buildCategoryTree(List<Category> categories) {
+        List<Category> rootCategories = new ArrayList<>();
+
+        for (Category category : categories) {
+            // Check if the category has a parent
+            if (category.getParent() != null) {
+                // If the parent is in the filtered list, add the current category as a child
+                if (categories.contains(category.getParent())) {
+                    category.getParent().addChild(category);
+                }
+            } else {
+                // This is a top-level (root) category.
+                rootCategories.add(category);
+            }
+        }
+        return rootCategories;
+    }
+
 
 }
