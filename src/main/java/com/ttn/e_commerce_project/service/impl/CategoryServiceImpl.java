@@ -24,7 +24,9 @@ import java.util.List;
 import static com.ttn.e_commerce_project.constants.UserConstants.FIELD_NAME_ALREADY_EXISTS;
 
 @Service
-public class CategoryServiceImpl {
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+public class CategoryServiceImpl implements CategoryService {
 
     CategoryMetadataFieldRepository categoryMetadataRepo;
     CategoryRepository categoryRepo;
