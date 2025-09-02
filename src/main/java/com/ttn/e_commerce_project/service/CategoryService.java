@@ -17,5 +17,5 @@ public interface CategoryService {
     Page<MetadataFieldVo> getAllMetadataFields(int offset, int max, String sortBy, String order, String query);
     CategoryVo addCategory(CategoryCo categoryCo);
     ListCategoryVo getCategoryById(Long id);
-
+    List<Category> getAllCategories(String query);
 }
