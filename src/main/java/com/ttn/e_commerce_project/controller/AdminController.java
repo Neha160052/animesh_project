@@ -137,7 +137,7 @@ public class AdminController {
         return categoryService.getAllCategories(max, offset, sort, order, query);
     }
 
-    @PatchMapping("/update-category/{id}")
+    @PutMapping("/update-category/{id}")
     public ResponseEntity<String> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryCo categoryCo)
     {
         categoryService.updateCategory(id,categoryCo);
