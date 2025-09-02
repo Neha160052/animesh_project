@@ -23,6 +23,9 @@ public class Category extends Auditable {
     @JoinColumn(name = "parent_id")
     Category parent;
 
+    @Transient
+    List<Category> children = new ArrayList<>();
+
 //    @OneToMany
 //    @JoinColumn(name = "category_id",referencedColumnName = "id")
 //    Set<CategoryMetaDataValues> categoryMetaDataValues;
