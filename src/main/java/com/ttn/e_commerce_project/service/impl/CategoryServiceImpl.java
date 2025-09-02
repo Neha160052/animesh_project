@@ -1,15 +1,18 @@
 package com.ttn.e_commerce_project.service.impl;
 
 import com.ttn.e_commerce_project.dto.co.CategoryCo;
+import com.ttn.e_commerce_project.dto.co.CategoryMetaDataCo;
 import com.ttn.e_commerce_project.dto.co.MetadataFieldCo;
 import com.ttn.e_commerce_project.dto.vo.CategoryVo;
 import com.ttn.e_commerce_project.dto.vo.ListCategoryVo;
 import com.ttn.e_commerce_project.dto.vo.MetadataFieldVo;
 import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
+import com.ttn.e_commerce_project.entity.category.CategoryMetaDataValues;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CategoryMetadataFieldRepository;
+import com.ttn.e_commerce_project.respository.CategoryMetadataFieldValueRepo;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.service.CategoryService;
 import jakarta.transaction.Transactional;
@@ -35,6 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     CategoryMetadataFieldRepository categoryMetadataRepo;
     CategoryRepository categoryRepo;
+    CategoryMetadataFieldValueRepo metadataFieldValueRepo;
 
     public CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo) {
 
@@ -62,22 +66,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     public CategoryVo addCategory(CategoryCo categoryCo) {
         String name = categoryCo.getName();
-        Category parent =null;
-        if(categoryCo.getParentId()!=null){
-            parent = categoryRepo.findById(categoryCo.getParentId()).orElseThrow(()->new ResourceNotFoundException("parent category not found"));
+        Category parent = null;
+        if (categoryCo.getParentId() != null) {
+            parent = categoryRepo.findById(categoryCo.getParentId()).orElseThrow(() -> new ResourceNotFoundException("parent category not found"));
         }
         // 1. root category unique
-        if(parent ==null)
-        {
-            if(categoryRepo.existsByNameAndParentIsNull(name))
-            {
-                throw new InvalidArgumentException("Root category "+name+" already exists");
+        if (parent == null) {
+            if (categoryRepo.existsByNameAndParentIsNull(name)) {
+                throw new InvalidArgumentException("Root category " + name + " already exists");
             }
-        }else {
+        } else {
             // tree wide uniqueness
             Category root = findRoot(parent);
-            if(categoryRepo.existsByNameAndParent(name, parent)){
-                throw new InvalidArgumentException("category name \t"+name+" \t already exists in tree root \t "+root.getName());
+            if (categoryRepo.existsByNameAndParent(name, parent)) {
+                throw new InvalidArgumentException("category name \t" + name + " \t already exists in tree root \t " + root.getName());
             }
         }
         Category category = new Category();
@@ -91,12 +93,12 @@ public class CategoryServiceImpl implements CategoryService {
             parent.setLeaf(false);
             categoryRepo.save(parent);
         }
-        return new CategoryVo(saved.getId(), saved.getName(),"Category created successfully");
+        return new CategoryVo(saved.getId(), saved.getName(), "Category created successfully");
     }
 
 
     private Category findRoot(Category category) {
-        return category.getParent()==null?category:findRoot(category.getParent());
+        return category.getParent() == null ? category : findRoot(category.getParent());
     }
 
     public ListCategoryVo getCategoryById(Long id) {
@@ -196,4 +198,31 @@ public class CategoryServiceImpl implements CategoryService {
 
         return ResponseEntity.ok("Category updated successfully");
     }
+
+    public ResponseEntity<String> addMetadata(CategoryMetaDataCo metaDataCo) {
+        if (metaDataCo.getFieldValues().size() != metaDataCo.getFieldValues().stream().distinct().count()) {
+            return ResponseEntity.badRequest().body("values must be unique within the list");
+        }
+
+        Category category = categoryRepo.findById(metaDataCo.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category with the given id not found"));
+
+        if (!category.isLeaf()) {
+            throw new InvalidArgumentException(
+                    "Metadata values can only be added to leaf categories. Category '" + category.getName() + "' is not a leaf.");
+        }
+
+            CategoryMetaDataField metaDataField = categoryMetadataRepo.findById(metaDataCo.getMetaDataFieldId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Metadata field with the given fieldId not found"));
+
+            for (String value : metaDataCo.getFieldValues()) {
+                CategoryMetaDataValues metaDataValues = new CategoryMetaDataValues();
+                metaDataValues.setFieldValues(value);
+                metaDataValues.setCategory(category);
+                metaDataValues.setCategoryMetaDataField(metaDataField);
+                metadataFieldValueRepo.save(metaDataValues);
+            }
+
+            return ResponseEntity.ok("metaDataField values added successfully");
+        }
 }
