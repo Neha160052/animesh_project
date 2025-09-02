@@ -175,23 +175,23 @@ public class CategoryServiceImpl implements CategoryService {
         return buildCategoryTree(filteredList);
     }
 
-    private List<Category> buildCategoryTree(List<Category> categories) {
-        List<Category> rootCategories = new ArrayList<>();
-
-        for (Category category : categories) {
-            // Check if the category has a parent
-            if (category.getParent() != null) {
-                // If the parent is in the filtered list, add the current category as a child
-                if (categories.contains(category.getParent())) {
-                    category.getParent().addChild(category);
-                }
-            } else {
-                // This is a top-level (root) category.
-                rootCategories.add(category);
+        // Check uniqueness based on parent
+        if (category.getParent() == null) {
+            // Root category case
+            if (categoryRepo.existsByNameAndParentIsNull(newName)
+                    && !category.getName().equalsIgnoreCase(newName)) {
+                throw new InvalidArgumentException("Root category '" + newName + "' already exists");
+            }
+        } else {
+            // Child category case
+            Long parentId = category.getParent().getId();
+            if (categoryRepo.existsByNameAndParentId(newName, parentId)
+                    && !category.getName().equalsIgnoreCase(newName)) {
+                throw new InvalidArgumentException("Category name '" + newName
+                        + "' already exists under parent '" + category.getParent().getName() + "'");
             }
         }
-        return rootCategories;
-    }
+        category.setName(newName);
 
 
 }
