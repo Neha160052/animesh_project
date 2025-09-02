@@ -5,6 +5,7 @@ import com.ttn.e_commerce_project.dto.co.MetadataFieldCo;
 import com.ttn.e_commerce_project.dto.vo.CategoryVo;
 import com.ttn.e_commerce_project.dto.vo.ListCategoryVo;
 import com.ttn.e_commerce_project.dto.vo.MetadataFieldVo;
+import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
 import org.springframework.data.domain.Page;
 
