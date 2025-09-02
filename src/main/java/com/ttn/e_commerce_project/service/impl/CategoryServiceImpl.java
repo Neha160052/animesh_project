@@ -118,6 +118,45 @@ public class CategoryServiceImpl implements CategoryService {
                 children
         );
     }
+
+    public Page<ListCategoryVo> getAllCategories(int max, int offset, String sort, String order, String query) {
+
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(direction, sort));
+
+        Page<Category> categoryPage;
+
+        if (query != null && !query.isEmpty()) {
+            categoryPage = categoryRepo.findByNameContainingIgnoreCase(query, pageable);
+        } else {
+            categoryPage = categoryRepo.findAll(pageable);
+        }
+
+        return categoryPage.map(this::mapToVo);
+    }
+
+    private ListCategoryVo mapToVo(Category category) {
+        // Map parents up to root
+        List<ListCategoryVo.ParentInfo> parents = new ArrayList<>();
+        Category currentParent = category.getParent();
+        while (currentParent != null) {
+            parents.add(new ListCategoryVo.ParentInfo(currentParent.getId(), currentParent.getName()));
+            currentParent = currentParent.getParent();
+        }
+        Collections.reverse(parents); // optional: to start from root
+
+        // Map immediate children
+        List<ListCategoryVo.ChildInfo> children = category.getChildren().stream()
+                .map(child -> new ListCategoryVo.ChildInfo(child.getId(), child.getName()))
+                .toList();
+
+        return new ListCategoryVo(
+                category.getId(),
+                category.getName(),
+                parents,
+                children
+        );
+    }
     @Override
     public List<Category> getAllCategories(String query) {
 
