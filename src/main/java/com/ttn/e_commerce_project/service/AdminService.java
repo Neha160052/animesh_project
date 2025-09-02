@@ -11,7 +11,4 @@ public interface AdminService {
     boolean activateSeller (Long id);
     boolean deactivateCustomer(Long id);
     boolean deactivateSeller(Long id);
-    CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo);
-    Page<MetadataFieldVo> getAllMetadataFields(int offset, int max, String sortBy, String order, String query);
-    CategoryVo addCategory(CategoryCo categoryCo);
 }
