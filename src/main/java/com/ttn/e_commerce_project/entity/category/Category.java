@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -28,6 +27,8 @@ public class Category extends Auditable {
 
     @Transient
     List<Category> children = new ArrayList<>();
+
+    boolean isLeaf;
 
 //    @OneToMany
 //    @JoinColumn(name = "category_id",referencedColumnName = "id")
