@@ -84,6 +84,11 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(name);
         category.setParent(parent);
         Category saved = categoryRepo.save(category);
+
+        if (parent != null && parent.isLeaf()) {
+            parent.setLeaf(false);
+            categoryRepo.save(parent);
+        }
         return new CategoryVo(saved.getId(), saved.getName(),"Category created successfully");
     }
 
