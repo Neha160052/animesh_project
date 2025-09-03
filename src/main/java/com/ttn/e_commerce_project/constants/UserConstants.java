@@ -43,6 +43,18 @@ public final class UserConstants {
     //Category
     public static final String CATEGORY_NOT_FOUND = "Category not found with id: ";
     public static final String CATEGORY_MUST_BE_LEAF ="Category must be a leaf node";
+    public static final String CATEGORY_UPDATE_SUCCESS = "Category updated  successfully";
+    public static final String METADATA_VALUES_UPDATE_SUCCESS = "Category updated successfully";
+    //Product
+    public static final String PRODUCT_ACTIVATION_MAIL="A new Product has been registered by the seller please review and activate the same";
+    public static final String PRODUCT_SAVED_SUCCESSFULLY="Product saved successfully with product id %d";
+    public static final String PRODUCT_ALREADY_EXISTS = "Product already exists for this seller, brand, and category";
+    public static final String PRODUCT_NOT_FOUND = "Product Not found with given id";
+    public static final String PRODUCT_ID_NULL = "Product ID cannot be null";
+    public static final String PRODUCT_ACTIVATED_SUCCESS = "Product activated successfully";
+    public static final String PRODUCT_ALREADY_ACTIVE = "Product was already active";
+    public static final String PRODUCT_DEACTIVATED_SUCCESS = "Product deactivated successfully";
+    public static final String PRODUCT_ALREADY_INACTIVE = "Product was already inactive";
 
     // Role Prefix
     public static final String ROLE_PREFIX = "ROLE_";
