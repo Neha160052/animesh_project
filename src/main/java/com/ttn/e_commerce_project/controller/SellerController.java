@@ -1,11 +1,16 @@
 package com.ttn.e_commerce_project.controller;
 
 import com.ttn.e_commerce_project.dto.co.AddressCo;
+import com.ttn.e_commerce_project.dto.co.ProductCo;
 import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.SellerListCategoryVo;
+import com.ttn.e_commerce_project.dto.vo.SellerProductVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
+import com.ttn.e_commerce_project.entity.product.Product;
+import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.service.CategoryService;
+import com.ttn.e_commerce_project.service.ProductService;
 import com.ttn.e_commerce_project.service.SellerService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.validation.Valid;
@@ -15,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,10 +40,11 @@ public class SellerController {
     SellerService sellerService;
     ImageStorageUtil imageStorageUtil;
     CategoryService categoryService;
+    ProductService productService;
 
     @GetMapping("/profile")
     public ResponseEntity<SellerProfileVo> getMyProfile(Authentication authentication) {
-        String email = authentication.getName(); // comes from JWT
+        String email = authentication.getName();
         return ResponseEntity.ok(sellerService.getSellerProfile(email));
     }
 
