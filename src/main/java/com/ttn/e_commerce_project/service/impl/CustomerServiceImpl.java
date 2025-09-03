@@ -7,6 +7,7 @@ import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.AddressVo;
 import com.ttn.e_commerce_project.dto.vo.CustomerProfileVo;
 import com.ttn.e_commerce_project.entity.address.Address;
+import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
@@ -16,6 +17,7 @@ import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.AddressRepository;
+import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.CustomerService;
@@ -50,6 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
     EmailService emailService;
     AddressRepository addressRepository;
     ImageStorageUtil imageStorageUtil;
+    CategoryRepository categoryRepo;
 
     @Override
     public void register(CustomerCo customerCo) {
