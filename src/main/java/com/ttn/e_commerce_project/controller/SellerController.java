@@ -3,7 +3,9 @@ package com.ttn.e_commerce_project.controller;
 import com.ttn.e_commerce_project.dto.co.AddressCo;
 import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
+import com.ttn.e_commerce_project.dto.vo.SellerListCategoryVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
+import com.ttn.e_commerce_project.service.CategoryService;
 import com.ttn.e_commerce_project.service.SellerService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
@@ -30,6 +33,7 @@ public class SellerController {
 
     SellerService sellerService;
     ImageStorageUtil imageStorageUtil;
+    CategoryService categoryService;
 
     @GetMapping("/profile")
     public ResponseEntity<SellerProfileVo> getMyProfile(Authentication authentication) {
@@ -84,5 +88,11 @@ public class SellerController {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(arr);
+    }
+
+    @GetMapping("/get-all-categories")
+    public ResponseEntity<List<SellerListCategoryVo>> getAllLeafCategories() {
+        List<SellerListCategoryVo> categories = categoryService.getAllLeafCategories();
+        return ResponseEntity.ok(categories);
     }
 }
