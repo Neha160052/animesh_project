@@ -102,4 +102,17 @@ public class ProductServiceImpl implements ProductService {
         return sellerProductVo;
     }
 
+    @Override
+    public void deleteProduct(Long productid) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Seller seller = commonService.findSellerByEmail(email);
+        Product product = commonService.findProductById(productid);
+        if(!(product.getSeller().equals(seller)))
+            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
+
+        product.setDeleted(true);
+        productRepo.save(product);
+    }
+
+
 }
