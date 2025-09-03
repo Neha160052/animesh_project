@@ -93,6 +93,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public SellerProductVo viewProduct(Long productid) {
         Product product = commonService.findProductById(productid);
+        if(product.isDeleted())
+            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND+productid);
         SellerProductVo sellerProductVo = new SellerProductVo();
         sellerProductVo.setBrand(product.getBrand());
         sellerProductVo.setDescription(product.getDescription());
