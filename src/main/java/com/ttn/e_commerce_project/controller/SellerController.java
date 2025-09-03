@@ -95,4 +95,15 @@ public class SellerController {
         List<SellerListCategoryVo> categories = categoryService.getAllLeafCategories();
         return ResponseEntity.ok(categories);
     }
+
+    @PostMapping("/add-products")
+    public ResponseEntity<String> addProduct(@Valid @RequestBody ProductCo productCo){
+        Product p = productService.addProduct(productCo);
+        return ResponseEntity.ok(String.format(PRODUCT_SAVED_SUCCESSFULLY,p.getId()));
+    }
+
+    @GetMapping("/view-product/{id}")
+    public ResponseEntity<SellerProductVo> viewProduct(@PathVariable @Valid Long id){
+        return ResponseEntity.ok(productService.viewProduct(id));
+    }
 }
