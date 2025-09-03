@@ -111,5 +111,26 @@ public class ProductServiceImpl implements ProductService {
         productRepo.save(product);
     }
 
+    public Page<SellerProductVo> viewAllProducts(Pageable pageable)
+    {
+       String email = SecurityContextHolder.getContext().getAuthentication().getName();
+       Seller seller = commonService.findSellerByEmail(email);
+       Page<Product> products = productRepo.findBySeller(seller,pageable);
+       return products.map(this::mapToVo);
+    }
+    
+    private SellerProductVo mapToVo(Product product) {
+        SellerProductVo vo = new SellerProductVo();
+        vo.setId(product.getId());
+        vo.setBrand(product.getBrand());
+        vo.setDescription(product.getDescription());
+        vo.setName(product.getName());
+        Category category = product.getCategory();
+        if (category != null) {
+            vo.setCategoryVo(new CategoryVo(category.getId(), category.getName(), null));
+        }
+        return vo;
+    }
+
 
 }
