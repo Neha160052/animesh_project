@@ -7,6 +7,8 @@ import com.ttn.e_commerce_project.dto.co.CustomerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.AddressVo;
 import com.ttn.e_commerce_project.dto.vo.CustomerProfileVo;
+import com.ttn.e_commerce_project.entity.category.Category;
+import com.ttn.e_commerce_project.service.CategoryService;
 import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.impl.UserCommonService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
@@ -37,6 +39,7 @@ public class CustomerController {
     CustomerService customerService;
     ImageStorageUtil imageStorageUtil;
     UserCommonService commonService;
+    CategoryService categoryService;
 
     @GetMapping("/profile")
     public ResponseEntity<CustomerProfileVo> getMyProfile(Authentication authentication) {
@@ -99,5 +102,13 @@ public class CustomerController {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(arr);
+    }
+
+    @GetMapping("/get-all-categories")
+    public ResponseEntity<List<Category>> listCategories(
+                                           @RequestParam(required = false) Long categoryId) {
+
+        List<Category> categories = categoryService.getCategories(categoryId);
+        return ResponseEntity.ok(categories);
     }
 }
