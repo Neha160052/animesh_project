@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.CATEGORY_NOT_FOUND;
 import static com.ttn.e_commerce_project.constants.UserConstants.FIELD_NAME_ALREADY_EXISTS;
 
 @Service
@@ -103,7 +104,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ListCategoryVo getCategoryById(Long id) {
 
         Category category = categoryRepo.findByIdWithParent(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + id));
 
         List<Category> childrenEntities = categoryRepo.findByParentId(id);
 
@@ -171,7 +172,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<String> updateCategory(Long id, CategoryCo categoryCo) {
 
         Category category = categoryRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND+id));
 
         String newName = categoryCo.getName();
 
@@ -316,7 +317,7 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             // Case 2: Specific category → return category with children
             Category category = categoryRepo.findById(categoryId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
+                    .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + categoryId));
 
             populateChildren(category);
             return List.of(category);

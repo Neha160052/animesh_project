@@ -22,4 +22,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     Page<Category> findByNameContainingIgnoreCase(String query, Pageable pageable);
 
     boolean existsByNameAndParentId(String name , Long parentId);
+    List<Category> findAllByIsLeafTrue();
+
+    List<Category> findByParentIsNull();
 }
