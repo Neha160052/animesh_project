@@ -29,7 +29,7 @@ public class Seller extends Auditable
     String image;
 
     @OneToMany
-    @JoinColumn(name = "seller_user_id",referencedColumnName = "user_id")
+    @JoinColumn(name = "seller_id",referencedColumnName = "user_id")
     List<Product> product;
 
 }
