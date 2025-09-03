@@ -276,7 +276,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private SellerListCategoryVo mapToDto(Category category) {
 
-        List<SellerParentVo> parentChain = buildParentChain(category);
+        List<CategoryParentVo> parentChain = buildParentChain(category);
         List<CategoryMetaDataValues> values = metadataFieldValueRepo.findByCategoryId(category.getId());
 
         // group by field
@@ -285,8 +285,8 @@ public class CategoryServiceImpl implements CategoryService {
                         CategoryMetaDataValues::getCategoryMetaDataField,
                         Collectors.mapping(CategoryMetaDataValues::getFieldValues, Collectors.toList())
                 ));
-        List<SellerMetadataFieldVo> metadata = grouped.entrySet().stream()
-                .map(entry -> new SellerMetadataFieldVo(
+        List<CategoryMetadataFieldVo> metadata = grouped.entrySet().stream()
+                .map(entry -> new CategoryMetadataFieldVo(
                         entry.getKey().getId(),
                         entry.getKey().getName(),
                         entry.getValue()
@@ -297,11 +297,11 @@ public class CategoryServiceImpl implements CategoryService {
                 metadata, parentChain);
     }
 
-    private List<SellerParentVo> buildParentChain(Category category) {
-        List<SellerParentVo> chain = new ArrayList<>();
+    private List<CategoryParentVo> buildParentChain(Category category) {
+        List<CategoryParentVo> chain = new ArrayList<>();
         Category parent = category.getParent();
         while (parent != null) {
-            chain.add(new SellerParentVo(parent.getId(), parent.getName()));
+            chain.add(new CategoryParentVo(parent.getId(), parent.getName()));
             parent = parent.getParent();
         }
         Collections.reverse(chain);
