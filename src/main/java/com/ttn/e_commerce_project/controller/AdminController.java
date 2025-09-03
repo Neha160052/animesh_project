@@ -8,8 +8,10 @@ import com.ttn.e_commerce_project.dto.vo.*;
 import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
 import com.ttn.e_commerce_project.service.AdminService;
 import com.ttn.e_commerce_project.service.CategoryService;
+import com.ttn.e_commerce_project.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +33,7 @@ public class AdminController {
 
     AdminService adminService;
     CategoryService categoryService;
+    ProductService productService;
 
     //api to list all the customers
     @GetMapping("/list-customers")
@@ -138,7 +141,7 @@ public class AdminController {
     public ResponseEntity<String> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryCo categoryCo)
     {
         categoryService.updateCategory(id,categoryCo);
-        return ResponseEntity.ok("category updated successfully");
+        return ResponseEntity.ok(CATEGORY_UPDATE_SUCCESS);
     }
 
     @PostMapping("/add-metadata-values")
@@ -149,7 +152,7 @@ public class AdminController {
     @PutMapping("/update-metadata-values")
     public ResponseEntity<String> updateMetadata(@Valid @RequestBody CategoryMetaDataUpdateCo metaDataUpdateCo) {
         categoryService.updateMetadataValues(metaDataUpdateCo);
-        return ResponseEntity.ok("Metadata values updated successfully");
+        return ResponseEntity.ok(METADATA_VALUES_UPDATE_SUCCESS);
     }
 
     @PatchMapping("/activate-product/{id}")
