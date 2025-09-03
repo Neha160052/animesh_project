@@ -264,6 +264,38 @@ public class CategoryServiceImpl implements CategoryService {
                 entity.setFieldValues(newValue); // update the value
                 metadataFieldValueRepo.save(entity); // Hibernate will issue UPDATE
             }
+        }
+    }
+
+    public List<SellerListCategoryVo> getAllLeafCategories() {
+        List<Category> leafCategories = categoryRepo.findAllByIsLeafTrue();
+        return leafCategories.stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    private SellerListCategoryVo mapToDto(Category category) {
+
+        List<SellerParentVo> parentChain = buildParentChain(category);
+        List<CategoryMetaDataValues> values = metadataFieldValueRepo.findByCategoryId(category.getId());
+
+        // group by field
+        Map<CategoryMetaDataField, List<String>> grouped = values.stream()
+                .collect(Collectors.groupingBy(
+                        CategoryMetaDataValues::getCategoryMetaDataField,
+                        Collectors.mapping(CategoryMetaDataValues::getFieldValues, Collectors.toList())
+                ));
+        List<SellerMetadataFieldVo> metadata = grouped.entrySet().stream()
+                .map(entry -> new SellerMetadataFieldVo(
+                        entry.getKey().getId(),
+                        entry.getKey().getName(),
+                        entry.getValue()
+                ))
+                .toList();
+
+        return new SellerListCategoryVo(category.getId(), category.getName(),
+                metadata, parentChain);
+    }
 
             }
             }
