@@ -225,4 +225,47 @@ public class CategoryServiceImpl implements CategoryService {
 
             return ResponseEntity.ok("metaDataField values added successfully");
         }
+
+
+    @Transactional
+    public void updateMetadataValues(CategoryMetaDataUpdateCo metadataUpdateCo) {
+        Long categoryId = metadataUpdateCo.getCategoryId();
+
+        // 1. Validate category
+        Category category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with given id not found"));
+
+        if (!category.isLeaf()) {
+            throw new InvalidArgumentException("Metadata can only be updated for leaf categories.");
+        }
+
+        for (FieldUpdate fieldUpdate : metadataUpdateCo.getUpdates()) {
+            Long fieldId = fieldUpdate.getMetaDataFieldId();
+            List<String> values = fieldUpdate.getValues();
+
+            // 2. Validate metadata field
+            categoryMetadataRepo.findById(fieldId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Metadata field with given id not found"));
+
+            // 3. Ensure uniqueness within the request payload
+            if (values.size() != values.stream().distinct().count()) {
+                throw new InvalidArgumentException("Duplicate values provided for field id: " + fieldId);
+            }
+
+            // 4. Fetch existing entities for this (category, field) pair
+            List<CategoryMetaDataValues> existingEntities =
+                    metadataFieldValueRepo.findByCategoryIdAndCategoryMetaDataFieldId(categoryId, fieldId);
+
+
+            for (int i = 0; i < existingEntities.size(); i++) {
+                CategoryMetaDataValues entity = existingEntities.get(i);
+                String newValue = values.get(i);
+
+                entity.setFieldValues(newValue); // update the value
+                metadataFieldValueRepo.save(entity); // Hibernate will issue UPDATE
+            }
+
+            }
+            }
 }
+
