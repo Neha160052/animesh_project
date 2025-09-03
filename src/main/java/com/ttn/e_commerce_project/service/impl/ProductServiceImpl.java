@@ -95,13 +95,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = commonService.findProductById(productid);
         if(product.isDeleted())
             throw new ResourceNotFoundException(PRODUCT_NOT_FOUND+productid);
-        SellerProductVo sellerProductVo = new SellerProductVo();
-        sellerProductVo.setBrand(product.getBrand());
-        sellerProductVo.setDescription(product.getDescription());
-        sellerProductVo.setName(product.getName());
-        sellerProductVo.setCategoryVo(new CategoryVo(product.getCategory().getId()
-                , product.getCategory().getName(), null));
-        return sellerProductVo;
+        return mapToVo(product);
     }
 
     @Override
