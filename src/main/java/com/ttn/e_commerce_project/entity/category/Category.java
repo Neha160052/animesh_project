@@ -1,5 +1,7 @@
 package com.ttn.e_commerce_project.entity.category;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -23,9 +25,11 @@ public class Category extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonBackReference
     Category parent;
 
     @Transient
+    @JsonManagedReference
     List<Category> children = new ArrayList<>();
 
     boolean isLeaf;
