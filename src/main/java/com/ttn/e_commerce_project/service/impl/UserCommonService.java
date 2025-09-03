@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.service.impl;
 
+import com.ttn.e_commerce_project.entity.product.Product;
 import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
@@ -34,7 +35,7 @@ public class UserCommonService {
     TokenServiceImpl verificationTokenService;
     EmailService emailService;
     TokenRepository tokenRepository;
-
+    ProductRepository productRepo;
 
     public Role findRoleByAuthority(RoleAuthority authority) {
         return roleRepository.findByAuthority(authority)
