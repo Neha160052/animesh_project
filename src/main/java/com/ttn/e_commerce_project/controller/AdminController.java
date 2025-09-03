@@ -150,4 +150,9 @@ public class AdminController {
         return categoryService.addMetadata(categoryMetaDataCo);
     }
 
+    @PutMapping("/update-metadata-values")
+    public ResponseEntity<String> updateMetadata(@Valid @RequestBody CategoryMetaDataUpdateCo metaDataUpdateCo) {
+        categoryService.updateMetadataValues(metaDataUpdateCo);
+        return ResponseEntity.ok("Metadata values updated successfully");
+    }
 }
