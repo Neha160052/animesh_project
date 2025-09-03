@@ -40,6 +40,10 @@ public final class UserConstants {
     public static final String SELLER_DOES_NOT_EXIST = "Seller with the given id does not exist: ";
     public static final String SELLER_ACTIVATION_MAIL = "Dear Seller your account has been activated by the admin, now you can login";
 
+    //Category
+    public static final String CATEGORY_NOT_FOUND = "Category not found with id: ";
+    public static final String CATEGORY_MUST_BE_LEAF ="Category must be a leaf node";
+
     // Role Prefix
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String ROLE_DOES_NOT_EXIST = "Role does not exist";
