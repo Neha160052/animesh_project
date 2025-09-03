@@ -1,6 +1,9 @@
 package com.ttn.e_commerce_project.entity.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
+import com.ttn.e_commerce_project.entity.category.Category;
+import com.ttn.e_commerce_project.entity.user.Seller;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,4 +35,12 @@ public class Product extends Auditable {
        @OneToMany
        @JoinColumn(name = "Product_id",referencedColumnName = "id")
        List<ProductReview> productReview;
+
+       @JsonBackReference("category-products")
+       @ManyToOne(fetch = FetchType.LAZY)
+       @JoinColumn(name = "category_id")
+       Category category;
+
+       @ManyToOne(fetch=FetchType.LAZY)
+       Seller seller;
  }
