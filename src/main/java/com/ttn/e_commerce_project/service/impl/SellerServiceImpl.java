@@ -6,7 +6,6 @@ import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
 import com.ttn.e_commerce_project.entity.address.Address;
-import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
