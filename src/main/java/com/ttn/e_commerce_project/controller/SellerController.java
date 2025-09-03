@@ -119,4 +119,19 @@ public class SellerController {
         productService.deleteProduct(id);
         return ResponseEntity.ok(PRODUCT_DELETED_SUCCESSFULLY);
     }
+
+    @GetMapping("/view-all-products")
+    public ResponseEntity<Page<SellerProductVo>> viewAllProducts(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String query)
+    {
+        Pageable pageable = PageRequest.of(page, size,
+                query.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+
+        Page<SellerProductVo> products = productService.viewAllProducts(pageable);
+        return ResponseEntity.ok(products);
+    }
 }
