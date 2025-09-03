@@ -297,7 +297,35 @@ public class CategoryServiceImpl implements CategoryService {
                 metadata, parentChain);
     }
 
-            }
-            }
+    private List<SellerParentVo> buildParentChain(Category category) {
+        List<SellerParentVo> chain = new ArrayList<>();
+        Category parent = category.getParent();
+        while (parent != null) {
+            chain.add(new SellerParentVo(parent.getId(), parent.getName()));
+            parent = parent.getParent();
+        }
+        Collections.reverse(chain);
+        return chain;
+    }
+
+    public List<Category> getCategories(Long categoryId) {
+        if (categoryId == null) {
+            // Case 1: No categoryId → return root categories with children
+            List<Category> roots = categoryRepo.findByParentIsNull();
+            roots.forEach(this::populateChildren);
+            return roots;
+        } else {
+            // Case 2: Specific category → return category with children
+            Category category = categoryRepo.findById(categoryId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
+
+            populateChildren(category);
+            return List.of(category);
+        }
+    }
+    private void populateChildren(Category category) {
+        List<Category> children = categoryRepo.findByParentId(category.getId());
+        category.setChildren(children);
+    }
 }
 
