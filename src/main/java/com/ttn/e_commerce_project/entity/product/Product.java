@@ -41,6 +41,6 @@ public class Product extends Auditable {
        @JoinColumn(name = "category_id")
        Category category;
 
-       @ManyToOne(fetch=FetchType.LAZY)
+       @ManyToOne
        Seller seller;
  }
