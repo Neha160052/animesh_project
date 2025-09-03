@@ -113,4 +113,10 @@ public class SellerController {
     public ResponseEntity<SellerProductVo> viewProduct(@PathVariable @Valid Long id){
         return ResponseEntity.ok(productService.viewProduct(id));
     }
+
+    @DeleteMapping("/delete-product/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable @Valid Long id){
+        productService.deleteProduct(id);
+        return ResponseEntity.ok(PRODUCT_DELETED_SUCCESSFULLY);
+    }
 }
