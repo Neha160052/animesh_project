@@ -151,4 +151,16 @@ public class AdminController {
         categoryService.updateMetadataValues(metaDataUpdateCo);
         return ResponseEntity.ok("Metadata values updated successfully");
     }
+
+    @PatchMapping("/activate-product/{id}")
+    public String activateProduct(@PathVariable("id") @NotNull(message = PRODUCT_ID_NULL) Long id) {
+        boolean activated = productService.activateProduct(id);
+        return activated ? PRODUCT_ACTIVATED_SUCCESS:PRODUCT_ALREADY_ACTIVE;
+    }
+
+    @PatchMapping("/deactivate-product/{id}")
+    public String deactivateProduct(@PathVariable @NotNull(message = PRODUCT_ID_NULL) Long id) {
+        boolean deactivated = productService.deactivateProduct(id);
+        return deactivated ? PRODUCT_DEACTIVATED_SUCCESS : PRODUCT_ALREADY_INACTIVE;
+    }
 }
