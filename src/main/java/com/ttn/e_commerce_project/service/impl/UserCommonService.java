@@ -92,5 +92,10 @@ public class UserCommonService {
         user.setPasswordUpdateDate(ZonedDateTime.now());
         return user.getEmail();
     }
+
+    public Product findProductById(Long id)
+    {
+        return productRepo.findById(id).orElseThrow(()->new ResourceNotFoundException(PRODUCT_NOT_FOUND));
+    }
 }
 
