@@ -7,6 +7,7 @@ import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.product.Product;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
+import com.ttn.e_commerce_project.exceptionhandling.ProductOwnershipException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.respository.ProductRepository;
@@ -16,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -93,8 +96,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public SellerProductVo viewProduct(Long productid) {
         Product product = commonService.findProductById(productid);
-        if(product.isDeleted())
-            throw new ResourceNotFoundException(PRODUCT_NOT_FOUND+productid);
         return mapToVo(product);
     }
 
@@ -118,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
        Page<Product> products = productRepo.findBySeller(seller,pageable);
        return products.map(this::mapToVo);
     }
-    
+
     private SellerProductVo mapToVo(Product product) {
         SellerProductVo vo = new SellerProductVo();
         vo.setId(product.getId());
