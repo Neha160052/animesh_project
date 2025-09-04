@@ -150,6 +150,54 @@ public class ProductServiceImpl implements ProductService {
         productRepo.save(product);
     }
 
+    public void addProductVariation(ProductVariationCo co) throws IOException {
+       String email = SecurityContextHolder.getContext().getAuthentication().getName();
+       Seller seller = commonService.findSellerByEmail(email);
+       Product product = commonService.findProductById(co.getProductId());
+       if(seller.getUserid()!=product.getSeller().getUserid())
+           throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
+
+       if(product.isDeleted()||!product.isActive())
+           throw new InvalidArgumentException("Product is either deleted or inactive");
+
+        Map<String, Object> metadataMap;
+        try {
+            metadataMap = objectMapper.readValue(co.getMetadata(), new TypeReference<>() {});
+        } catch (JsonProcessingException e) {
+            throw new InvalidArgumentException("Invalid metadata JSON format", e);
+        }
+        if (metadataMap.isEmpty()) {
+            throw new InvalidArgumentException("Variation must have at least one metadata field-value");
+        }
+        ProductVariation variation = new ProductVariation();
+        variation.setQuantityAvailable(co.getQuantityAvailable());
+        variation.setPrice(co.getPrice());
+        variation.setMetadata(metadataMap);
+        variation.setActive(true);
+        variation.setProduct(product);
+        productVariationRepo.save(variation);
+        saveProductImage(variation,co);
+    }
+
+    private void saveProductImage(ProductVariation variation,ProductVariationCo co) throws IOException {
+
+        String primaryImageName = null;
+        if (co.getPrimaryImage() != null && !co.getPrimaryImage().isEmpty()) {
+            primaryImageName = imageStorageUtil.saveImage("products", String.valueOf(variation.getId()), co.getPrimaryImage());
+
+            List<String> secondaryImageNames = new ArrayList<>();
+            if (co.getSecondaryImage() != null) {
+                int index = 0;
+                for (MultipartFile file : co.getSecondaryImage()) {
+                    if (!file.isEmpty()) {
+                        String secondaryId = imageStorageUtil.buildSecondaryImageName(variation.getId(), index++);
+                        secondaryImageNames.add(imageStorageUtil.saveImage("secondary_images",secondaryId,file ));
+                    }}}
+            variation.setPrimaryImageName(primaryImageName);
+            productVariationRepo.save(variation);
+        }
+    }
+
     private SellerProductVo mapToVo(Product product) {
         SellerProductVo vo = new SellerProductVo();
         vo.setId(product.getId());
