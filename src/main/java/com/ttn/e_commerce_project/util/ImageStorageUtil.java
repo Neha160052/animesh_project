@@ -21,7 +21,7 @@ import static com.ttn.e_commerce_project.constants.UserConstants.BASE_PATH;
 public class ImageStorageUtil {
 
 
-    public String saveImage(String userType, Long userId, MultipartFile file) throws IOException {
+    public String saveImage(String userType, String userId, MultipartFile file) throws IOException {
         // Create the subfolder for the userType (customers or sellers)
         Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
         if (!Files.exists(folder)) {
