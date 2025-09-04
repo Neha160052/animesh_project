@@ -20,7 +20,8 @@ public class CustomerCo {
     String email;
 
     @NotBlank(message = "{phone.required}")
-    @Size(min = 10, max = 10, message = "{phone.size}")
+    @Pattern(regexp ="^(?:\+91[6-9]\d{9}|\+1[2-9]\d{2}[2-9]\d{6})$",
+             message = "{phone.number.invalid}")
     String phoneNumber;
 
     @NotBlank(message = "{password.required}")
