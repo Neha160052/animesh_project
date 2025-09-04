@@ -164,7 +164,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             metadataMap = objectMapper.readValue(co.getMetadata(), new TypeReference<>() {});
         } catch (JsonProcessingException e) {
-            throw new InvalidArgumentException("Invalid metadata JSON format", e);
+            throw new InvalidArgumentException("Invalid metadata JSON format");
         }
         if (metadataMap.isEmpty()) {
             throw new InvalidArgumentException("Variation must have at least one metadata field-value");
