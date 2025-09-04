@@ -1,26 +1,31 @@
 package com.ttn.e_commerce_project.dto.co;
 
+import com.ttn.e_commerce_project.customvalidation.ValidName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductCo {
 
     @NotBlank(message = "Product name is required")
-    private String name;
+//    @ValidName(message = "name of product should be valid")
+    String name;
 
     @NotBlank(message = "Brand is required")
-    private String brand;
+    @ValidName(message = "brand name should be valid")
+    String brand;
 
-    private String description;
+    String description;
 
-    private Boolean isCancellable = false;
-    private Boolean isReturnable = false;
+    Boolean isCancellable = false;
+    Boolean isReturnable = false;
 
     @NotNull(message = "Category ID is required")
-    private Long categoryId;
-
+    Long categoryId;
 }
