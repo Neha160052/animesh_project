@@ -260,6 +260,31 @@ public class ProductServiceImpl implements ProductService {
         return vo;
     }
 
+    public ProductVariationVo viewProductVariationVo(Long variationId,String email)
+    {
+        Seller seller = commonService.findSellerByEmail(email);
+        ProductVariation variation = productVariationRepo.findById(variationId).orElseThrow(()->new ResourceNotFoundException(PRODUCT_VARIATION_NOT_FOUND));
+        if(variation.getProduct().getSeller().getUserid()!=seller.getUserid())
+            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
+        return mapToVariationVo();
+    }
+
+
+    private ProductVariationVo mapToVariationVo(ProductVariation variation)
+    {
+        ProductVariationVo vo = new ProductVariationVo();
+        vo.setId(variation.getId());
+        vo.setQuantityAvailable(variation.getQuantityAvailable());
+        vo.setPrice(variation.getPrice());
+        vo.setMetadata(variation.getMetadata());
+        vo.setPrimaryImageName(variation.getPrimaryImageName());
+        vo.setIsActive(variation.isActive());
+        vo.setProductId(variation.getProduct().getId());
+        vo.setProductName(variation.getProduct().getName());
+        vo.setProductBrand(variation.getProduct().getBrand());
+        return vo;
+    }
+
     private void validateAndSetMetadata(Product product, ProductVariation variation, String metadataJson) {
         log.info("Starting metadata validation for product id: {}", product.getId());
 
