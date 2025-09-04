@@ -1,9 +1,6 @@
 package com.ttn.e_commerce_project.controller;
 
-import com.ttn.e_commerce_project.dto.co.AddressCo;
-import com.ttn.e_commerce_project.dto.co.ProductCo;
-import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
-import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
+import com.ttn.e_commerce_project.dto.co.*;
 import com.ttn.e_commerce_project.dto.vo.SellerListCategoryVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProductVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
@@ -17,6 +14,11 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -136,8 +139,9 @@ public class SellerController {
     }
 
     @PatchMapping("/update-product")
-    public ResponseEntity<String> updateProduct(ProductUpdateCo productUpdateCo)
+    public ResponseEntity<String> updateProduct(@Valid @RequestBody ProductUpdateCo productUpdateCo)
     {
+        log.info(productUpdateCo.getProductid().toString());
        productService.updateProduct(productUpdateCo);
        return ResponseEntity.ok(PRODUCT_UPDATED_SUCCESSFULLY);
     }
