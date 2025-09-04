@@ -134,4 +134,12 @@ public class SellerController {
         Page<SellerProductVo> products = productService.viewAllProducts(pageable);
         return ResponseEntity.ok(products);
     }
+
+    @PatchMapping("/update-product")
+    public ResponseEntity<String> updateProduct(ProductUpdateCo productUpdateCo)
+    {
+       productService.updateProduct(productUpdateCo);
+       return ResponseEntity.ok(PRODUCT_UPDATED_SUCCESSFULLY);
+    }
+
 }
