@@ -125,7 +125,7 @@ public class SellerController {
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "id") String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String query)
+            @RequestParam(required = false, defaultValue = "asc") String order)
     {
         Pageable pageable = PageRequest.of(page, size,
                 order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
