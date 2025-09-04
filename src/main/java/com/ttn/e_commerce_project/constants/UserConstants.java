@@ -55,7 +55,12 @@ public final class UserConstants {
     public static final String PRODUCT_ALREADY_ACTIVE = "Product was already active";
     public static final String PRODUCT_DEACTIVATED_SUCCESS = "Product deactivated successfully";
     public static final String PRODUCT_ALREADY_INACTIVE = "Product was already inactive";
-
+    public static final String PRODUCT_IS_NOT_ACTIVE = "Product is not active";
+    public static final String PRODUCT_VARIATION_ADDED_SUCCESSFULLY = "Product variation added successfully";
+    public static final String VARIATION_DOES_NOT_BELONG = "Product variation does not belong to user";
+    public static final String PRODUCT_VARIATION_NOT_FOUND = "Product variation not found";
+    public static final String PRODUCT_NOT_ACTIVE_OR_DELETED = "Product is either not active or deleted";
+    public static final String PRODUCT_VARIATION_UPDATED_SUCCESSFULLY = "product variation updated successfully";
     // Role Prefix
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String ROLE_DOES_NOT_EXIST = "Role does not exist";
