@@ -228,6 +228,25 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    private void updateProductImage(ProductVariation variation,UpdateVariationCo co) throws IOException {
+
+        String primaryImageName = null;
+        if (co.getPrimaryImage() != null && !co.getPrimaryImage().isEmpty()) {
+            primaryImageName = imageStorageUtil.saveImage("products", String.valueOf(variation.getId()), co.getPrimaryImage());
+
+            List<String> secondaryImageNames = new ArrayList<>();
+            if (co.getSecondaryImage() != null) {
+                int index = 0;
+                for (MultipartFile file : co.getSecondaryImage()) {
+                    if (!file.isEmpty()) {
+                        String secondaryId = imageStorageUtil.buildSecondaryImageName(variation.getId(), index++);
+                        secondaryImageNames.add(imageStorageUtil.saveImage("secondary_images",secondaryId,file ));
+                    }}}
+            variation.setPrimaryImageName(primaryImageName);
+            productVariationRepo.save(variation);
+        }
+    }
+
     private SellerProductVo mapToVo(Product product) {
         SellerProductVo vo = new SellerProductVo();
         vo.setId(product.getId());
