@@ -3,6 +3,8 @@ package com.ttn.e_commerce_project.customvalidation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.NAME_REGEX;
+
 public class NameValidator  implements ConstraintValidator<ValidName, String> {
 
     // Regex: Only letters upper,lower, spaces allowed but not leading/trailing or multiple
