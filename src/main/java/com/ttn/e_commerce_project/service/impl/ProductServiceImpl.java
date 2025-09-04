@@ -206,7 +206,7 @@ public class ProductServiceImpl implements ProductService {
         vo.setName(product.getName());
         Category category = product.getCategory();
         if (category != null) {
-            vo.setCategoryVo(new CategoryVo(category.getId(), category.getName(), null));
+            vo.setCategory(new CategoryVo(category.getId(), category.getName(), null));
         }
         return vo;
     }
