@@ -128,7 +128,7 @@ public class SellerController {
             @RequestParam(required = false, defaultValue = "asc") String query)
     {
         Pageable pageable = PageRequest.of(page, size,
-                query.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+                order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
         );
 
         Page<SellerProductVo> products = productService.viewAllProducts(pageable);
