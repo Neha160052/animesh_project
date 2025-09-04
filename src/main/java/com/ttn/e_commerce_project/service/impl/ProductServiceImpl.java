@@ -172,7 +172,7 @@ public class ProductServiceImpl implements ProductService {
         ProductVariation variation = new ProductVariation();
         variation.setQuantityAvailable(co.getQuantityAvailable());
         variation.setPrice(co.getPrice());
-        variation.setMetadata(metadataMap);
+        validateAndSetMetadata(product, variation, co.getMetadata());
         variation.setActive(true);
         variation.setProduct(product);
         productVariationRepo.save(variation);
