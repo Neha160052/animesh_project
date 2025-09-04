@@ -35,6 +35,9 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepo;
     EmailService emailService;
     UserCommonService commonService;
+    ObjectMapper objectMapper;
+    ProductVariationRepository  productVariationRepo;
+    ImageStorageUtil imageStorageUtil;
 
     @Override
     public Product addProduct(ProductCo productCo) {
