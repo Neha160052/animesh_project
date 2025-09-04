@@ -28,7 +28,7 @@ public class JwtUtil {
      Key secretKey;
 
 
-     long expiryMins=1000*60*10;
+     long expiryMins=1000*60*60;
      long refreshTokenExpiry = 1000 * 60 * 60 * 24 * 7;
 
     public JwtUtil(@Value("${secret.key}")String secretKey) {
