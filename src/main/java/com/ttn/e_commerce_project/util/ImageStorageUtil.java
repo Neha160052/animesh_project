@@ -71,4 +71,10 @@ public class ImageStorageUtil {
         return "/" + userType + "/" + id + "/get-profile-image";
     }
 
+    public String buildSecondaryImageName(Long variationId, int index) {
+        if (index < 0 || index >= ALPHABETS.length) {
+            throw new IllegalArgumentException("Index out of range (supports up to 26 images per variation)");
+        }
+        return variationId + "(" + ALPHABETS[index] + ")";
+    }
 }
