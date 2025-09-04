@@ -179,6 +179,36 @@ public class ProductServiceImpl implements ProductService {
         saveProductImage(variation,co);
     }
 
+    @Override
+    public void updateProductVariation(UpdateVariationCo co) throws IOException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Seller seller = commonService.findSellerByEmail(email);
+        ProductVariation variation= productVariationRepo.findById(co.getVariationId())
+                              .orElseThrow(()->new ResourceNotFoundException(PRODUCT_VARIATION_NOT_FOUND));
+
+        if(seller.getUserid()!=variation.getProduct().getSeller().getUserid())
+            throw new ProductOwnershipException(VARIATION_DOES_NOT_BELONG);
+
+        Product product = variation.getProduct();
+
+        if(!product.isActive()|| product.isDeleted())
+            throw new InvalidArgumentException(PRODUCT_NOT_ACTIVE_OR_DELETED);
+
+        if (co.getQuantityAvailable() != null) {
+            variation.setQuantityAvailable(co.getQuantityAvailable());
+        }
+        if (co.getPrice() != null) {
+            variation.setPrice(co.getPrice());
+        }
+        if (co.getIsActive() != null) {
+            variation.setActive(co.getIsActive());
+        }
+        productVariationRepo.save(variation);
+        validateAndSetMetadata(product,variation,co.getMetadata());
+        updateProductImage(variation,co);
+
+    }
+
     private void saveProductImage(ProductVariation variation,ProductVariationCo co) throws IOException {
 
         String primaryImageName = null;
