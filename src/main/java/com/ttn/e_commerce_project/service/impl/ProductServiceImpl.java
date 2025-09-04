@@ -1,6 +1,7 @@
 package com.ttn.e_commerce_project.service.impl;
 
 import com.ttn.e_commerce_project.dto.co.ProductCo;
+import com.ttn.e_commerce_project.dto.co.ProductUpdateCo;
 import com.ttn.e_commerce_project.dto.vo.CategoryVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProductVo;
 import com.ttn.e_commerce_project.entity.category.Category;
@@ -119,16 +120,31 @@ public class ProductServiceImpl implements ProductService {
        Page<Product> products = productRepo.findBySeller(seller,pageable);
        return products.map(this::mapToVo);
     }
-    
+
     @Override
     public void updateProduct(ProductUpdateCo productUpdateCo) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Seller seller = commonService.findSellerByEmail(email);
         Product product = commonService.findProductById(productUpdateCo.getProductid());
+        if(product.getSeller().getUserid()!=(seller.getUserid()))
+            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
+
+        boolean exists = productRepo.existsByNameAndBrandAndCategoryAndSeller(
+                productUpdateCo.getName(),
+                product.getBrand(),
+                product.getCategory(),
+                seller);
+        if (exists) {
+            throw new InvalidArgumentException(PRODUCT_ALREADY_EXISTS);
+        }
         if(productUpdateCo.getName()!=null)
             product.setName(productUpdateCo.getName());
         if(productUpdateCo.getDescription()!=null)
             product.setDescription(productUpdateCo.getDescription());
-        product.setCancellable(Boolean.TRUE.equals(productUpdateCo.getIsCancellable()));
-        product.setReturnable(Boolean.TRUE.equals(productUpdateCo.getIsReturnable()));
+        if((productUpdateCo.getIsCancellable()!=null))
+            product.setCancellable(productUpdateCo.getIsCancellable());
+        if((productUpdateCo.getIsReturnable()!=null))
+            product.setCancellable(productUpdateCo.getIsReturnable());
         productRepo.save(product);
     }
 
