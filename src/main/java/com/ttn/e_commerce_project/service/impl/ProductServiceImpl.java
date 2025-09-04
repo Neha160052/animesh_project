@@ -211,5 +211,60 @@ public class ProductServiceImpl implements ProductService {
         return vo;
     }
 
+    private void validateAndSetMetadata(Product product, ProductVariation variation, String metadataJson) {
+        log.info("Starting metadata validation for product id: {}", product.getId());
+
+        if (metadataJson == null) {
+            log.info("No metadata provided. Skipping validation.");
+            return;
+        }
+
+        Map<String, Object> metadata;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            metadata = mapper.readValue(metadataJson, new TypeReference<Map<String, Object>>() {});
+            log.info("Parsed metadata JSON: {}", metadata);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse metadata JSON: {}", metadataJson, e);
+            throw new InvalidArgumentException("Invalid metadata JSON format");
+        }
+
+        String str = String.valueOf(product.getCategory().getCategoryMetaDataValues());
+        log.info("str >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + str);
+        Set<CategoryMetaDataValues> allowedValues = product.getCategory().getCategoryMetaDataValues();
+        if (allowedValues == null || allowedValues.isEmpty()) {
+            log.warn("Product category metadata is empty or null for product id: {}", product.getId());
+            throw new InvalidArgumentException("No metadata defined for product category");
+        }
+
+        Map<String, Set<String>> allowedMap = new HashMap<>();
+        for (CategoryMetaDataValues cmfv : allowedValues) {
+            String fieldName = cmfv.getCategoryMetaDataField().getName().toLowerCase();
+            Set<String> values = Arrays.stream(cmfv.getFieldValues().split(","))
+                    .map(String::trim)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toSet());
+            allowedMap.computeIfAbsent(fieldName, k -> new HashSet<>()).addAll(values);
+            log.info("Allowed field (merged): {} -> {}", fieldName, allowedMap.get(fieldName));
+        }
+
+        for (Map.Entry<String, Object> entry : metadata.entrySet()) {
+            String key = entry.getKey().toLowerCase();
+            String value = String.valueOf(entry.getValue()).toLowerCase();
+            log.info("Validating metadata field: {} -> {}", key, value);
+
+            if (!allowedMap.containsKey(key)) {
+                log.error("Field '{}' not found in allowed fields: {}", key, allowedMap.keySet());
+                throw new InvalidArgumentException("Field not found: " + key);
+            }
+
+            if (!allowedMap.get(key).contains(value)) {
+                log.error("Value '{}' not allowed for field '{}'. Allowed values: {}", value, key, allowedMap.get(key));
+                throw new InvalidArgumentException("Metadata value not allowed: " + value + " for field: " + key);
+            }
+        }
+        variation.setMetadata(metadata);
+        log.info("Metadata validation passed and set for product variation.");
+    }
 
 }
