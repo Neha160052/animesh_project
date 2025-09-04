@@ -104,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Seller seller = commonService.findSellerByEmail(email);
         Product product = commonService.findProductById(productid);
-        if(!(product.getSeller().equals(seller)))
+        if(product.getSeller().getUserid()!=(seller.getUserid()))
             throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
         if(!product.isActive())
             throw new InvalidArgumentException(PRODUCT_IS_NOT_ACTIVE);
