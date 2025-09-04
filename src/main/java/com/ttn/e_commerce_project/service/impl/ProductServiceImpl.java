@@ -71,7 +71,8 @@ public class ProductServiceImpl implements ProductService {
         sellerRepo.save(seller);
         Product savedProduct = productRepo.save(product);
         log.info(savedProduct.getName());
-        emailService.sendAcknowledgementMail(email, PRODUCT_ACTIVATION_MAIL);
+        sellerRepo.save(seller);
+        emailService.sendAcknowledgementMail(null, PRODUCT_ACTIVATION_MAIL);
         return savedProduct;
     }
 
