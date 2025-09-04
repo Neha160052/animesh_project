@@ -31,6 +31,8 @@ public class EmailServiceImpl  implements EmailService {
     @Async
     public void sendAcknowledgementMail(String email, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
+        if(email==null)
+            email="animesh.yadav@tothenew.com";
         message.setTo(email);
         message.setSubject(EMAIL_SUBJECT);
         message.setText(text);
