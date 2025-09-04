@@ -109,10 +109,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = commonService.findProductById(productid);
         if(product.getSeller().getUserid()!=(seller.getUserid()))
             throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
-        if(!product.isActive())
-            throw new InvalidArgumentException(PRODUCT_IS_NOT_ACTIVE);
-        product.setDeleted(true);
-        productRepo.save(product);
+        productRepo.delete(product);
     }
 
     public Page<SellerProductVo> viewAllProducts(Pageable pageable)
