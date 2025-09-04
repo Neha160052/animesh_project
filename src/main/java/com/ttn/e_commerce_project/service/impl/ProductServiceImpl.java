@@ -66,8 +66,9 @@ public class ProductServiceImpl implements ProductService {
         product.setCancellable(Boolean.TRUE.equals(productCo.getIsCancellable()));
         product.setReturnable(Boolean.TRUE.equals(productCo.getIsReturnable()));
         product.setCategory(category);
-
-        product.setSeller(seller);
+        
+        seller.getProduct().add(product);
+        sellerRepo.save(seller);
         Product savedProduct = productRepo.save(product);
         log.info(savedProduct.getName());
         emailService.sendAcknowledgementMail(email, PRODUCT_ACTIVATION_MAIL);
