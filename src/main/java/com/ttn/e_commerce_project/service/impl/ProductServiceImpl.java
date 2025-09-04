@@ -119,6 +119,18 @@ public class ProductServiceImpl implements ProductService {
        Page<Product> products = productRepo.findBySeller(seller,pageable);
        return products.map(this::mapToVo);
     }
+    
+    @Override
+    public void updateProduct(ProductUpdateCo productUpdateCo) {
+        Product product = commonService.findProductById(productUpdateCo.getProductid());
+        if(productUpdateCo.getName()!=null)
+            product.setName(productUpdateCo.getName());
+        if(productUpdateCo.getDescription()!=null)
+            product.setDescription(productUpdateCo.getDescription());
+        product.setCancellable(Boolean.TRUE.equals(productUpdateCo.getIsCancellable()));
+        product.setReturnable(Boolean.TRUE.equals(productUpdateCo.getIsReturnable()));
+        productRepo.save(product);
+    }
 
     private SellerProductVo mapToVo(Product product) {
         SellerProductVo vo = new SellerProductVo();
