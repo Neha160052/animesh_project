@@ -88,7 +88,7 @@ public class CustomerController {
     public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file,
                                               Principal principal) throws IOException {
         customerService.checkOwnership(id, principal.getName());
-        String path = imageStorageUtil.saveImage(CUSTOMER_USER_TYPE, id, file);
+        String path = imageStorageUtil.saveImage(CUSTOMER_USER_TYPE, id.toString(), file);
         return ResponseEntity.ok(IMAGE_UPLOADED+ path);
     }
 
