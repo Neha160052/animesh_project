@@ -303,7 +303,8 @@ public class ProductServiceImpl implements ProductService {
         return variationPage.map(this::mapToVariationVo);
     }
 
-    public List<ProductCategoryVariationVo> viewAllVariationsCustomerForProduct(Long productId) {
+    @Override
+    public List<ProductCategoryVariationVo> viewAllVariationsGenericForProduct(Long productId) {
         Product product = commonService.findProductById(productId);
         Set<ProductVariation> variations = product.getProductVariation();
         return variations.stream()
