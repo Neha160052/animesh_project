@@ -131,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
         if(product.getSeller().getUserid()!=(seller.getUserid()))
             throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
 
-        boolean exists = productRepo.existsByNameAndBrandAndCategoryAndSeller(
+        boolean exists = productRepo.existsByNameAndBrandAndCategoryAndSellerUserIdAndIdNot(
                 productUpdateCo.getName(),
                 product.getBrand(),
                 product.getCategory(),
