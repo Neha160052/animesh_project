@@ -40,7 +40,7 @@ public class ProductVariation extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     Product product;
-    
+
     @OneToMany
     @JoinColumn(name = "product_variation_id",referencedColumnName = "id")
     Set<OrderProduct> orderProducts;
