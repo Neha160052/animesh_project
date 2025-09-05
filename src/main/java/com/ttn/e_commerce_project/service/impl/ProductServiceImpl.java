@@ -311,6 +311,24 @@ public class ProductServiceImpl implements ProductService {
                 .map(this::mapToProductCategoryVariationVo).toList();
     }
 
+    @Override
+    public Page<ProductCategoryVariationVo> viewAllVariationsForAllProduct(Long categoryId, String query, Pageable pageable) {
+
+        Category category = categoryRepo.findById(categoryId).orElseThrow(()->new ResourceNotFoundException(CATEGORY_NOT_FOUND));
+
+        if(!category.isLeaf())
+            throw new InvalidArgumentException(CATEGORY_MUST_BE_LEAF);
+
+        Specification<ProductVariation> spec = ProductVariationSpecification.belongsToCategory(categoryId)
+                                                      .and(ProductVariationSpecification.filterByQuery(query));
+
+        Page<ProductVariation> variationPage = productVariationRepo.findAll(spec, pageable);
+
+        return variationPage.map(this::mapToProductCategoryVariationVo);
+    }
+
+
+
     private ProductCategoryVariationVo mapToProductCategoryVariationVo(ProductVariation variation) {
         ProductVariationVo variationVo = mapToVariationVo(variation);
         Category category = variation.getProduct().getCategory();
