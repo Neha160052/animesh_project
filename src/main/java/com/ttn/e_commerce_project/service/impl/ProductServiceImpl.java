@@ -324,7 +324,8 @@ public class ProductServiceImpl implements ProductService {
             throw new InvalidArgumentException(CATEGORY_MUST_BE_LEAF);
 
         Specification<ProductVariation> spec = ProductVariationSpecification.belongsToCategory(categoryId)
-                                                      .and(ProductVariationSpecification.filterByQuery(query));
+                .and(ProductVariationSpecification.isProductActive())
+                .and(ProductVariationSpecification.filterByQuery(query));
 
         Page<ProductVariation> variationPage = productVariationRepo.findAll(spec, pageable);
 
