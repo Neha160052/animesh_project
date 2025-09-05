@@ -112,7 +112,7 @@ public class CustomerController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/view-all-products/{productId}")
+    @GetMapping("/view-product-variations/{productId}")
     public ResponseEntity<Page<ProductVariationVo>> viewAllProductVariations(
             @PathVariable Long productId,
             @RequestParam(defaultValue = "10") int max,
