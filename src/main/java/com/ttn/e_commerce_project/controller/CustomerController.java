@@ -141,7 +141,7 @@ public class CustomerController {
                                                                                         @RequestParam(required = false) String query) {
         Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
 
-        Page<ProductDetailVo> similarProductsPage = productService.findSimilarProducts(productId,pageable);
+        Page<ProductDetailVo> similarProductsPage = productService.findSimilarProducts(productId,query,pageable);
         return ResponseEntity.ok(similarProductsPage);
     }
 
