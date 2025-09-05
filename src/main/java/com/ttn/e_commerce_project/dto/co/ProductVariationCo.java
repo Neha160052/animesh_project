@@ -36,4 +36,5 @@ public class ProductVariationCo {
         MultipartFile primaryImage;
 
         List<MultipartFile> secondaryImage;
+
 }
