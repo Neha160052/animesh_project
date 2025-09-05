@@ -40,6 +40,7 @@ public class CustomerController {
     ImageStorageUtil imageStorageUtil;
     UserCommonService commonService;
     CategoryService categoryService;
+    ProductService productService;
 
     @GetMapping("/profile")
     public ResponseEntity<CustomerProfileVo> getMyProfile(Authentication authentication) {
