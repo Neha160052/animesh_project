@@ -339,7 +339,8 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND + productId));
 
         Specification<Product> spec = ProductSpecification.isActive()
-                .and(ProductSpecification.isSimilarTo(sourceProduct));
+                .and(ProductSpecification.isSimilarTo(sourceProduct))
+                .and(ProductSpecification.filterByCriteria(query));
 
         Page<Product> similarProductsPage = productRepo.findAll(spec, pageable);
         return similarProductsPage.map(this::mapToProductDetailVo);
