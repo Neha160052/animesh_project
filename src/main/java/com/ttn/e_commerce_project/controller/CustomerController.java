@@ -81,7 +81,7 @@ public class CustomerController {
 
     @PutMapping("/update/address/{id}")
     public ResponseEntity<String> updateAddress(Authentication authentication, @PathVariable Long id,
-                                                @RequestBody AddressCo addressCo) {
+                                                @Valid @RequestBody AddressCo addressCo) {
         return ResponseEntity.ok(customerService.updateAddress(id, addressCo));
     }
 
