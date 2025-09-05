@@ -266,7 +266,19 @@ public class ProductServiceImpl implements ProductService {
         ProductVariation variation = productVariationRepo.findById(variationId).orElseThrow(()->new ResourceNotFoundException(PRODUCT_VARIATION_NOT_FOUND));
         if(variation.getProduct().getSeller().getUserid()!=seller.getUserid())
             throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
-        return mapToVariationVo();
+        return mapToVariationVo(variation);
+    }
+
+    @Override
+    public Page<ProductVariationVo> viewAllVariationsForProduct(Long productId, String userEmail, String query, Pageable pageable) {
+        Seller seller = commonService.findSellerByEmail(userEmail);
+        Product product = commonService.findProductById(productId);
+        if(product.getSeller().getUserid()!= seller.getUserid())
+            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
+        Specification<ProductVariation> spec = ProductVariationSpecification.belongsToProduct(productId)
+                                                           .and(ProductVariationSpecification.filterByQuery(query));
+        Page<ProductVariation> variationPage = productVariationRepo.findAll(spec, pageable);
+        return variationPage.map(this::mapToVariationVo);
     }
 
 
