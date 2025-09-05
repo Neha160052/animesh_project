@@ -173,4 +173,16 @@ public class AdminController {
         return ResponseEntity.ok(variationList);    
     }
 
+    @GetMapping("/view-all-products")
+    public ResponseEntity<Page<ProductDetailVo>> viewAllProducts(@RequestParam(defaultValue = "10") int max,
+                                                                 @RequestParam(defaultValue = "0") int offset,
+                                                                 @RequestParam(defaultValue = "id") String sort,
+                                                                 @RequestParam(defaultValue = "ASC") Sort.Direction order,
+                                                                 @RequestParam(required = false) String query){
+
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
+
+        Page<ProductDetailVo> productsPage = productService.viewAllProducts(query,pageable);
+        return ResponseEntity.ok(productsPage);
+    }
 }
