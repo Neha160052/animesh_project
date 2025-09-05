@@ -132,5 +132,17 @@ public class CustomerController {
         return ResponseEntity.ok(variationPage);
     }
 
+    @GetMapping("/view-similar-products/{productId}")
+    public ResponseEntity<Page<ProductDetailVo>> viewAllSimilarProducts(@PathVariable Long productId,
+                                                                                        @RequestParam(defaultValue = "10") int max,
+                                                                                        @RequestParam(defaultValue = "0") int offset,
+                                                                                        @RequestParam(defaultValue = "id") String sort,
+                                                                                        @RequestParam(defaultValue = "ASC") Sort.Direction order,
+                                                                                        @RequestParam(required = false) String query) {
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
+
+        Page<ProductDetailVo> similarProductsPage = productService.findSimilarProducts(productId,pageable);
+        return ResponseEntity.ok(similarProductsPage);
+    }
 
 }
