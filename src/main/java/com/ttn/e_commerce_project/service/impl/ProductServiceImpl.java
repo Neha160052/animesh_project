@@ -332,6 +332,55 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+    public Page<ProductDetailVo> findSimilarProducts(Long productId, Pageable pageable) {
+
+        Product sourceProduct = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND + productId));
+
+        Specification<Product> spec = ProductSpecification.isActive()
+                .and(ProductSpecification.isSimilarTo(sourceProduct));
+
+        Page<Product> similarProductsPage = productRepo.findAll(spec, pageable);
+        return similarProductsPage.map(this::mapToProductDetailVo);
+    }
+
+    public Page<ProductDetailVo> viewAllProducts(String query, Pageable pageable) {
+
+        Specification<Product> spec = ProductSpecification.isActive()
+                .and(ProductSpecification.filterByCriteria(query));
+
+        Page<Product> productPage = productRepo.findAll(spec, pageable);
+        return productPage.map(this::mapToProductDetailVo);
+    }
+
+    private SellerProductVo mapToVo(Product product) {
+        SellerProductVo vo = new SellerProductVo();
+        vo.setId(product.getId());
+        vo.setBrand(product.getBrand());
+        vo.setDescription(product.getDescription());
+        vo.setName(product.getName());
+        Category category = product.getCategory();
+        if (category != null) {
+            vo.setCategory(new CategoryVo(category.getId(), category.getName(), null));
+        }
+        return vo;
+    }
+
+
+    private ProductDetailVo mapToProductDetailVo(Product product) {
+
+        ProductDetailVo vo = new ProductDetailVo();
+        vo.setId(product.getId());
+        vo.setName(product.getName());
+        vo.setBrand(product.getBrand());
+        CategoryVo categoryVo = new CategoryVo(product.getCategory().getId(),
+                product.getCategory().getName(), null);
+        vo.setCategoryVo(categoryVo);
+        vo.setVariations(product.getProductVariation().stream()
+                .map(this::mapToVariationVo)
+                .toList();
+        return vo;
+    }
 
     private ProductCategoryVariationVo mapToProductCategoryVariationVo(ProductVariation variation) {
         ProductVariationVo variationVo = mapToVariationVo(variation);
