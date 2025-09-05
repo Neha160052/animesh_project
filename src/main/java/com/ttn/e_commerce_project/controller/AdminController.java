@@ -167,7 +167,7 @@ public class AdminController {
         return deactivated ? PRODUCT_DEACTIVATED_SUCCESS : PRODUCT_ALREADY_INACTIVE;
     }
 
-    @GetMapping("/view-product-variations/{productId}")
+    @GetMapping("/view-product/{productId}")
     public ResponseEntity<List<ProductCategoryVariationVo>> viewProductVariations(@PathVariable Long productId){
         List<ProductCategoryVariationVo> variationList = productService.viewAllVariationsGenericForProduct(productId);
         return ResponseEntity.ok(variationList);    
