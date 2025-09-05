@@ -19,6 +19,7 @@ public class CategoryMetaDataValues extends Auditable {
     String fieldValues;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
     Category category;
 
     @ManyToOne
