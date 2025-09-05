@@ -1,27 +1,45 @@
 package com.ttn.e_commerce_project.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ttn.e_commerce_project.dto.co.ProductCo;
 import com.ttn.e_commerce_project.dto.co.ProductUpdateCo;
+import com.ttn.e_commerce_project.dto.co.ProductVariationCo;
+import com.ttn.e_commerce_project.dto.co.UpdateVariationCo;
 import com.ttn.e_commerce_project.dto.vo.CategoryVo;
+import com.ttn.e_commerce_project.dto.vo.ProductVariationVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProductVo;
 import com.ttn.e_commerce_project.entity.category.Category;
+import com.ttn.e_commerce_project.entity.category.CategoryMetaDataValues;
 import com.ttn.e_commerce_project.entity.product.Product;
+import com.ttn.e_commerce_project.entity.product.ProductVariation;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.ProductOwnershipException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.respository.ProductRepository;
+import com.ttn.e_commerce_project.respository.ProductVariationRepository;
 import com.ttn.e_commerce_project.service.EmailService;
 import com.ttn.e_commerce_project.service.ProductService;
+import com.ttn.e_commerce_project.util.ImageStorageUtil;
+import com.ttn.e_commerce_project.util.ProductVariationSpecification;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
@@ -69,12 +87,10 @@ public class ProductServiceImpl implements ProductService {
         product.setCancellable(Boolean.TRUE.equals(productCo.getIsCancellable()));
         product.setReturnable(Boolean.TRUE.equals(productCo.getIsReturnable()));
         product.setCategory(category);
-        
-        seller.getProduct().add(product);
-        sellerRepo.save(seller);
+
+        product.setSeller(seller);
         Product savedProduct = productRepo.save(product);
         log.info(savedProduct.getName());
-        sellerRepo.save(seller);
         emailService.sendAcknowledgementMail(null, PRODUCT_ACTIVATION_MAIL);
         return savedProduct;
     }
@@ -84,6 +100,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = commonService.findProductById(productid);
         if (!product.isActive()) {
             product.setActive(true);
+            productRepo.save(product);
             return true;
         } else
             return false;
@@ -94,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = commonService.findProductById(productid);
         if (product.isActive()) {
             product.setActive(false);
+            productRepo.save(product);
             return true;
         } else
             return false;
@@ -120,6 +138,7 @@ public class ProductServiceImpl implements ProductService {
        String email = SecurityContextHolder.getContext().getAuthentication().getName();
        Seller seller = commonService.findSellerByEmail(email);
        Page<Product> products = productRepo.findBySeller(seller,pageable);
+        log.info(products.getContent().toString());
        return products.map(this::mapToVo);
     }
 
@@ -127,6 +146,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(ProductUpdateCo productUpdateCo) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Seller seller = commonService.findSellerByEmail(email);
+        log.info(productUpdateCo.getProductid().toString());
         Product product = commonService.findProductById(productUpdateCo.getProductid());
         if(product.getSeller().getUserid()!=(seller.getUserid()))
             throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
