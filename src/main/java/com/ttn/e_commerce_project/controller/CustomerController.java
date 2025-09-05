@@ -114,9 +114,8 @@ public class CustomerController {
     }
 
     @GetMapping("/view-product-variations/{productId}")
-    public ResponseEntity<List<ProductCategoryVariationVo>> viewAllProductVariations(
-            @PathVariable Long productId) {
-        List<ProductCategoryVariationVo> variationList = productService.viewAllVariationsCustomerForProduct(productId);
+    public ResponseEntity<List<ProductCategoryVariationVo>> viewAllProductVariations(@PathVariable Long productId) {
+        List<ProductCategoryVariationVo> variationList = productService.viewAllVariationsGenericForProduct(productId);
         return ResponseEntity.ok(variationList);
     }
 
