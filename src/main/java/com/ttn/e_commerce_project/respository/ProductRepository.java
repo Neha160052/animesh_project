@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
     boolean existsByNameAndBrandAndCategoryAndSeller(String name, String brand, Category category, Seller seller);
+    boolean existsByNameAndBrandAndCategoryAndSellerUserIdAndIdNot(String name, String brand, Category category, Long sellerId,Long productId);
+    Page<Product> findBySeller(Seller seller, Pageable pageable);
 }
