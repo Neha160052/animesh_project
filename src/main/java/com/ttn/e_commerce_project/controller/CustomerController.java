@@ -120,4 +120,18 @@ public class CustomerController {
         return ResponseEntity.ok(variationList);
     }
 
+    @GetMapping("/view-all-variations/{categoryId}")
+    public ResponseEntity<Page<ProductCategoryVariationVo>> viewAllProductAllVariations(@PathVariable Long categoryId,
+                                                                                        @RequestParam(defaultValue = "10") int max,
+                                                                                        @RequestParam(defaultValue = "0") int offset,
+                                                                                        @RequestParam(defaultValue = "id") String sort,
+                                                                                        @RequestParam(defaultValue = "ASC") Sort.Direction order,
+                                                                                        @RequestParam(required = false) String query) {
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
+        
+        Page<ProductCategoryVariationVo> variationPage = productService.viewAllVariationsForAllProduct(categoryId,query,pageable);
+        return ResponseEntity.ok(variationPage);
+    }
+
+
 }
