@@ -308,7 +308,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductCategoryVariationVo> viewAllVariationsGenericForProduct(Long productId) {
         Product product = commonService.findProductById(productId);
-        if(!product.isActive()|| product.isDeleted())
+        if(!product.isActive())
             throw new ResourceNotFoundException(PRODUCT_NOT_FOUND);
         Set<ProductVariation> variations = product.getProductVariation();
         return variations.stream()
