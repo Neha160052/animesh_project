@@ -13,8 +13,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.Set;
 
-import static com.ttn.e_commerce_project.constants.UserConstants.ALLOWED_EXTENSIONS;
-import static com.ttn.e_commerce_project.constants.UserConstants.BASE_PATH;
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+import static com.ttn.e_commerce_project.constants.UserConstants.ALPHABETS;
 
 @Slf4j
 @Component
