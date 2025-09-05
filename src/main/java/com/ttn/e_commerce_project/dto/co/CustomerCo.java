@@ -17,6 +17,7 @@ public class CustomerCo {
 
     @NotBlank(message = "{email.required}")
     @Email(message = "{email.invalid}")
+    @Pattern(regexp ="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$\n",message = "{email.invalid}")
     String email;
 
     @NotBlank(message = "{phone.required}")
@@ -25,7 +26,6 @@ public class CustomerCo {
             message = "{phone.number.invalid}"
     )
     String phoneNumber;
-
     @NotBlank(message = "{password.required}")
     @Size(min = 8, message = "{password.size}")
     @Pattern( regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
@@ -38,6 +38,7 @@ public class CustomerCo {
     @NotBlank(message = "{first.name.required}")
     @ValidName(message = "{first.name.invalid}")
     String firstName;
+    @ValidName(message = "{middle.name.invalid}")
     String middleName;
 
     @NotBlank(message = "{last.name.required}")

@@ -2,20 +2,25 @@ package com.ttn.e_commerce_project.controller;
 
 
 import com.ttn.e_commerce_project.dto.co.AddressCo;
-import com.ttn.e_commerce_project.dto.co.CustomerCo;
 import com.ttn.e_commerce_project.dto.co.CustomerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.AddressVo;
 import com.ttn.e_commerce_project.dto.vo.CustomerProfileVo;
+import com.ttn.e_commerce_project.dto.vo.ProductCategoryVariationVo;
+import com.ttn.e_commerce_project.dto.vo.ProductDetailVo;
 import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.service.CategoryService;
 import com.ttn.e_commerce_project.service.CustomerService;
-import com.ttn.e_commerce_project.service.impl.UserCommonService;
+import com.ttn.e_commerce_project.service.ProductService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,7 +43,6 @@ public class CustomerController {
 
     CustomerService customerService;
     ImageStorageUtil imageStorageUtil;
-    UserCommonService commonService;
     CategoryService categoryService;
     ProductService productService;
 
@@ -108,7 +112,6 @@ public class CustomerController {
     @GetMapping("/get-all-categories")
     public ResponseEntity<List<Category>> listCategories(
                                            @RequestParam(required = false) Long categoryId) {
-
         List<Category> categories = categoryService.getCategories(categoryId);
         return ResponseEntity.ok(categories);
     }
@@ -127,7 +130,7 @@ public class CustomerController {
                                                                                         @RequestParam(defaultValue = "ASC") Sort.Direction order,
                                                                                         @RequestParam(required = false) String query) {
         Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
-        
+
         Page<ProductCategoryVariationVo> variationPage = productService.viewAllVariationsForAllProduct(categoryId,query,pageable);
         return ResponseEntity.ok(variationPage);
     }
