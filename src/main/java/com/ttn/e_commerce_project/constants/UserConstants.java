@@ -9,6 +9,8 @@ public final class UserConstants {
 
     // Role
     public static final String ROLE_NOT_FOUND = "No role found for authority : %s";
+    public static final char[] ALPHABETS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+
 
     // User
     public static final String USER_NOT_FOUND_BY_EMAIL = "No account found with email: ";
@@ -70,6 +72,7 @@ public final class UserConstants {
     public static final String INVALID_EMAIL = "enter a valid email address";
     public static final String GST_ALREADY_IN_USE = "GST already exists provide unique one";
     public static final String COMPANY_NAME_ALREADY_EXISTS = "Company name already exists provide a unique name.";
+    public static final String NAME_REGEX = "^[A-Za-z]+(?: [A-Za-z]+)*$";// Regex: Only letters upper,lower, spaces allowed but not leading/trailing or multiple
 
     // Account activation
     public static final String ACCOUNT_ACTIVATED = "Account activated Successfully";
@@ -132,6 +135,7 @@ public final class UserConstants {
     public static final String ACCESS_DENIED = "You are not allowed to access this resource";
     public static final String FIELD_NAME_ALREADY_EXISTS = "field name already exists";
     public static final String ACCESS_TOKEN_EXPIRED = "access token expired";
+    public static final String PRODUCT_DOES_NOT_BELONG_TO_USER = "Product does not belong to the authenticated User";
 
     // Success Messages
     public static final String PROFILE_UPDATED_SUCCESSFULLY = "Profile updated successfully";
@@ -140,6 +144,8 @@ public final class UserConstants {
     public static final String ADDRESS_DELETED_SUCCESSFULLY = "Address deleted successfully";
     public static final String ADDRESS_UPDATED_SUCCESSFULLY = "Address updated successfully";
     public static final String METADATA_FIELD_ADDED_SUCCESSFULLY = "Metadata field created successfully with ID: %d";
+    public static final String PRODUCT_DELETED_SUCCESSFULLY = "Product deleted successfully";
+    public static final String PRODUCT_UPDATED_SUCCESSFULLY = "Product updated successfully";
 
 
 

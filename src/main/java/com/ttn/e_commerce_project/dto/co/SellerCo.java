@@ -53,5 +53,6 @@ public class SellerCo {
     @ValidName(message="{last.name.invalid}")
     private String lastName;
 
+    @ValidName(message="{middle.name.invalid}")
     private String middleName;
 }

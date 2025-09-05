@@ -1,6 +1,7 @@
 package com.ttn.e_commerce_project.controller;
 
 import com.ttn.e_commerce_project.dto.co.*;
+import com.ttn.e_commerce_project.dto.vo.ProductVariationVo;
 import com.ttn.e_commerce_project.dto.vo.SellerListCategoryVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProductVo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -84,7 +86,7 @@ public class SellerController {
         String role = authentication.getAuthorities().stream()
                 .findFirst().map(auth->
                         auth.getAuthority().replace(ROLE_PREFIX,"").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
-        String path = imageStorageUtil.saveImage(role, id, file);
+        String path = imageStorageUtil.saveImage(role, id.toString(), file);
         return ResponseEntity.ok(IMAGE_UPLOADED + path);
     }
 
