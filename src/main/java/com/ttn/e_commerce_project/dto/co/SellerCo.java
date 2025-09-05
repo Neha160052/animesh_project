@@ -19,6 +19,7 @@ public class SellerCo {
 
     @Email(message = "{email.invalid}")
     @NotBlank(message = "{email.required}")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$\n",message = "{email.invalid}")
     private String email;
 
     @NotBlank(message = "{password.required}")
