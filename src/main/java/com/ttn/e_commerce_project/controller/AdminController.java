@@ -166,4 +166,11 @@ public class AdminController {
         boolean deactivated = productService.deactivateProduct(id);
         return deactivated ? PRODUCT_DEACTIVATED_SUCCESS : PRODUCT_ALREADY_INACTIVE;
     }
+
+    @GetMapping("/view-product-variations/{productId}")
+    public ResponseEntity<List<ProductCategoryVariationVo>> viewProductVariations(@PathVariable Long productId){
+        List<ProductCategoryVariationVo> variationList = productService.viewAllVariationsGenericForProduct(productId);
+        return ResponseEntity.ok(variationList);    
+    }
+
 }
