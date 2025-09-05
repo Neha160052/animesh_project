@@ -146,4 +146,52 @@ public class SellerController {
        return ResponseEntity.ok(PRODUCT_UPDATED_SUCCESSFULLY);
     }
 
+    @PostMapping("/add-productvariation")
+    public ResponseEntity<String> addProductVariation(@Valid @ModelAttribute ProductVariationCo variationCo) throws IOException {
+        productService.addProductVariation(variationCo);
+        return ResponseEntity.ok(PRODUCT_VARIATION_ADDED_SUCCESSFULLY);
+    }
+
+    @PatchMapping("/update-productvariation")
+    public ResponseEntity<String> updateProductVariation(@Valid @ModelAttribute UpdateVariationCo variationCo) throws IOException {
+        productService.updateProductVariation(variationCo);
+        return  ResponseEntity.ok(PRODUCT_VARIATION_UPDATED_SUCCESSFULLY);
+    }
+    @GetMapping("/view-productvariation/{id}")
+    public ResponseEntity<ProductVariationVo> viewProductVariation(@PathVariable Long id,Principal principal) throws IOException {
+        String email = principal.getName();
+        ProductVariationVo vo = productService.viewProductVariation(id,email);
+        return  ResponseEntity.ok(vo);
+    }
+
+    @GetMapping("/view-all-variations/{productId}")
+    public ResponseEntity<Page<ProductVariationVo>> viewAllProductVariations(
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "10") int max,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "ASC") Sort.Direction order,
+            @RequestParam(required = false) String query,
+            Principal principal) {
+
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
+
+        String userEmail = principal.getName();
+
+        Page<ProductVariationVo> variationPage = productService.viewAllVariationsForProduct(
+                                                  productId, userEmail, query, pageable);
+
+        return ResponseEntity.ok(variationPage);
+    }
+
+    // TODO : BUILD AN ENDPOINT FOR THIS CONTROLLER
+
+    @GetMapping("/primary-product-image/{id}")
+    public ResponseEntity<byte[]> viewProductImage(@PathVariable Long id ) throws IOException {
+        byte[] arr = imageStorageUtil.loadImage("product", id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(arr);
+    }
+
 }
