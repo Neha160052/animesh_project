@@ -69,7 +69,7 @@ public class CustomerController {
     }
 
     @PostMapping("/add-address")
-    public ResponseEntity<String> addAddress(Authentication authentication, @RequestBody AddressCo addressCo) {
+    public ResponseEntity<String> addAddress(Authentication authentication,@Valid @RequestBody AddressCo addressCo) {
         return ResponseEntity.ok(customerService.addCustomerAddress(authentication.getName(), addressCo));
     }
 
