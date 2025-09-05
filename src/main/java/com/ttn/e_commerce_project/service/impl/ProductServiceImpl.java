@@ -333,7 +333,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    public Page<ProductDetailVo> findSimilarProducts(Long productId, Pageable pageable) {
+    public Page<ProductDetailVo> findSimilarProducts(Long productId,String query ,Pageable pageable) {
 
         Product sourceProduct = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND + productId));
