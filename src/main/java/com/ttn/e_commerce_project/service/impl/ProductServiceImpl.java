@@ -295,7 +295,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductVariationVo> viewAllVariationsForProduct(Long productId, String userEmail, String query, Pageable pageable) {
         Seller seller = commonService.findSellerByEmail(userEmail);
         Product product = commonService.findProductById(productId);
-        if(!product.isActive()|| product.isDeleted())
+        if(!product.isActive())
             throw new ResourceNotFoundException(PRODUCT_NOT_FOUND);
         if(product.getSeller().getUserid()!= seller.getUserid())
             throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
