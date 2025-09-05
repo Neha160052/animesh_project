@@ -135,7 +135,8 @@ public class ProductServiceImpl implements ProductService {
                 productUpdateCo.getName(),
                 product.getBrand(),
                 product.getCategory(),
-                seller);
+                seller.getUserid(),
+                product.getId());
         if (exists) {
             throw new InvalidArgumentException(PRODUCT_ALREADY_EXISTS);
         }
