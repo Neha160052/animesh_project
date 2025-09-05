@@ -260,7 +260,8 @@ public class ProductServiceImpl implements ProductService {
         return vo;
     }
 
-    public ProductVariationVo viewProductVariationVo(Long variationId,String email)
+    @Override
+    public ProductVariationVo viewProductVariation(Long variationId, String email)
     {
         Seller seller = commonService.findSellerByEmail(email);
         ProductVariation variation = productVariationRepo.findById(variationId).orElseThrow(()->new ResourceNotFoundException(PRODUCT_VARIATION_NOT_FOUND));
