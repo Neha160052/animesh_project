@@ -14,6 +14,10 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductVariationVo {
 
+    Long productId;
+    String productName;
+    String productBrand;
+
     Long id;
     Long quantityAvailable;
     Double price;
