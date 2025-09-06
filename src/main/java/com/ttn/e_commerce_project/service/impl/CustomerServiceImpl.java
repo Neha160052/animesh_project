@@ -99,7 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public List<AddressVo> getMyAddresses(String email){
-
+        commonService.verifyUser(email);
         Customer customer = commonService.findCustomerByEmail(email);
         List<Address> addresses = addressRepository.findByUserId(customer.getUser().getId());
 
