@@ -4,6 +4,8 @@ import com.ttn.e_commerce_project.customvalidation.ValidName;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.PHONE_REGEX;
+
 @Getter
 @Setter
 @AllArgsConstructor
