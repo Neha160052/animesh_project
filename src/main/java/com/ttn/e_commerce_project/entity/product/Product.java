@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 import java.util.Set;
@@ -17,6 +19,8 @@ import java.util.Set;
 @Getter
 @Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
+@SQLRestriction("is_deleted = false")
+@SQLDelete(sql = "UPDATE product SET is_deleted= true WHERE id=?")
 public class Product extends Auditable {
 
        @Id
@@ -29,18 +33,17 @@ public class Product extends Auditable {
        String brand;
        boolean isActive;
        boolean isDeleted;
-       @OneToMany
-       @JoinColumn(name = "Product_id",referencedColumnName = "id")
+       @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
        Set<ProductVariation> productVariation;
        @OneToMany
        @JoinColumn(name = "Product_id",referencedColumnName = "id")
        List<ProductReview> productReview;
 
-       @JsonBackReference("category-products")
        @ManyToOne(fetch = FetchType.LAZY)
        @JoinColumn(name = "category_id")
        Category category;
 
        @ManyToOne
+       @JoinColumn(name = "seller_id")
        Seller seller;
  }
