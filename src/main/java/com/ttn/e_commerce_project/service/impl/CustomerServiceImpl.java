@@ -83,7 +83,10 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = commonService.findCustomerByEmail(email);
         User user = customer.getUser();
-        String imagePath = imageStorageUtil.buildProfileImageUrl(CUSTOMER_USER_TYPE, user.getId());
+        String imagePath=null;
+        if (imageStorageUtil.profileImageExists(CUSTOMER_USER_TYPE, user.getId())) {
+            imagePath = imageStorageUtil.buildProfileImageUrl(CUSTOMER_USER_TYPE, user.getId());
+        }
         return new CustomerProfileVo(
                 user.getId(),
                 user.getFirstName(),
