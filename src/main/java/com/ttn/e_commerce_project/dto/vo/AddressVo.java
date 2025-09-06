@@ -16,7 +16,7 @@ public class AddressVo {
     String state;
     String country;
     String addressLine;
-    int zipCode;
+    String zipCode;
     @Enumerated(EnumType.STRING)
     Label label;
 }
