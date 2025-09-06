@@ -10,7 +10,7 @@ public final class UserConstants {
     // Role
     public static final String ROLE_NOT_FOUND = "No role found for authority : %s";
     public static final char[] ALPHABETS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-
+    public static final String SYSTEM_AUDITOR = "system";
 
     // User
     public static final String USER_NOT_FOUND_BY_EMAIL = "No account found with email: ";
@@ -72,7 +72,11 @@ public final class UserConstants {
     public static final String INVALID_EMAIL = "enter a valid email address";
     public static final String GST_ALREADY_IN_USE = "GST already exists provide unique one";
     public static final String COMPANY_NAME_ALREADY_EXISTS = "Company name already exists provide a unique name.";
-    public static final String NAME_REGEX = "^[A-Za-z]+(?: [A-Za-z]+)*$";// Regex: Only letters upper,lower, spaces allowed but not leading/trailing or multiple
+    public static final String NAME_REGEX = "^[A-Za-z]{2,}$";
+    public static final String GLOBAL_LOCATION_REGEX = "^[\\p{L} .'-]+(?: [\\p{L} .'-]+)*$";
+    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$";
+    public static final String PHONE_REGEX = "^(?:\\+91[6-9]\\d{9}|\\+1[2-9]\\d{2}[2-9]\\d{6})$";
+    public static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     // Account activation
     public static final String ACCOUNT_ACTIVATED = "Account activated Successfully";
