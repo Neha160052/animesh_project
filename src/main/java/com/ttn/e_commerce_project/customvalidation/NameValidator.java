@@ -7,9 +7,6 @@ import static com.ttn.e_commerce_project.constants.UserConstants.NAME_REGEX;
 
 public class NameValidator  implements ConstraintValidator<ValidName, String> {
 
-    // Regex: Only letters upper,lower, spaces allowed but not leading/trailing or multiple
-    private static final String NAME_REGEX = "^[A-Za-z]+(?: [A-Za-z]+)*$";
-
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null || value.trim().isEmpty()) {
