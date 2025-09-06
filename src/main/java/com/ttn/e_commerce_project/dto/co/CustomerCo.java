@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -17,18 +19,18 @@ public class CustomerCo {
 
     @NotBlank(message = "{email.required}")
     @Email(message = "{email.invalid}")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "{email.invalid}")
+    @Pattern(regexp = EMAIL_REGEX, message = "{email.invalid}")
     String email;
 
     @NotBlank(message = "{phone.required}")
     @Pattern(
-            regexp = "^(?:\\+91[6-9]\\d{9}|\\+1[2-9]\\d{2}[2-9]\\d{6})$",
+            regexp = PHONE_REGEX,
             message = "{phone.number.invalid}"
     )
     String phoneNumber;
     @NotBlank(message = "{password.required}")
     @Size(min = 8, message = "{password.size}")
-    @Pattern( regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
+    @Pattern( regexp = PASSWORD_REGEX,
               message = "{password.pattern}")
     String password;
 
