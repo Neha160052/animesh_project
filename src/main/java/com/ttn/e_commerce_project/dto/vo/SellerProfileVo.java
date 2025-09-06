@@ -23,6 +23,6 @@ public class SellerProfileVo {
      String state;
      String country;
      String addressLine;
-     int zipCode;
+     String zipCode;
 
 }
