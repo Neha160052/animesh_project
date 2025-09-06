@@ -24,9 +24,4 @@ public class ProductVariationVo {
     Map<String, Object> metadata;
     String primaryImageName;
     Boolean isActive;
-
-    Long productId;
-    String productName;
-    String productBrand;
-
 }
