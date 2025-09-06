@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+
 @Getter
 @Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
@@ -19,40 +21,40 @@ public class SellerCo {
 
     @Email(message = "{email.invalid}")
     @NotBlank(message = "{email.required}")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$\n",message = "{email.invalid}")
-    private String email;
+    @Pattern(regexp = EMAIL_REGEX,message = "{email.invalid}")
+    String email;
 
     @NotBlank(message = "{password.required}")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
+    @Pattern(regexp = PASSWORD_REGEX,
                     message = "{password.pattern}")
-    private String password;
+    String password;
 
     @NotBlank(message = "{confirm.password.required}")
-    private String confirmPassword;
+    String confirmPassword;
 
-    @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9]{1}$",
+    @Pattern(regexp = GST_REGEX,
             message = "{gst.invalid}")
-    private String gst;
+    String gst;
 
     @NotBlank(message = "{company.name.required}")
     @ValidName(message = "{company.name.invalid}")
-    private String companyName;
+    String companyName;
 
     @Valid
     @NotNull(message = "{company.address.required}")
-    private AddressCo companyAddress;
+    AddressCo companyAddress;
 
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "{company.contact.invalid}")
-    private String companyContact;
+    @Pattern(regexp = COMPANY_CONTACT, message = "{company.contact.invalid}")
+    String companyContact;
 
     @NotBlank(message = "{first.name.required}")
     @ValidName(message = "{first.name.invalid}")
-    private String firstName;
+    String firstName;
 
     @NotBlank(message = "{last.name.required}")
     @ValidName(message="{last.name.invalid}")
-    private String lastName;
+    String lastName;
 
     @ValidName(message="{middle.name.invalid}")
-    private String middleName;
+    String middleName;
 }

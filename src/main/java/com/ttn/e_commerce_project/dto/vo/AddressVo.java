@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.dto.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ttn.e_commerce_project.enums.Label;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressVo {
     String city;
     String state;

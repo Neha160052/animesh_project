@@ -27,12 +27,10 @@ public class ImageStorageUtil {
         if (!Files.exists(folder)) {
             Files.createDirectories(folder); // make directory if missing
         }
-
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || !originalFilename.contains(".")) {
             throw new IOException("File must have an extension");
         }
-
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1)
                 .toLowerCase(Locale.ROOT);
 
@@ -40,7 +38,6 @@ public class ImageStorageUtil {
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
             throw new IOException("Unsupported file type: " + extension);
         }
-
         // Final path format: uploads/{userType}/{userId}.{ext}
         Path filePath = folder.resolve(userId + "." + extension);
 

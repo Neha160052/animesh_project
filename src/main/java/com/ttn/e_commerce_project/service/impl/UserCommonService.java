@@ -108,7 +108,6 @@ public class UserCommonService {
             throw  new AccountNotActiveException(ACCOUNT_NOT_ACTIVE);
         if(user.isLocked())
             throw new AccountLockedException(ACCOUNT_LOCKED);
-        return true;
     }
 }
 

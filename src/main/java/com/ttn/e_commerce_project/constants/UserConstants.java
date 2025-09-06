@@ -73,11 +73,14 @@ public final class UserConstants {
     public static final String GST_ALREADY_IN_USE = "GST already exists provide unique one";
     public static final String COMPANY_NAME_ALREADY_EXISTS = "Company name already exists provide a unique name.";
     public static final String NAME_REGEX = "^[A-Za-z]{2,}$";
-    public static final String GLOBAL_LOCATION_REGEX = "^[\\p{L} .'-]+(?: [\\p{L} .'-]+)*$";
+    public static final String GLOBAL_LOCATION_REGEX = "^[\\p{L}.'-]+(?: [\\p{L}.'-]+)*$";
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$";
     public static final String PHONE_REGEX = "^(?:\\+91[6-9]\\d{9}|\\+1[2-9]\\d{2}[2-9]\\d{6})$";
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-
+    public static final String GST_REGEX= "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9]{1}$";
+    public static final String COMPANY_CONTACT = "^[6-9]\\d{9}$";
+    public static final String ZIPCODE_REGEX = "^\\d{6}$";
+    public static final String DEFAULT_IMAGE_PATH = "Image not uploaded";
     // Account activation
     public static final String ACCOUNT_ACTIVATED = "Account activated Successfully";
     public static final String INVALID_OR_EXPIRED_TOKEN = "Invalid or expired token";

@@ -84,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = commonService.findCustomerByEmail(email);
         commonService.verifyUser(email);
         User user = customer.getUser();
-        String imagePath="Image not uploaded";
+        String imagePath=DEFAULT_IMAGE_PATH;
         if (imageStorageUtil.profileImageExists(CUSTOMER_USER_TYPE, user.getId())) {
             imagePath = imageStorageUtil.buildProfileImageUrl(CUSTOMER_USER_TYPE, user.getId());
         }
@@ -99,7 +99,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public List<AddressVo> getMyAddresses(String email){
-        commonService.verifyUser(email);
         Customer customer = commonService.findCustomerByEmail(email);
         List<Address> addresses = addressRepository.findByUserId(customer.getUser().getId());
 
@@ -131,7 +130,6 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerProfileCo.getContact() != null) {
             customer.setContact(customerProfileCo.getContact());
         }
-
         customerRepository.save(customer);
         log.info("persisted the customer in the db");
         return PROFILE_UPDATED_SUCCESSFULLY;
@@ -141,18 +139,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
         {
-            commonService.verifyUser(username);
             User user = commonService.findUserByEmail(username);
             if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
                 throw new InvalidArgumentException(CURRENT_PASSWORD_INCORRECT);
             }
-
             if (!updatePasswordCo.getNewPassword().equals(updatePasswordCo.getConfirmPassword())) {
                 throw new PasswordMismatchException(NEW_PASSWORD_MISMATCH);
             }
             user.setPassword(passwordEncoder.encode(updatePasswordCo.getNewPassword()));
             userRepository.save(user);
-
             emailService.sendAcknowledgementMail(username,PASSWORD_UPDATED_SUCCESSFULLY );
         }
     }
@@ -177,10 +172,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public String deleteAddress(String email ,Long id) {
         Customer customer = commonService.findCustomerByEmail(email);
-
         Address address = addressRepository.findByIdAndUserId(id, customer.getUserid())
                 .orElseThrow(() -> new ResourceNotFoundException(ADDRESS_NOT_FOUND));
-
         addressRepository.delete(address);
         return ADDRESS_DELETED_SUCCESSFULLY;
     }
@@ -188,7 +181,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     @Override
     public String updateAddress(Long id, AddressCo addressCo) {
-
         Address address = addressRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ADDRESS_NOT_FOUND));
 
         address.setAddressLine(addressCo.getAddressLine());
