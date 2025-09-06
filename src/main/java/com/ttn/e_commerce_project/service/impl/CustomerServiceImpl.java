@@ -141,9 +141,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
         {
-            User user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new ResourceNotFoundException(CUSTOMER_NOT_FOUND));
-
+            commonService.verifyUser(username);
+            User user = commonService.findUserByEmail(username);
             if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
                 throw new InvalidArgumentException(CURRENT_PASSWORD_INCORRECT);
             }
