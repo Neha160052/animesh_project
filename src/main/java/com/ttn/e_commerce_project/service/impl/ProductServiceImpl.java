@@ -178,17 +178,8 @@ public class ProductServiceImpl implements ProductService {
            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
 
        if(product.isDeleted()||!product.isActive())
-           throw new InvalidArgumentException("Product is either deleted or inactive");
+           throw new InvalidArgumentException(PRODUCT_NOT_ACTIVE_OR_DELETED);
 
-        Map<String, Object> metadataMap;
-        try {
-            metadataMap = objectMapper.readValue(co.getMetadata(), new TypeReference<>() {});
-        } catch (JsonProcessingException e) {
-            throw new InvalidArgumentException("Invalid metadata JSON format");
-        }
-        if (metadataMap.isEmpty()) {
-            throw new InvalidArgumentException("Variation must have at least one metadata field-value");
-        }
         ProductVariation variation = new ProductVariation();
         variation.setQuantityAvailable(co.getQuantityAvailable());
         variation.setPrice(co.getPrice());
