@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface ProductRepository extends JpaRepository<Product,Long> , JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product,Long> , JpaSpecificationExecutor<Product>,ProductRepositoryCustom{
     boolean existsByNameAndBrandAndCategoryAndSeller(String name, String brand, Category category, Seller seller);
     boolean existsByNameAndBrandAndCategoryAndSellerUserIdAndIdNot(String name, String brand, Category category, Long sellerId,Long productId);
     Page<Product> findBySeller(Seller seller, Pageable pageable);
