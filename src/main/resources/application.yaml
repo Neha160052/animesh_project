@@ -2,7 +2,7 @@ spring:
   application:
     name: e-commerce-project
   datasource:
-    url: jdbc:mysql://localhost:3306/ecom
+    url: jdbc:mysql://localhost:3306/ecommerece
     username: root
     password: Rootuser@023
 
