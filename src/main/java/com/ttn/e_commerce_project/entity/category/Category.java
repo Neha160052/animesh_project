@@ -31,7 +31,7 @@ public class Category extends Auditable {
     @JsonBackReference
     Category parent;
 
-    @Transient
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     @JsonManagedReference
     List<Category> children = new ArrayList<>();
 
