@@ -101,7 +101,7 @@ public class UserCommonService {
         return productRepo.findById(id).orElseThrow(()->new ResourceNotFoundException(PRODUCT_NOT_FOUND));
     }
 
-    public boolean verifyUser(String email)
+    public void verifyUser(String email)
     {
         User user = findUserByEmail(email);
         if(!user.isActive())
