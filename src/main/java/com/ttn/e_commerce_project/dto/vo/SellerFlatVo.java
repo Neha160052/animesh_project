@@ -13,6 +13,6 @@ public record SellerFlatVo(
         String state,
         String country,
         String addressLine,
-        int zipCode,
+        String zipCode,
         Label label)
 {}
