@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.PASSWORD_REGEX;
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
