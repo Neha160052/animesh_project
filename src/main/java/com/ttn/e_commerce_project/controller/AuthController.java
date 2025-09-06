@@ -50,7 +50,7 @@ public class AuthController{
             return ResponseEntity.ok(RESET_PASSWORD_EMAIL_SENT);
         }
 
-    @PostMapping("/reset-password")
+    @PutMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordCo resetPasswordCo)
     {
         String email = resetPasswordCo.getEmail();
