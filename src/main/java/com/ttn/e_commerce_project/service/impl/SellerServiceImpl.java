@@ -102,7 +102,10 @@ public class SellerServiceImpl implements SellerService {
            Seller seller = commonService.findSellerByEmail(email);
            User user = seller.getUser();
            Address address = user.getAddress().getFirst();
-           String imagePath = imageStorageUtil.buildProfileImageUrl(SELLER_USER_TYPE, user.getId());
+        String imagePath=DEFAULT_IMAGE_PATH;
+        if (imageStorageUtil.profileImageExists(SELLER_USER_TYPE, user.getId())) {
+            imagePath = imageStorageUtil.buildProfileImageUrl(SELLER_USER_TYPE, user.getId());
+        }
            return new SellerProfileVo(
                    user.getId(),
                    user.getFirstName(),
