@@ -82,6 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerProfileVo getMyProfile(String email) {
 
         Customer customer = commonService.findCustomerByEmail(email);
+        commonService.verifyUser(email);
         User user = customer.getUser();
         String imagePath=null;
         if (imageStorageUtil.profileImageExists(CUSTOMER_USER_TYPE, user.getId())) {
