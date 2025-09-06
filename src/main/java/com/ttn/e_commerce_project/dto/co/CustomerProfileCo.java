@@ -15,5 +15,6 @@ public class CustomerProfileCo {
      String firstName;
      @ValidName(message = "{last.name.invalid}")
      String lastName;
+     @Pattern(regexp = PHONE_REGEX, message = "{phone.number.invalid}")
      String contact;
 }
