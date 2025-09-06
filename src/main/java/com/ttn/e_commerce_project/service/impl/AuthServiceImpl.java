@@ -105,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
         if(check)
         {
         VerificationToken token = tokenService.createToken(user);
-        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token), PASSWORD_RESET_SUBJECT);
+        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token), PASSWORD_RESET_SUBJECT);}
     }
 
     @Override
