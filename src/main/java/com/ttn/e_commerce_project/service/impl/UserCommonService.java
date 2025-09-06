@@ -7,6 +7,8 @@ import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.exceptionhandling.AccountLockedException;
+import com.ttn.e_commerce_project.exceptionhandling.AccountNotActiveException;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.*;
