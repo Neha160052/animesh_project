@@ -44,7 +44,7 @@ public class AuthController{
         return ResponseEntity.ok(LOGOUT_SUCCESS);
     }
 
-    @GetMapping("/forgot-password")
+    @PostMapping("/forgot-password")
     public ResponseEntity<String> initiateResetPassword(@RequestParam String email) {
             authServiceImpl.initiatePasswordReset(email);
             return ResponseEntity.ok(RESET_PASSWORD_EMAIL_SENT);
