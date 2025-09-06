@@ -166,7 +166,7 @@ public class ProductServiceImpl implements ProductService {
         if((productUpdateCo.getIsCancellable()!=null))
             product.setCancellable(productUpdateCo.getIsCancellable());
         if((productUpdateCo.getIsReturnable()!=null))
-            product.setCancellable(productUpdateCo.getIsReturnable());
+            product.setReturnable(productUpdateCo.getIsReturnable());
         productRepo.save(product);
     }
 
