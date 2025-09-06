@@ -66,7 +66,16 @@ public class ImageStorageUtil {
 
         throw new FileNotFoundException("No image found for " + userType + " with id " + userId);
     }
-
+    public boolean profileImageExists(String userType, Long userId) {
+        Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
+        for (String ext : ALLOWED_EXTENSIONS) {
+            Path filePath = folder.resolve(userId + "." + ext);
+            if (Files.exists(filePath)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public String buildProfileImageUrl(String userType, Long id) {
         return "/" + userType + "/" + id + "/get-profile-image";
     }
