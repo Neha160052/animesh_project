@@ -92,11 +92,7 @@ public class SellerController {
 
     @GetMapping("{id}/get-profile-image")
     public ResponseEntity<byte[]> getProfileImage(@PathVariable Long id,Authentication authentication) throws IOException, RoleNotFoundException {
-        sellerService.checkOwnership(id, authentication.getName());
-        String role = authentication.getAuthorities().stream()
-                .findFirst().map(auth->
-                        auth.getAuthority().replace(ROLE_PREFIX,"").toLowerCase(Locale.ROOT)).orElseThrow(RoleNotFoundException::new);
-        byte[] arr = imageStorageUtil.loadImage(role, id);
+        byte[] arr = imageStorageUtil.loadImage(SELLER_USER_TYPE, id);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(arr);
