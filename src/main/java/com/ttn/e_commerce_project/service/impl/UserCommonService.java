@@ -98,5 +98,15 @@ public class UserCommonService {
     {
         return productRepo.findById(id).orElseThrow(()->new ResourceNotFoundException(PRODUCT_NOT_FOUND));
     }
+
+    public boolean verifyUser(String email)
+    {
+        User user = findUserByEmail(email);
+        if(!user.isActive())
+            throw  new AccountNotActiveException(ACCOUNT_NOT_ACTIVE);
+        if(user.isLocked())
+            throw new AccountLockedException(ACCOUNT_LOCKED);
+        return true;
+    }
 }
 
