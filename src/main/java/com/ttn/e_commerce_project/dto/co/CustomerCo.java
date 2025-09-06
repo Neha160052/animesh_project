@@ -17,7 +17,7 @@ public class CustomerCo {
 
     @NotBlank(message = "{email.required}")
     @Email(message = "{email.invalid}")
-    @Pattern(regexp ="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$\n",message = "{email.invalid}")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "{email.invalid}")
     String email;
 
     @NotBlank(message = "{phone.required}")
