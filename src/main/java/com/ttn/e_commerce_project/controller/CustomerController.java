@@ -147,5 +147,9 @@ public class CustomerController {
         Page<ProductDetailVo> similarProductsPage = productService.findSimilarProducts(productId,query,pageable);
         return ResponseEntity.ok(similarProductsPage);
     }
-
+    @GetMapping("/filter-for-category/{categoryId}")
+    public ResponseEntity<FilterCategoryVo> getCategoryFilters(@PathVariable Long categoryId) {
+        FilterCategoryVo filters = categoryService.getFilterForCategory(categoryId);
+        return ResponseEntity.ok(filters);
+    }
 }
