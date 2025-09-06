@@ -7,9 +7,7 @@ import com.ttn.e_commerce_project.dto.co.ProductCo;
 import com.ttn.e_commerce_project.dto.co.ProductUpdateCo;
 import com.ttn.e_commerce_project.dto.co.ProductVariationCo;
 import com.ttn.e_commerce_project.dto.co.UpdateVariationCo;
-import com.ttn.e_commerce_project.dto.vo.CategoryVo;
-import com.ttn.e_commerce_project.dto.vo.ProductVariationVo;
-import com.ttn.e_commerce_project.dto.vo.SellerProductVo;
+import com.ttn.e_commerce_project.dto.vo.*;
 import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.category.CategoryMetaDataValues;
 import com.ttn.e_commerce_project.entity.product.Product;
@@ -24,8 +22,8 @@ import com.ttn.e_commerce_project.respository.ProductVariationRepository;
 import com.ttn.e_commerce_project.service.EmailService;
 import com.ttn.e_commerce_project.service.ProductService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
+import com.ttn.e_commerce_project.util.ProductSpecification;
 import com.ttn.e_commerce_project.util.ProductVariationSpecification;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -42,6 +40,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
+import static javax.management.Query.and;
 
 @Slf4j
 @Service
@@ -266,19 +265,6 @@ public class ProductServiceImpl implements ProductService {
             variation.setPrimaryImageName(primaryImageName);
             productVariationRepo.save(variation);
         }
-    }
-
-    private SellerProductVo mapToVo(Product product) {
-        SellerProductVo vo = new SellerProductVo();
-        vo.setId(product.getId());
-        vo.setBrand(product.getBrand());
-        vo.setDescription(product.getDescription());
-        vo.setName(product.getName());
-        Category category = product.getCategory();
-        if (category != null) {
-            vo.setCategory(new CategoryVo(category.getId(), category.getName(), null));
-        }
-        return vo;
     }
 
     @Override
