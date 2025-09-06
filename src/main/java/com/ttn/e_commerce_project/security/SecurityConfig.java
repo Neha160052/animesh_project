@@ -1,8 +1,6 @@
 package com.ttn.e_commerce_project.security;
 
 import com.ttn.e_commerce_project.service.impl.UserDetailServiceImpl;
-import com.ttn.e_commerce_project.util.JwtUtil;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
