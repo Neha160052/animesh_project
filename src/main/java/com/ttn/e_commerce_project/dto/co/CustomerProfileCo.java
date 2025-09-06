@@ -1,6 +1,7 @@
 package com.ttn.e_commerce_project.dto.co;
 
 import com.ttn.e_commerce_project.customvalidation.ValidName;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
