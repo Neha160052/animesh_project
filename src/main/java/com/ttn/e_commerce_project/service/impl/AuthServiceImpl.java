@@ -111,6 +111,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void resetUserPassword(String email,String password, String confirmPassword)
     {
+        userCommonService.verifyUser(email);
         try {
             if(password.matches(confirmPassword)) {
                 userRepository.updatePassword(email, passwordEncoder.encode(password));
