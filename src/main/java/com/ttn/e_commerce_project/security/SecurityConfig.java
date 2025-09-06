@@ -38,7 +38,10 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(request->request
-                .requestMatchers("/register/**", "/activate/**", "/auth/login","auth/forgot-password","auth/reset-password","auth/generate-new-access-token").permitAll()
+                                .requestMatchers("/register/**", "/activate/**", "/auth/login"
+                                        , "auth/forgot-password", "auth/reset-password",
+                                        "auth/generate-new-access-token",
+                                        "/customer/{id}/get-profile-image","/seller/{id}/get-profile-image").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/seller/**").hasRole("SELLER")
                 .requestMatchers("/customer/**").hasRole("CUSTOMER")
