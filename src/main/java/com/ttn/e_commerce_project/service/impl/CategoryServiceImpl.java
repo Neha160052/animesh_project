@@ -10,6 +10,7 @@ import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CategoryMetadataFieldRepository;
 import com.ttn.e_commerce_project.respository.CategoryMetadataFieldValueRepo;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
+import com.ttn.e_commerce_project.respository.ProductRepository;
 import com.ttn.e_commerce_project.service.CategoryService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -22,10 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ttn.e_commerce_project.constants.UserConstants.CATEGORY_NOT_FOUND;
@@ -39,6 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryMetadataFieldRepository categoryMetadataRepo;
     CategoryRepository categoryRepo;
     CategoryMetadataFieldValueRepo metadataFieldValueRepo;
+    ProductRepository productRepository;
 
     public CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo) {
 
@@ -323,9 +322,69 @@ public class CategoryServiceImpl implements CategoryService {
             return List.of(category);
         }
     }
+
+    public FilterCategoryVo getFilterForCategory(Long categoryId)
+    {
+        Set<Long> relevantCategoryIds = getCategoryAndAllChildrenIds(categoryId);
+
+        FilterStatsVo productStats = productRepository.getFilterStatsForCategories(relevantCategoryIds);
+
+        List<CategoryMetaDataValues> rawMetadata = metadataFieldValueRepo.findByCategoryId(categoryId);
+
+        List<FilterCategoryVo.MetadataField> metadata = transformMetadata(rawMetadata);
+        return new FilterCategoryVo(metadata, productStats.getBrands(), productStats.getPriceRange());
+    }
+
     private void populateChildren(Category category) {
         List<Category> children = categoryRepo.findByParentId(category.getId());
         category.setChildren(children);
+    }
+
+    private Set<Long> getCategoryAndAllChildrenIds(Long rootCategoryId) {
+        // First, ensure the root category actually exists.
+        if (!categoryRepo.existsById(rootCategoryId)) {
+            throw new ResourceNotFoundException("Category with ID " + rootCategoryId + " not found.");
+        }
+
+        Set<Long> allIds = new HashSet<>();
+        Queue<Long> queue = new LinkedList<>();
+
+        queue.add(rootCategoryId);
+        allIds.add(rootCategoryId);
+
+        while (!queue.isEmpty()) {
+            Long currentId = queue.poll();
+            List<Category> children = categoryRepo.findByParentId(currentId);
+            for (Category child : children) {
+                // The add method of a Set returns true if the element was new.
+                // This check prevents adding duplicates to the queue if there are circular references.
+                if (allIds.add(child.getId())) {
+                    queue.add(child.getId());
+                }
+            }
+        }
+        return allIds;
+    }
+    private List<FilterCategoryVo.MetadataField> transformMetadata(List<CategoryMetaDataValues> rawMetadata) {
+        if (rawMetadata == null || rawMetadata.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Using a map to group values by their field name (e.g., "RAM" -> ["8GB", "16GB"])
+        Map<String, List<String>> groupedMetadata = new LinkedHashMap<>();
+
+        for (CategoryMetaDataValues value : rawMetadata) {
+            String fieldName = value.getCategoryMetaDataField().getName();
+            String fieldValue = value.getFieldValues();
+
+            groupedMetadata.computeIfAbsent(fieldName, k -> new ArrayList<>()).add(fieldValue);
+        }
+        List<FilterCategoryVo.MetadataField> result = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : groupedMetadata.entrySet()) {
+            result.add(new FilterCategoryVo.MetadataField(entry.getKey(), entry.getValue()));
+        }
+
+        return result;
     }
 }
 
