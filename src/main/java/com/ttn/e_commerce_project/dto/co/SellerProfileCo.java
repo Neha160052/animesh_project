@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,16 +26,15 @@ public class SellerProfileCo {
     String lastName;
 
     // SELLER
-    @Pattern(regexp = "^[0-9]{7,15}$", message = "{company.contact.size}")
+    @Pattern(regexp = COMPANY_CONTACT, message = "{company.contact.size}")
     String companyContact;
 
+    @Pattern(regexp = COMPANY_NAME_REGEX,message ="{company.name.invalid}")
     @Size(min = 2, max = 60, message = "{company.name.size}")
     String companyName;
 
-    String image;
-
     // Indian GSTIN (15 chars): 2 digits + 5 letters + 4 digits + 1 letter + 1 alnum + 'Z' + 1 alnum
-    @Pattern(regexp = "^\\d{2}[A-Z]{5}\\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
+    @Pattern(regexp = GST_REGEX,
             message = "{gst.invalid}")
     String gst;
 
