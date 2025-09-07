@@ -74,7 +74,10 @@ public class ImageStorageUtil {
         return false;
     }
     public String buildProfileImageUrl(String userType, Long id) {
-        return "/" + userType + "/" + id + "/get-profile-image";
+        return UriComponentsBuilder.newInstance()
+                .path("/{userType}/{id}/get-profile-image") // Define the path template
+                .buildAndExpand(userType, id)              // Supply the variables
+                .toUriString();
     }
 
     public String buildSecondaryImageName(Long variationId, int index) {
