@@ -37,7 +37,7 @@ public class SellerCo {
     String gst;
 
     @NotBlank(message = "{company.name.required}")
-    @ValidName(message = "{company.name.invalid}")
+    @Pattern(regexp = COMPANY_NAME_REGEX,message="{company.name.invalid}")
     String companyName;
 
     @Valid
