@@ -123,8 +123,8 @@ public class SellerController {
 
     @GetMapping("/view-all-products")
     public ResponseEntity<Page<SellerProductVo>> viewAllProducts(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "0")@Min(value = 0, message = "value should be >=0") int page,
+            @RequestParam(required = false, defaultValue = "10")@Min(value = 1, message = "value should be >=1") int size,
             @RequestParam(required = false, defaultValue = "id") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String order)
     {
