@@ -15,7 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     EntityManager entityManager;
