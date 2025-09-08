@@ -13,7 +13,7 @@ import static com.ttn.e_commerce_project.constants.UserConstants.EMAIL_SUBJECT;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmailServiceImpl  implements EmailService {
 
     final JavaMailSender javaMailSender;
