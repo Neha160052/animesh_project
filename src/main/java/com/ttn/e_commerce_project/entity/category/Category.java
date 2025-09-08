@@ -41,5 +41,6 @@ public class Category extends Auditable {
     Set<Product> products;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     Set<CategoryMetaDataValues> categoryMetaDataValues = new HashSet<>();
 }

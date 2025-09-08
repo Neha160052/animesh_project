@@ -1,5 +1,6 @@
 package com.ttn.e_commerce_project.entity.category;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ttn.e_commerce_project.entity.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,6 +21,7 @@ public class CategoryMetaDataValues extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     Category category;
 
     @ManyToOne

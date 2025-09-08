@@ -6,11 +6,14 @@ import com.ttn.e_commerce_project.dto.co.CustomerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.*;
 import com.ttn.e_commerce_project.entity.category.Category;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.service.CategoryService;
 import com.ttn.e_commerce_project.service.CustomerService;
 import com.ttn.e_commerce_project.service.ProductService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,10 +32,10 @@ import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
-import java.util.Locale;
 
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
+@Validated
 @RestController
 @RequestMapping("/customer")
 @RequiredArgsConstructor
@@ -54,7 +58,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getMyAddresses(email));
     }
 
-    @PatchMapping("/update-profile")
+    @PutMapping("/update-profile")
     public ResponseEntity<String> updateMyProfile(Authentication authentication, @RequestBody CustomerProfileCo customerProfileCo) {
         String email = authentication.getName();
         String message = customerService.updateMyProfile(email, customerProfileCo);
@@ -89,22 +93,24 @@ public class CustomerController {
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file,
                                               Principal principal) throws IOException {
+        if (file.isEmpty())
+            throw new InvalidArgumentException("File must not be empty");
         customerService.checkOwnership(id, principal.getName());
         String path = imageStorageUtil.saveImage(CUSTOMER_USER_TYPE, id.toString(), file);
         return ResponseEntity.ok(IMAGE_UPLOADED+ path);
     }
 
     @GetMapping("{id}/get-profile-image")
-    public ResponseEntity<byte[]> getProfileImage(@PathVariable Long id,Authentication authentication) throws IOException, RoleNotFoundException {
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable Long id,Authentication authentication) throws IOException{
         byte[] arr = imageStorageUtil.loadImage(CUSTOMER_USER_TYPE, id);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(arr);
     }
 
-    @GetMapping("/get-all-categories")
+    @GetMapping("/get-all-categories/{categoryId}")
     public ResponseEntity<List<Category>> listCategories(
-                                           @RequestParam(required = false) Long categoryId) {
+                                           @PathVariable(required = false) Long categoryId) {
         List<Category> categories = categoryService.getCategories(categoryId);
         return ResponseEntity.ok(categories);
     }
@@ -117,9 +123,9 @@ public class CustomerController {
 
     @GetMapping("/view-all-variations/{categoryId}")
     public ResponseEntity<Page<ProductCategoryVariationVo>> viewAllProductAllVariations(@PathVariable Long categoryId,
-                                                                                        @RequestParam(defaultValue = "10") int max,
-                                                                                        @RequestParam(defaultValue = "0") int offset,
-                                                                                        @RequestParam(defaultValue = "id") String sort,
+                                                                                        @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
+                                                                                        @RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
+                                                                                        @RequestParam(defaultValue = "id")  String sort,
                                                                                         @RequestParam(defaultValue = "ASC") Sort.Direction order,
                                                                                         @RequestParam(required = false) String query) {
         Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
@@ -130,11 +136,11 @@ public class CustomerController {
 
     @GetMapping("/view-similar-products/{productId}")
     public ResponseEntity<Page<ProductDetailVo>> viewAllSimilarProducts(@PathVariable Long productId,
-                                                                                        @RequestParam(defaultValue = "10") int max,
-                                                                                        @RequestParam(defaultValue = "0") int offset,
-                                                                                        @RequestParam(defaultValue = "id") String sort,
-                                                                                        @RequestParam(defaultValue = "ASC") Sort.Direction order,
-                                                                                        @RequestParam(required = false) String query) {
+                                                                        @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
+                                                                        @RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
+                                                                        @RequestParam(defaultValue = "id")  String sort,
+                                                                        @RequestParam(defaultValue = "ASC") Sort.Direction order,
+                                                                        @RequestParam(required = false) String query) {
         Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
 
         Page<ProductDetailVo> similarProductsPage = productService.findSimilarProducts(productId,query,pageable);

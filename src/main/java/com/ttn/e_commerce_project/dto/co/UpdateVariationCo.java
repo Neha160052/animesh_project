@@ -18,7 +18,7 @@ public class UpdateVariationCo {
 
     Long quantityAvailable;
 
-    @Positive(message = "variation.price.range")
+    @Positive(message = "{variation.price.range}")
     Double price;
 
     String metadata;

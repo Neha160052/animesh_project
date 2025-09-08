@@ -26,7 +26,6 @@ public class Seller extends Auditable
     String gst;
     String companyContact;
     String companyName;
-    String image;
 
     @OneToMany(mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)
     List<Product> product;

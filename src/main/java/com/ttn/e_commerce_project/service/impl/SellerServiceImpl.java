@@ -135,7 +135,6 @@ public class SellerServiceImpl implements SellerService {
 
         if (sellerProfileCo.getCompanyContact() != null) seller.setCompanyContact(sellerProfileCo.getCompanyContact().trim());
         if (sellerProfileCo.getCompanyName() != null) seller.setCompanyName(sellerProfileCo.getCompanyName().trim());
-        if (sellerProfileCo.getImage() != null) seller.setImage(sellerProfileCo.getImage().trim());
         if (sellerProfileCo.getGst() != null)
         {
             if (sellerRepository.existsByGst(sellerProfileCo.getGst())) {

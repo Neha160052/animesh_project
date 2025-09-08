@@ -11,6 +11,8 @@ public final class UserConstants {
     public static final String ROLE_NOT_FOUND = "No role found for authority : %s";
     public static final char[] ALPHABETS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String SYSTEM_AUDITOR = "system";
+    public static final String PRODUCTS_PREFIX= "products";
+    public static final String SECONDARY_IMAGES_PREFIX= "secondary_images";
 
     // User
     public static final String USER_NOT_FOUND_BY_EMAIL = "No account found with email: ";
@@ -73,6 +75,7 @@ public final class UserConstants {
     public static final String GST_ALREADY_IN_USE = "GST already exists provide unique one";
     public static final String COMPANY_NAME_ALREADY_EXISTS = "Company name already exists provide a unique name.";
     public static final String NAME_REGEX = "^[A-Za-z]{2,}$";
+    public static final String COMPANY_NAME_REGEX = "^[A-Za-z0-9 .,&'\\-]{2,100}$";
     public static final String GLOBAL_LOCATION_REGEX = "^[\\p{L}.'-]+(?: [\\p{L}.'-]+)*$";
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$";
     public static final String PHONE_REGEX = "^(?:\\+91[6-9]\\d{9}|\\+1[2-9]\\d{2}[2-9]\\d{6})$";
@@ -81,6 +84,8 @@ public final class UserConstants {
     public static final String COMPANY_CONTACT = "^[6-9]\\d{9}$";
     public static final String ZIPCODE_REGEX = "^\\d{6}$";
     public static final String DEFAULT_IMAGE_PATH = "Image not uploaded";
+    public static final String PRODUCT_INACTIVE_OR_DELETED = "Product is either deleted or inactive";
+
     // Account activation
     public static final String ACCOUNT_ACTIVATED = "Account activated Successfully";
     public static final String INVALID_OR_EXPIRED_TOKEN = "Invalid or expired token";
@@ -117,7 +122,6 @@ public final class UserConstants {
     public static final String ACTIVATION_LINK_BASE = "http://localhost:8080/activate?token=";
     public static final String BASE_PATH = "uploads";
     public static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "bmp");
-
 
 
     // Headers

@@ -53,7 +53,7 @@ public class SellerController {
         return ResponseEntity.ok(sellerService.getSellerProfile(email));
     }
 
-    @PatchMapping("/update/profile")
+    @PutMapping("/update/profile")
     public ResponseEntity<String> patchMyProfile(Authentication auth,
                                                  @Valid @RequestBody SellerProfileCo sellerProfileCo)
     {
@@ -69,7 +69,7 @@ public class SellerController {
         return ResponseEntity.ok(PASSWORD_UPDATED);
     }
 
-    @PatchMapping("/address/{id}")
+    @PutMapping("/address/{id}")
     public ResponseEntity<String> updateAddress(
             Authentication authentication,
             @PathVariable Long id,

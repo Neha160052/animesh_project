@@ -13,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 public class CategoryCo {
 
    @NotBlank(message = "Category name cannot be blank")
-   @ValidName(message = "{category.name.invalid}")
    String name;
    Long parentId;
 }

@@ -1,6 +1,7 @@
 package com.ttn.e_commerce_project.util;
 
 import com.ttn.e_commerce_project.entity.product.Product;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;

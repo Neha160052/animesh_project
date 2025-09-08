@@ -19,18 +19,18 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ProductVariationCo {
 
-        @NotNull
+        @NotNull(message = "{variation.productId.notNull}")
         Long productId;
 
-        @NotNull
-        @Min(value = 0, message = "variation.quantity.range")
+        @NotNull(message = "{variation.quantity.notNull}")
+        @Min(value = 0, message = "{variation.quantity.range}")
         Long quantityAvailable;
 
-        @NotNull(message = "variation.price.notNull")
-        @Positive(message = "variation.price.range")
+        @NotNull(message = "{variation.price.notNull}")
+        @Positive(message = "{variation.price.range}")
         Double price;
 
-        @NotNull(message = "variation.metadata.notNull")
+        @NotNull(message = "{variation.metadata.notNull}")
         String metadata;
 
         MultipartFile primaryImage;
