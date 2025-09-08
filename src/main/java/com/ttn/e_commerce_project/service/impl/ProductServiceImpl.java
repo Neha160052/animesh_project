@@ -136,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
         productRepo.delete(product);
     }
 
-    public Page<SellerProductVo> viewAllProducts(Pageable pageable)
+    public Page<SellerProductVo> viewAllProductsForSeller(Pageable pageable)
     {
        String email = SecurityContextHolder.getContext().getAuthentication().getName();
        Seller seller = commonService.findSellerByEmail(email);
@@ -327,7 +327,7 @@ public class ProductServiceImpl implements ProductService {
         return similarProductsPage.map(this::mapToProductDetailVo);
     }
 
-    public Page<ProductDetailVo> viewAllProducts(String query, Pageable pageable) {
+    public Page<ProductDetailVo> viewAllProductsForSeller(String query, Pageable pageable) {
 
        validationSpecification.validateQuery(query);
         Specification<Product> spec = ProductSpecification.isActive()
