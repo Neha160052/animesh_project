@@ -26,7 +26,7 @@ public class InactiveProductScheduler {
     @Value("${admin.default.email}")
     String adminEmail;
 
-    @Scheduled(cron = "0 0 20 * * *")
+    @Scheduled(cron = "0 0 9 * * *")
     public void notifyAdminOfInactiveProducts() {
         log.info("Running scheduled job: Checking for recent inactive products...");
 
