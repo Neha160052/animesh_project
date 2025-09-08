@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "AuditAware")
 @EnableAsync
+@EnableScheduling
 public class ECommerceProjectApplication {
 
 	public static void main(String[] args) {
