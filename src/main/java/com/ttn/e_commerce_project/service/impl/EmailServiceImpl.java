@@ -39,5 +39,13 @@ public class EmailServiceImpl  implements EmailService {
         javaMailSender.send(message);
     }
 
+    @Async
+    public void sendProductInactiveMail(String email, String subject, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(body);
+        javaMailSender.send(message);
+    }
 
 }
