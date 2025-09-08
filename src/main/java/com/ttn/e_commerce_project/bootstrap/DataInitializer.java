@@ -44,10 +44,10 @@ public class DataInitializer implements CommandLineRunner {
         }));
 
         Role adminRole = roleRepository.findByAuthority(RoleAuthority.ADMIN).orElseThrow(()-> new ResourceNotFoundException("Role not found"));
-        if(!userRepository.existsByEmail("animesh.yadav@tothenew.com"))
+        if(!userRepository.existsByEmail(adminEmail))
         {
             User admin = new User();
-            admin.setEmail("animesh.yadav@tothenew.com");
+            admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode(password));
             admin.setFirstName("admin");
             admin.setPasswordUpdateDate(ZonedDateTime.now());

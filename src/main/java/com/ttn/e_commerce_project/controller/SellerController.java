@@ -181,8 +181,6 @@ public class SellerController {
         return ResponseEntity.ok(variationPage);
     }
 
-    // TODO : BUILD AN ENDPOINT FOR THIS CONTROLLER
-
     @GetMapping("/primary-product-image/{id}")
     public ResponseEntity<byte[]> viewProductImage(@PathVariable Long id ) throws IOException {
         byte[] arr = imageStorageUtil.loadImage(PRODUCTS_PREFIX, id);

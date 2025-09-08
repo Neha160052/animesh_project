@@ -5,8 +5,6 @@ import com.ttn.e_commerce_project.entity.product.Product;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -16,9 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> , JpaSpecificationExecutor<Product>,ProductRepositoryCustom{
-    @Override
-    @EntityGraph(value = "Product.withVariations")
-    Page<Product> findAll(Specification<Product> spec, Pageable pageable);
     boolean existsByNameAndBrandAndCategoryAndSeller(String name, String brand, Category category, Seller seller);
     boolean existsByNameAndBrandAndCategoryAndSellerUserIdAndIdNot(String name, String brand, Category category, Long sellerId,Long productId);
     Page<Product> findBySeller(Seller seller, Pageable pageable);
