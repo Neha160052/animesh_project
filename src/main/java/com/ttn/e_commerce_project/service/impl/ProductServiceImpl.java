@@ -124,6 +124,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long productid) {
+        log.info("Entering deleteProduct with productId: {}", productid);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Seller seller = commonService.findSellerByEmail(email);
         Product product = commonService.findProductById(productid);
