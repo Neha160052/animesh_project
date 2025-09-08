@@ -1,8 +1,6 @@
 package com.ttn.e_commerce_project.util;
 
 import com.ttn.e_commerce_project.entity.product.Product;
-import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
-import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.respository.SellerRepository;
 import jakarta.persistence.criteria.JoinType;
@@ -15,9 +13,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.ttn.e_commerce_project.constants.UserConstants.CATEGORY_NOT_FOUND;
-import static com.ttn.e_commerce_project.constants.UserConstants.SELLER_NOT_FOUND;
 
 @FieldDefaults(level= AccessLevel.PRIVATE,makeFinal = true)
 @RequiredArgsConstructor
