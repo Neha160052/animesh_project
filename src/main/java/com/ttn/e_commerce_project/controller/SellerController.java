@@ -165,8 +165,8 @@ public class SellerController {
     @GetMapping("/view-all-variations/{productId}")
     public ResponseEntity<Page<ProductVariationVo>> viewAllProductVariations(
             @PathVariable Long productId,
-            @RequestParam(defaultValue = "10") int max,
-            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10")@Min(value = 0, message = "value should be >=0") int max,
+            @RequestParam(defaultValue = "0")@Min(value = 0, message = "value should be >=0") int offset,
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "ASC") Sort.Direction order,
             @RequestParam(required = false) String query,
