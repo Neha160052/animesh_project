@@ -133,7 +133,6 @@ public class AuthServiceImpl implements AuthService {
         }
         userRepository.save(user);
     }
-//  To Do : send email to the user to stating that the account has been locked
 
     public void resetFailedAttempts(User user) {
         user.setInvalidAttemptCount(0);

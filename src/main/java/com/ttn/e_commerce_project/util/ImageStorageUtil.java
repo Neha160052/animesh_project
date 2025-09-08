@@ -23,10 +23,10 @@ public class ImageStorageUtil {
 
 
     public String saveImage(String userType, String userId, MultipartFile file) throws IOException {
-        // Create the subfolder for the userType (customers or sellers)
+
         Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
         if (!Files.exists(folder)) {
-            Files.createDirectories(folder); // make directory if missing
+            Files.createDirectories(folder);
         }
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || !originalFilename.contains(".")) {
@@ -35,14 +35,12 @@ public class ImageStorageUtil {
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1)
                 .toLowerCase(Locale.ROOT);
 
-        // Validate allowed extensions
+
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
             throw new IOException("Unsupported file type: " + extension);
         }
-        // Final path format: uploads/{userType}/{userId}.{ext}
         Path filePath = folder.resolve(userId + "." + extension);
 
-        // Save file bytes (overwrite if exists)
         Files.write(filePath, file.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         log.info("Image saved at {}", filePath);
@@ -52,7 +50,6 @@ public class ImageStorageUtil {
         Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
         log.info(folder.toString());
 
-        // Check each allowed extension to see if file exists
         for (String ext : ALLOWED_EXTENSIONS) {
             Path filePath = folder.resolve(userId + "." + ext);
             log.info(filePath.toString());
@@ -76,8 +73,8 @@ public class ImageStorageUtil {
     }
     public String buildProfileImageUrl(String userType, Long id) {
         return UriComponentsBuilder.newInstance()
-                .path("/{userType}/{id}/get-profile-image") // Define the path template
-                .buildAndExpand(userType, id)              // Supply the variables
+                .path("/{userType}/{id}/get-profile-image")
+                .buildAndExpand(userType, id)
                 .toUriString();
     }
 

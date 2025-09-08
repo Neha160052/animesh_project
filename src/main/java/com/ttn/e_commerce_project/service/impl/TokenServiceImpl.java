@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class TokenServiceImpl implements TokenService      // service to create tokens for activation and reset password.
+public class TokenServiceImpl implements TokenService
 {
     TokenRepository tokenRepository;
 

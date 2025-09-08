@@ -23,7 +23,7 @@ public class ValidationSpecification {
 
     public void validateQuery(String query) {
         if (!StringUtils.hasText(query)) {
-            return; // Nothing to validate
+            return;
         }
         String[] criteria = query.split(",");
         for (String criterion : criteria) {
@@ -33,7 +33,6 @@ public class ValidationSpecification {
             }
             String key = parts[0].trim();
             String value = parts[1].trim();
-            // Check for empty or blank search values
             if (!StringUtils.hasText(value)) {
                 throw new InvalidArgumentException("Search value for '" + key + "' cannot be empty.");
             }

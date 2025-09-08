@@ -116,9 +116,9 @@ public class AdminServiceImpl implements AdminService {
         } else {
             updated = customerRepository.deactivateCustomerIfActive(id);
             if (updated == 1) {
-                return true; // Successfully deactivated
+                return true;
             }
-            return false; // Already deactivated
+            return false;
         }
     }
 
@@ -129,9 +129,9 @@ public class AdminServiceImpl implements AdminService {
         } else {
             updated = sellerRepository.deactivateSellerIfActive(id);
             if (updated == 1) {
-                return true; // Successfully deactivated
+                return true;
             }
-            return false; // Already deactivated
+            return false;
         }
     }
 

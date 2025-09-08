@@ -128,8 +128,6 @@ public class SellerServiceImpl implements SellerService {
         Seller seller = commonService.findSellerByEmail(email);
         User user = seller.getUser();
 
-        // these null checks are necessary because the data can be present or even not present due to patch type of request
-
         if (sellerProfileCo.getFirstName()!= null) user.setFirstName(sellerProfileCo.getFirstName().trim());
         if (sellerProfileCo.getLastName()!= null) user.setLastName(sellerProfileCo.getLastName().trim());
 
@@ -179,7 +177,6 @@ public class SellerServiceImpl implements SellerService {
         Address address = addressRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(ADDRESS_NOT_FOUND));
 
-        // update fields
         address.setAddressLine(addressCo.getAddressLine());
         address.setCity(addressCo.getCity());
         address.setState(addressCo.getState());
@@ -191,7 +188,6 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public void checkOwnership(Long id, String email) {
         Seller seller = commonService.findSellerByEmail(email);
-        // Compare DB id with requested id
         if (!(seller.getUserid()==id)) {
             throw new AccessDeniedException(ACCESS_DENIED);
         }

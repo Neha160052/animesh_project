@@ -242,16 +242,16 @@ public class CategoryServiceImpl implements CategoryService {
             Long fieldId = fieldUpdate.getMetaDataFieldId();
             List<String> values = fieldUpdate.getValues();
 
-            // 2. Validate metadata field
+
             categoryMetadataRepo.findById(fieldId)
                     .orElseThrow(() -> new ResourceNotFoundException("Metadata field with given id not found"));
 
-            // 3. Ensure uniqueness within the request payload
+
             if (values.size() != values.stream().distinct().count()) {
                 throw new InvalidArgumentException("Duplicate values provided for field id: " + fieldId);
             }
 
-            // 4. Fetch existing entities for this (category, field) pair
+
             List<CategoryMetaDataValues> existingEntities =
                     metadataFieldValueRepo.findByCategoryIdAndCategoryMetaDataFieldId(categoryId, fieldId);
 
@@ -260,8 +260,8 @@ public class CategoryServiceImpl implements CategoryService {
                 CategoryMetaDataValues entity = existingEntities.get(i);
                 String newValue = values.get(i);
 
-                entity.setFieldValues(newValue); // update the value
-                metadataFieldValueRepo.save(entity); // Hibernate will issue UPDATE
+                entity.setFieldValues(newValue);
+                metadataFieldValueRepo.save(entity);
             }
         }
     }
@@ -309,7 +309,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     public List<CategoryWithChildrenVo> getCategories(Long categoryId) {
         if (categoryId == null) {
-            // Case 1: No ID -> return root categories (as simple VOs)
+
             List<Category> roots = categoryRepo.findByParentIsNull();
             return roots.stream()
                     .map(rootCategory -> {
@@ -318,7 +318,7 @@ public class CategoryServiceImpl implements CategoryService {
                     })
                     .toList();
         } else {
-            // Case 2: ID is provided -> return that category with its immediate children
+
             Category category = categoryRepo.findById(categoryId)
                     .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + categoryId));
 
@@ -355,10 +355,7 @@ public class CategoryServiceImpl implements CategoryService {
         return new FilterCategoryVo(metadata, productStats.getBrands(), productStats.getPriceRange());
     }
 
-    private void populateChildren(Category category) {
-        List<Category> children = categoryRepo.findByParentId(category.getId());
-        category.setChildren(children);
-    }
+
 
     private Set<Long> getCategoryAndAllChildrenIds(Long rootCategoryId) {
         // First, ensure the root category actually exists.
@@ -376,8 +373,6 @@ public class CategoryServiceImpl implements CategoryService {
             Long currentId = queue.poll();
             List<Category> children = categoryRepo.findByParentId(currentId);
             for (Category child : children) {
-                // The add method of a Set returns true if the element was new.
-                // This check prevents adding duplicates to the queue if there are circular references.
                 if (allIds.add(child.getId())) {
                     queue.add(child.getId());
                 }
@@ -390,7 +385,6 @@ public class CategoryServiceImpl implements CategoryService {
             return Collections.emptyList();
         }
 
-        // Using a map to group values by their field name (e.g., "RAM" -> ["8GB", "16GB"])
         Map<String, List<String>> groupedMetadata = new LinkedHashMap<>();
 
         for (CategoryMetaDataValues value : rawMetadata) {

@@ -101,13 +101,11 @@ public class ProductSpecification {
             query.distinct(true);
             root.fetch("productVariation", JoinType.LEFT);
 
-            // Predicate 1: Match products in the same category
             Predicate categoryMatch = criteriaBuilder.equal(
                     root.get("category").get("id"),
                     sourceProduct.getCategory().getId()
             );
 
-            // Predicate 2: Exclude the original product from the list
             Predicate notItself = criteriaBuilder.notEqual(
                     root.get("id"),
                     sourceProduct.getId()

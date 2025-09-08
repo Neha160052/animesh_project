@@ -200,7 +200,6 @@ public class CustomerServiceImpl implements CustomerService {
     public void checkOwnership(Long id, String email) {
 
         Customer customer = commonService.findCustomerByEmail(email);
-        // Compare DB id with requested id
         if (!(customer.getUserid()==id)) {
             throw new AccessDeniedException(ACCESS_DENIED);
         }
