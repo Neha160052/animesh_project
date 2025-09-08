@@ -24,6 +24,6 @@ public interface CategoryService {
     ResponseEntity<String> addMetadata(CategoryMetaDataCo metaDataCo);
     void updateMetadataValues(@Valid CategoryMetaDataUpdateCo metaDataUpdateCo);
     List<SellerListCategoryVo> getAllLeafCategories();
-    List<Category> getCategories(Long categoryId);
+    List<CategoryWithChildrenVo> getCategories(Long categoryId);
     FilterCategoryVo getFilterForCategory(Long categoryId);
 }
