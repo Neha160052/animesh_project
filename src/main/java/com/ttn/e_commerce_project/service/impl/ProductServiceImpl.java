@@ -138,11 +138,15 @@ public class ProductServiceImpl implements ProductService {
 
     public Page<SellerProductVo> viewAllProductsForSeller(Pageable pageable)
     {
-       String email = SecurityContextHolder.getContext().getAuthentication().getName();
-       Seller seller = commonService.findSellerByEmail(email);
-       Page<Product> products = productRepo.findBySeller(seller,pageable);
-        log.info(products.getContent().toString());
-       return products.map(this::mapToVo);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Seller seller = commonService.findSellerByEmail(email);
+
+        Specification<Product> spec = ProductSpecification.hasSeller(seller);
+        if (StringUtils.hasText(query)) {
+            spec = spec.and(ProductSpecification.filterByBrandOrName(query));
+        }
+        Page<Product> products = productRepo.findAll(spec, pageable);
+        return products.map(this::mapToVo);
     }
 
     @Override
