@@ -307,20 +307,40 @@ public class CategoryServiceImpl implements CategoryService {
         return chain;
     }
 
-    public List<Category> getCategories(Long categoryId) {
+    public List<CategoryWithChildrenVo> getCategories(Long categoryId) {
         if (categoryId == null) {
-            // Case 1: No categoryId → return root categories with children
+            // Case 1: No ID -> return root categories (as simple VOs)
             List<Category> roots = categoryRepo.findByParentIsNull();
-            roots.forEach(this::populateChildren);
-            return roots;
+            return roots.stream()
+                    .map(rootCategory -> {
+                        List<Category> children = categoryRepo.findByParentId(rootCategory.getId());
+                        return convertToVoWithChildren(rootCategory, children);
+                    })
+                    .toList();
         } else {
-            // Case 2: Specific category → return category with children
+            // Case 2: ID is provided -> return that category with its immediate children
             Category category = categoryRepo.findById(categoryId)
                     .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + categoryId));
 
-            populateChildren(category);
-            return List.of(category);
+            List<Category> children = categoryRepo.findByParentId(category.getId());
+            CategoryWithChildrenVo vo = convertToVoWithChildren(category, children);
+            return List.of(vo);
         }
+    }
+
+    private CategoryWithChildrenVo convertToVoWithChildren(Category category, List<Category> children) {
+        CategoryWithChildrenVo vo = new CategoryWithChildrenVo();
+        vo.setId(category.getId());
+        vo.setName(category.getName());
+
+        if (children != null && !children.isEmpty()) {
+            vo.setChildren(
+                    children.stream()
+                            .map(child -> new CategoryVo(child.getId(), child.getName(),null))
+                            .toList()
+            );
+        }
+        return vo;
     }
 
     public FilterCategoryVo getFilterForCategory(Long categoryId)
