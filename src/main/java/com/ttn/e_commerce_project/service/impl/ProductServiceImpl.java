@@ -381,7 +381,8 @@ public class ProductServiceImpl implements ProductService {
         vo.setQuantityAvailable(variation.getQuantityAvailable());
         vo.setPrice(variation.getPrice());
         vo.setMetadata(variation.getMetadata());
-        vo.setPrimaryImageName(variation.getPrimaryImageName());
+        if(variation.getPrimaryImageName()!=null)
+         {vo.setPrimaryImageName(variation.getPrimaryImageName());}
         vo.setIsActive(variation.isActive());
         vo.setProductId(variation.getProduct().getId());
         vo.setProductName(variation.getProduct().getName());
