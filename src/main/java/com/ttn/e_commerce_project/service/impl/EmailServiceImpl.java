@@ -16,7 +16,9 @@ import static com.ttn.e_commerce_project.constants.UserConstants.EMAIL_SUBJECT;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class EmailServiceImpl  implements EmailService {
 
-    JavaMailSender javaMailSender;
+    final JavaMailSender javaMailSender;
+    @Value("${admin.default.email}")
+    String adminEmail;
 
     @Async
     public void sendLinkWithSubjectEmail(String toEmail, String activationLink, String subject)
