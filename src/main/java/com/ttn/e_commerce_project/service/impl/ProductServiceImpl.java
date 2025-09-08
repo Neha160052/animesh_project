@@ -357,7 +357,9 @@ public class ProductServiceImpl implements ProductService {
         vo.setCategoryVo(categoryVo);
         vo.setVariations(product.getProductVariation().stream()
                 .map(this::mapToVariationVo)
-                .toList());
+                .toList()
+                : List.of()
+        );
         return vo;
     }
 
