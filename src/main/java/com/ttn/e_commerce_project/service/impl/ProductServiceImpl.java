@@ -245,7 +245,7 @@ public class ProductServiceImpl implements ProductService {
 
         String primaryImageName = null;
         if (co.getPrimaryImage() != null && !co.getPrimaryImage().isEmpty()) {
-            primaryImageName = imageStorageUtil.saveImage("products", String.valueOf(variation.getId()), co.getPrimaryImage());
+            primaryImageName = imageStorageUtil.saveImage(PRODUCTS_PREFIX, String.valueOf(variation.getId()), co.getPrimaryImage());
 
             List<String> secondaryImageNames = new ArrayList<>();
             if (co.getSecondaryImage() != null) {
