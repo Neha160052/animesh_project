@@ -384,9 +384,11 @@ public class ProductServiceImpl implements ProductService {
         if(variation.getPrimaryImageName()!=null)
          {vo.setPrimaryImageName(variation.getPrimaryImageName());}
         vo.setIsActive(variation.isActive());
-        vo.setProductId(variation.getProduct().getId());
-        vo.setProductName(variation.getProduct().getName());
-        vo.setProductBrand(variation.getProduct().getBrand());
+        if (variation.getProduct() != null) {
+            vo.setProductId(variation.getProduct().getId());
+            vo.setProductName(variation.getProduct().getName());
+            vo.setProductBrand(variation.getProduct().getBrand());
+        }
         return vo;
     }
 
