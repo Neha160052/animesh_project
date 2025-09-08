@@ -22,7 +22,7 @@ public interface ProductService {
     boolean deactivateProduct(Long productid);
     SellerProductVo viewProduct(Long productid);
     void deleteProduct(Long productid);
-    Page<SellerProductVo> viewAllProducts(Pageable pageable);
+    Page<SellerProductVo> viewAllProductsSeller(String query, Pageable pageable);
     void updateProduct(ProductUpdateCo productUpdateCo);
     void addProductVariation(ProductVariationCo co) throws IOException;
     void updateProductVariation(UpdateVariationCo co) throws IOException;

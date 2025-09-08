@@ -1,6 +1,7 @@
 package com.ttn.e_commerce_project.util;
 
 import com.ttn.e_commerce_project.entity.product.Product;
+import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.respository.SellerRepository;
 import jakarta.persistence.criteria.JoinType;

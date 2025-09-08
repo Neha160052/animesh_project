@@ -34,6 +34,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -331,7 +332,7 @@ public class ProductServiceImpl implements ProductService {
         return similarProductsPage.map(this::mapToProductDetailVo);
     }
 
-    public Page<ProductDetailVo> viewAllProductsForSeller(String query, Pageable pageable) {
+    public Page<ProductDetailVo> viewAllProducts(String query, Pageable pageable) {
 
        validationSpecification.validateQuery(query);
         Specification<Product> spec = ProductSpecification.isActive()
