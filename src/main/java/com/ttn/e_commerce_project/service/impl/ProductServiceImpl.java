@@ -24,6 +24,7 @@ import com.ttn.e_commerce_project.service.ProductService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import com.ttn.e_commerce_project.util.ProductSpecification;
 import com.ttn.e_commerce_project.util.ProductVariationSpecification;
+import com.ttn.e_commerce_project.util.ValidationSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -55,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
     ObjectMapper objectMapper;
     ProductVariationRepository  productVariationRepo;
     ImageStorageUtil imageStorageUtil;
+    ValidationSpecification validationSpecification;
 
     @Override
     public Product addProduct(ProductCo productCo) {
@@ -327,6 +329,7 @@ public class ProductServiceImpl implements ProductService {
 
     public Page<ProductDetailVo> viewAllProducts(String query, Pageable pageable) {
 
+       validationSpecification.validateQuery(query);
         Specification<Product> spec = ProductSpecification.isActive()
                 .and(ProductSpecification.filterByCriteria(query));
 
