@@ -355,7 +355,8 @@ public class ProductServiceImpl implements ProductService {
         CategoryVo categoryVo = new CategoryVo(product.getCategory().getId(),
                 product.getCategory().getName(), null);
         vo.setCategoryVo(categoryVo);
-        vo.setVariations(product.getProductVariation().stream()
+        vo.setVariations(product.getProductVariation() != null
+                ? product.getProductVariation().stream()
                 .map(this::mapToVariationVo)
                 .toList()
                 : List.of()
