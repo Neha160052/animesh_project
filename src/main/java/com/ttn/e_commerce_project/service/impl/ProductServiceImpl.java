@@ -234,7 +234,7 @@ public class ProductServiceImpl implements ProductService {
                 for (MultipartFile file : co.getSecondaryImage()) {
                     if (!file.isEmpty()) {
                         String secondaryId = imageStorageUtil.buildSecondaryImageName(variation.getId(), index++);
-                        secondaryImageNames.add(imageStorageUtil.saveImage("secondary_images",secondaryId,file ));
+                        secondaryImageNames.add(imageStorageUtil.saveImage(SECONDARY_IMAGES_PREFIX,secondaryId,file ));
                     }}}
             variation.setPrimaryImageName(primaryImageName);
             productVariationRepo.save(variation);
