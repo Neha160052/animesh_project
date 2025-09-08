@@ -38,7 +38,7 @@ public class SecurityConfig{
                                 .requestMatchers("/register/**", "/activate/**", "/auth/login"
                                         , "auth/forgot-password", "auth/reset-password",
                                         "auth/generate-new-access-token",
-                                        "/customer/{id}/get-profile-image","/seller/{id}/get-profile-image").permitAll()
+                                        "/customer/{id}/get-profile-image","/seller/{id}/get-profile-image","seller/primary-product-image/{id}").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/seller/**").hasRole("SELLER")
                 .requestMatchers("/customer/**").hasRole("CUSTOMER")
