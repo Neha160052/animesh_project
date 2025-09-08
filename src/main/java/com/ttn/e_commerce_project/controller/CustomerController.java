@@ -108,7 +108,7 @@ public class CustomerController {
                 .body(arr);
     }
 
-    @GetMapping("/get-all-categories/{categoryId}")
+    @GetMapping("/get-all-categories")
     public ResponseEntity<List<Category>> listCategories(
                                            @PathVariable(required = false) Long categoryId) {
         List<Category> categories = categoryService.getCategories(categoryId);
