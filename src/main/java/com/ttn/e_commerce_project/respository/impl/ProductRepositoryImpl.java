@@ -37,7 +37,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         Root<Product> product = query.from(Product.class);
 
         query.select(product.get("brand")).distinct(true);
-        Predicate categoryIdPredicate = product.get("categoryId").get("id").in(categoryIds);
+        Predicate categoryIdPredicate = product.get("category").get("id").in(categoryIds);
         query.where(categoryIdPredicate);
         query.orderBy(cb.asc(product.get("brand")));
 
