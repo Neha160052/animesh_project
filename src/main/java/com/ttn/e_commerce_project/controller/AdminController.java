@@ -177,8 +177,8 @@ public class AdminController {
     }
 
     @GetMapping("/view-all-products")
-    public ResponseEntity<Page<ProductDetailVo>> viewAllProducts(@RequestParam(defaultValue = "10") int max,
-                                                                 @RequestParam(defaultValue = "0") int offset,
+    public ResponseEntity<Page<ProductDetailVo>> viewAllProducts(@RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1")  int max,
+                                                                 @RequestParam(defaultValue = "0") @Min(value = 0, message = "value should be >=0")  int offset,
                                                                  @RequestParam(defaultValue = "id") String sort,
                                                                  @RequestParam(defaultValue = "ASC") Sort.Direction order,
                                                                  @RequestParam(required = false) String query){
