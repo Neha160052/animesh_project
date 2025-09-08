@@ -52,6 +52,10 @@ public class ProductSpecification {
     public static Specification<Product> isSimilarTo(Product sourceProduct) {
         return (root, query, criteriaBuilder) -> {
 
+            assert query != null;
+            query.distinct(true);
+            root.fetch("productVariation", JoinType.LEFT);
+
             // Predicate 1: Match products in the same category
             Predicate categoryMatch = criteriaBuilder.equal(
                     root.get("category").get("id"),
