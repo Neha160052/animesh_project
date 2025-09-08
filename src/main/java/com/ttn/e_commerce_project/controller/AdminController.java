@@ -11,7 +11,9 @@ import com.ttn.e_commerce_project.service.CategoryService;
 import com.ttn.e_commerce_project.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -40,8 +42,8 @@ public class AdminController {
 
     //api to list all the customers
     @GetMapping("/list-customers")
-    ResponseEntity<Page<CustomerVo>> getAllCustomers(@RequestParam(defaultValue = "10") int pageSize,
-                                                            @RequestParam(defaultValue = "0") int pageOffset,
+    ResponseEntity<Page<CustomerVo>> getAllCustomers(@RequestParam(defaultValue = "10")@Min(value = 1, message = "value should be >=1") int pageSize,
+                                                            @RequestParam(defaultValue = "0")@Min(value = 0, message = "value should be >=0") int pageOffset,
                                                             @RequestParam(defaultValue = "id") String sort,
                                                             @RequestParam(required = false) @Email(message=INVALID_EMAIL) String email)
     {
@@ -51,8 +53,8 @@ public class AdminController {
     //api to list all the sellers
 
     @GetMapping("/list-sellers")
-    ResponseEntity<Page<SellerVo>> getAllSellers(@RequestParam(defaultValue = "10") int pageSize,
-                                                 @RequestParam(defaultValue = "0") int pageOffset,
+    ResponseEntity<Page<SellerVo>> getAllSellers(@RequestParam(defaultValue = "10")@Min(value = 1, message = "value should be >=1") int pageSize,
+                                                 @RequestParam(defaultValue = "0")@Min(value = 0, message = "value should be >=0") int pageOffset,
                                                  @RequestParam(defaultValue = "id") String sort,
                                                  @RequestParam(required = false)@Email(message=INVALID_EMAIL) String email)
     {
@@ -109,11 +111,11 @@ public class AdminController {
     }
 
     @GetMapping("/get/metadata-fields")
-    public ResponseEntity<List<MetadataFieldVo>> getMetadataField( @RequestParam(defaultValue = "0") int offset,
-                                                             @RequestParam(defaultValue = "10") int max,
-                                                             @RequestParam(defaultValue = "id") String sort,
-                                                             @RequestParam(defaultValue = "ASC") String order,
-                                                             @RequestParam(required = false) String query)
+    public ResponseEntity<List<MetadataFieldVo>> getMetadataField(@RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
+                                                                  @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
+                                                                  @RequestParam(defaultValue = "id")  String sort,
+                                                                  @RequestParam(defaultValue = "ASC") String order,
+                                                                  @RequestParam(required = false) String query)
     {
         List<MetadataFieldVo> fields = categoryService.getAllMetadataFields(offset, max, sort, order, query).getContent();
         return ResponseEntity.ok(fields);
@@ -134,7 +136,7 @@ public class AdminController {
             @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
             @RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
             @RequestParam(defaultValue = "name") String sort,
-            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam(defaultValue = "asc")  String order,
             @RequestParam(required = false) String query) {
 
         return categoryService.getAllCategories(max, offset, sort, order, query);
