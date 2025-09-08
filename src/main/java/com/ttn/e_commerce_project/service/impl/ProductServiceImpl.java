@@ -136,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
         productRepo.delete(product);
     }
 
-    public Page<SellerProductVo> viewAllProductsForSeller(Pageable pageable)
+    public Page<SellerProductVo> viewAllProductsSeller(String query, Pageable pageable)
     {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Seller seller = commonService.findSellerByEmail(email);
