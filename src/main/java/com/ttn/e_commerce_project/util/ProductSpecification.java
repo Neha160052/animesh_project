@@ -25,6 +25,39 @@ public class ProductSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isActive"));
     }
 
+    public static Specification<Product> hasSeller(Seller seller) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("seller"), seller);
+    }
+
+    public static Specification<Product> filterByBrandOrName(String query) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (!StringUtils.hasText(query)) {
+                return criteriaBuilder.conjunction(); // No filter if query is empty
+            }
+            List<Predicate> predicates = new ArrayList<>();
+            String[] criteria = query.split(",");
+
+            for (String criterion : criteria) {
+                String[] parts = criterion.split(":");
+                if (parts.length == 2) {
+                    String key = parts[0].trim();
+                    String value = parts[1].trim();
+                    String likePattern = "%" + value.toLowerCase() + "%";
+                    switch (key) {
+                        case "brand":
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("brand")), likePattern));
+                            break;
+                        case "name":
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), likePattern));
+                            break;
+                    }
+                }
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
     public static Specification<Product> filterByCriteria(String query) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             if (!StringUtils.hasText(query)) {
