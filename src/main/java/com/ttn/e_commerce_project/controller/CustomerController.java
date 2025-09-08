@@ -5,7 +5,6 @@ import com.ttn.e_commerce_project.dto.co.AddressCo;
 import com.ttn.e_commerce_project.dto.co.CustomerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.*;
-import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.service.CategoryService;
 import com.ttn.e_commerce_project.service.CustomerService;
@@ -13,7 +12,6 @@ import com.ttn.e_commerce_project.service.ProductService;
 import com.ttn.e_commerce_project.util.ImageStorageUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +26,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -109,9 +106,9 @@ public class CustomerController {
     }
 
     @GetMapping("/get-all-categories")
-    public ResponseEntity<List<Category>> listCategories(
-                                           @PathVariable(required = false) Long categoryId) {
-        List<Category> categories = categoryService.getCategories(categoryId);
+    public ResponseEntity<List<CategoryWithChildrenVo>> listCategories(
+                                           @RequestParam(required = false) Long categoryId) {
+        List<CategoryWithChildrenVo> categories = categoryService.getCategories(categoryId);
         return ResponseEntity.ok(categories);
     }
 
