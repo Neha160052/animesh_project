@@ -127,8 +127,9 @@ public class ProductServiceImpl implements ProductService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Seller seller = commonService.findSellerByEmail(email);
         Product product = commonService.findProductById(productid);
-        if(product.getSeller().getUserid()!=(seller.getUserid()))
-            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);
+        if(product.getSeller().getUserid()!=(seller.getUserid())){
+            log.error("Unauthorized delete attempt for productId: {} by seller: {}", productid, seller.getUserid());
+            throw new ProductOwnershipException(PRODUCT_DOES_NOT_BELONG_TO_USER);}
         productRepo.delete(product);
     }
 
