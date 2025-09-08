@@ -352,6 +352,7 @@ public class ProductServiceImpl implements ProductService {
         vo.setId(product.getId());
         vo.setName(product.getName());
         vo.setBrand(product.getBrand());
+        vo.setDescription(product.getDescription());
         CategoryVo categoryVo = new CategoryVo(product.getCategory().getId(),
                 product.getCategory().getName(), null);
         vo.setCategoryVo(categoryVo);
