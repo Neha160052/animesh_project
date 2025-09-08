@@ -185,7 +185,7 @@ public class SellerController {
 
     @GetMapping("/primary-product-image/{id}")
     public ResponseEntity<byte[]> viewProductImage(@PathVariable Long id ) throws IOException {
-        byte[] arr = imageStorageUtil.loadImage("product", id);
+        byte[] arr = imageStorageUtil.loadImage(PRODUCTS_PREFIX, id);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(arr);
