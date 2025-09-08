@@ -1,13 +1,10 @@
 package com.ttn.e_commerce_project.security;
 
 import com.ttn.e_commerce_project.service.impl.UserDetailServiceImpl;
-import com.ttn.e_commerce_project.util.JwtUtil;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,7 +35,10 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(request->request
-                .requestMatchers("/register/**", "/activate/**", "/auth/login","auth/forgot-password","auth/reset-password","auth/generate-new-access-token").permitAll()
+                                .requestMatchers("/register/**", "/activate/**", "/auth/login"
+                                        , "auth/forgot-password", "auth/reset-password",
+                                        "auth/generate-new-access-token",
+                                        "/customer/{id}/get-profile-image","/seller/{id}/get-profile-image","seller/primary-product-image/{id}").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/seller/**").hasRole("SELLER")
                 .requestMatchers("/customer/**").hasRole("CUSTOMER")

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.PASSWORD_REGEX;
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,7 +22,7 @@ public class ResetPasswordCo {
 
     @NotBlank(message = "{password.required}")
     @Size(min = 8, message = "{password.size}")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
+    @Pattern(regexp = PASSWORD_REGEX,
             message = "{password.pattern}")
     String password;
 

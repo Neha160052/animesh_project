@@ -1,11 +1,14 @@
 package com.ttn.e_commerce_project.service.impl;
 
+import com.ttn.e_commerce_project.entity.product.Product;
 import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
 import com.ttn.e_commerce_project.enums.RoleAuthority;
+import com.ttn.e_commerce_project.exceptionhandling.AccountLockedException;
+import com.ttn.e_commerce_project.exceptionhandling.AccountNotActiveException;
 import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.*;
@@ -34,7 +37,7 @@ public class UserCommonService {
     TokenServiceImpl verificationTokenService;
     EmailService emailService;
     TokenRepository tokenRepository;
-
+    ProductRepository productRepo;
 
     public Role findRoleByAuthority(RoleAuthority authority) {
         return roleRepository.findByAuthority(authority)
@@ -91,6 +94,20 @@ public class UserCommonService {
         User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(USER_NOT_FOUND_BY_ID +id));
         user.setPasswordUpdateDate(ZonedDateTime.now());
         return user.getEmail();
+    }
+
+    public Product findProductById(Long id)
+    {
+        return productRepo.findById(id).orElseThrow(()->new ResourceNotFoundException(PRODUCT_NOT_FOUND));
+    }
+
+    public void verifyUser(String email)
+    {
+        User user = findUserByEmail(email);
+        if(!user.isActive())
+            throw  new AccountNotActiveException(ACCOUNT_NOT_ACTIVE);
+        if(user.isLocked())
+            throw new AccountLockedException(ACCOUNT_LOCKED);
     }
 }
 

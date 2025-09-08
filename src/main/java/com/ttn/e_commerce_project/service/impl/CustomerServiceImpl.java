@@ -7,6 +7,7 @@ import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.AddressVo;
 import com.ttn.e_commerce_project.dto.vo.CustomerProfileVo;
 import com.ttn.e_commerce_project.entity.address.Address;
+import com.ttn.e_commerce_project.entity.category.Category;
 import com.ttn.e_commerce_project.entity.token.VerificationToken;
 import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
@@ -16,6 +17,7 @@ import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
 import com.ttn.e_commerce_project.exceptionhandling.PasswordMismatchException;
 import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
 import com.ttn.e_commerce_project.respository.AddressRepository;
+import com.ttn.e_commerce_project.respository.CategoryRepository;
 import com.ttn.e_commerce_project.respository.CustomerRepository;
 import com.ttn.e_commerce_project.respository.UserRepository;
 import com.ttn.e_commerce_project.service.CustomerService;
@@ -30,7 +32,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -81,8 +82,12 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerProfileVo getMyProfile(String email) {
 
         Customer customer = commonService.findCustomerByEmail(email);
+        commonService.verifyUser(email);
         User user = customer.getUser();
-        String imagePath = imageStorageUtil.buildProfileImageUrl(CUSTOMER_USER_TYPE, user.getId());
+        String imagePath=DEFAULT_IMAGE_PATH;
+        if (imageStorageUtil.profileImageExists(CUSTOMER_USER_TYPE, user.getId())) {
+            imagePath = imageStorageUtil.buildProfileImageUrl(CUSTOMER_USER_TYPE, user.getId());
+        }
         return new CustomerProfileVo(
                 user.getId(),
                 user.getFirstName(),
@@ -94,7 +99,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public List<AddressVo> getMyAddresses(String email){
-
         Customer customer = commonService.findCustomerByEmail(email);
         List<Address> addresses = addressRepository.findByUserId(customer.getUser().getId());
 
@@ -126,7 +130,6 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerProfileCo.getContact() != null) {
             customer.setContact(customerProfileCo.getContact());
         }
-
         customerRepository.save(customer);
         log.info("persisted the customer in the db");
         return PROFILE_UPDATED_SUCCESSFULLY;
@@ -136,19 +139,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updatePassword(String username, UpdatePasswordCo updatePasswordCo) {
         {
-            User user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new ResourceNotFoundException(CUSTOMER_NOT_FOUND));
-
+            User user = commonService.findUserByEmail(username);
             if (!passwordEncoder.matches(updatePasswordCo.getCurrentPassword(), user.getPassword())) {
                 throw new InvalidArgumentException(CURRENT_PASSWORD_INCORRECT);
             }
-
             if (!updatePasswordCo.getNewPassword().equals(updatePasswordCo.getConfirmPassword())) {
                 throw new PasswordMismatchException(NEW_PASSWORD_MISMATCH);
             }
             user.setPassword(passwordEncoder.encode(updatePasswordCo.getNewPassword()));
             userRepository.save(user);
-
             emailService.sendAcknowledgementMail(username,PASSWORD_UPDATED_SUCCESSFULLY );
         }
     }
@@ -173,10 +172,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public String deleteAddress(String email ,Long id) {
         Customer customer = commonService.findCustomerByEmail(email);
-
         Address address = addressRepository.findByIdAndUserId(id, customer.getUserid())
                 .orElseThrow(() -> new ResourceNotFoundException(ADDRESS_NOT_FOUND));
-
         addressRepository.delete(address);
         return ADDRESS_DELETED_SUCCESSFULLY;
     }
@@ -184,7 +181,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     @Override
     public String updateAddress(Long id, AddressCo addressCo) {
-
         Address address = addressRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(ADDRESS_NOT_FOUND));
 
         address.setAddressLine(addressCo.getAddressLine());

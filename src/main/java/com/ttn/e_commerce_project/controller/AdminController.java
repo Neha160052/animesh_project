@@ -1,16 +1,30 @@
 package com.ttn.e_commerce_project.controller;
 
-import com.ttn.e_commerce_project.dto.vo.CustomerVo;
-import com.ttn.e_commerce_project.dto.vo.SellerVo;
-import com.ttn.e_commerce_project.service.impl.AdminService;
+import com.ttn.e_commerce_project.dto.co.CategoryCo;
+import com.ttn.e_commerce_project.dto.co.CategoryMetaDataCo;
+import com.ttn.e_commerce_project.dto.co.CategoryMetaDataUpdateCo;
+import com.ttn.e_commerce_project.dto.co.MetadataFieldCo;
+import com.ttn.e_commerce_project.dto.vo.*;
+import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
+import com.ttn.e_commerce_project.service.AdminService;
+import com.ttn.e_commerce_project.service.CategoryService;
+import com.ttn.e_commerce_project.service.ProductService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.ttn.e_commerce_project.constants.UserConstants.*;
 
@@ -22,11 +36,13 @@ import static com.ttn.e_commerce_project.constants.UserConstants.*;
 public class AdminController {
 
     AdminService adminService;
+    CategoryService categoryService;
+    ProductService productService;
 
     //api to list all the customers
     @GetMapping("/list-customers")
-    ResponseEntity<Page<CustomerVo>> getAllCustomers(@RequestParam(defaultValue = "10") int pageSize,
-                                                            @RequestParam(defaultValue = "0") int pageOffset,
+    ResponseEntity<Page<CustomerVo>> getAllCustomers(@RequestParam(defaultValue = "10")@Min(value = 1, message = "value should be >=1") int pageSize,
+                                                            @RequestParam(defaultValue = "0")@Min(value = 0, message = "value should be >=0") int pageOffset,
                                                             @RequestParam(defaultValue = "id") String sort,
                                                             @RequestParam(required = false) @Email(message=INVALID_EMAIL) String email)
     {
@@ -36,8 +52,8 @@ public class AdminController {
     //api to list all the sellers
 
     @GetMapping("/list-sellers")
-    ResponseEntity<Page<SellerVo>> getAllSellers(@RequestParam(defaultValue = "10") int pageSize,
-                                                 @RequestParam(defaultValue = "0") int pageOffset,
+    ResponseEntity<Page<SellerVo>> getAllSellers(@RequestParam(defaultValue = "10")@Min(value = 1, message = "value should be >=1") int pageSize,
+                                                 @RequestParam(defaultValue = "0")@Min(value = 0, message = "value should be >=0") int pageOffset,
                                                  @RequestParam(defaultValue = "id") String sort,
                                                  @RequestParam(required = false)@Email(message=INVALID_EMAIL) String email)
     {
@@ -82,5 +98,95 @@ public class AdminController {
         } else {
             return ResponseEntity.ok(SELLER_ALREADY_DEACTIVATED + id);
         }
+    }
+//For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+//or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+//TODO: Study more about this topic
+    @PostMapping("/add/metadata-fields")
+    public ResponseEntity<String> createMetadataField(@Valid @RequestBody MetadataFieldCo metadataFieldCo)
+    {
+        CategoryMetaDataField savedField = categoryService.addMetaDataField(metadataFieldCo);
+        return ResponseEntity.ok(String.format(METADATA_FIELD_ADDED_SUCCESSFULLY,savedField.getId()));
+    }
+
+    @GetMapping("/get/metadata-fields")
+    public ResponseEntity<List<MetadataFieldVo>> getMetadataField(@RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
+                                                                  @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
+                                                                  @RequestParam(defaultValue = "id")  String sort,
+                                                                  @RequestParam(defaultValue = "ASC") String order,
+                                                                  @RequestParam(required = false) String query)
+    {
+        List<MetadataFieldVo> fields = categoryService.getAllMetadataFields(offset, max, sort, order, query).getContent();
+        return ResponseEntity.ok(fields);
+    }
+    @PostMapping("/add-category")
+    public ResponseEntity<CategoryVo> addCategory(@Valid @RequestBody CategoryCo categoryCo) {
+        CategoryVo categoryVo = categoryService.addCategory(categoryCo);
+        return ResponseEntity.ok(categoryVo);
+    }
+
+    @GetMapping("/get-category/{id}")
+    public ResponseEntity<ListCategoryVo> getCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    }
+
+    @GetMapping("/get-all-categories")
+    public Page<ListCategoryVo> getAllCategories(
+            @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
+            @RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
+            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "asc")  String order,
+            @RequestParam(required = false) String query) {
+
+        return categoryService.getAllCategories(max, offset, sort, order, query);
+    }
+
+    @PutMapping("/update-category/{id}")
+    public ResponseEntity<String> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryCo categoryCo)
+    {
+        categoryService.updateCategory(id,categoryCo);
+        return ResponseEntity.ok(CATEGORY_UPDATE_SUCCESS);
+    }
+
+    @PostMapping("/add-metadata-values")
+    public ResponseEntity<String> addMetaData(@Valid @RequestBody CategoryMetaDataCo categoryMetaDataCo) {
+        return categoryService.addMetadata(categoryMetaDataCo);
+    }
+
+    @PutMapping("/update-metadata-values")
+    public ResponseEntity<String> updateMetadata(@Valid @RequestBody CategoryMetaDataUpdateCo metaDataUpdateCo) {
+        categoryService.updateMetadataValues(metaDataUpdateCo);
+        return ResponseEntity.ok(METADATA_VALUES_UPDATE_SUCCESS);
+    }
+
+    @PatchMapping("/activate-product/{id}")
+    public String activateProduct(@PathVariable("id") @NotNull(message = PRODUCT_ID_NULL) Long id) {
+        boolean activated = productService.activateProduct(id);
+        return activated ? PRODUCT_ACTIVATED_SUCCESS:PRODUCT_ALREADY_ACTIVE;
+    }
+
+    @PatchMapping("/deactivate-product/{id}")
+    public String deactivateProduct(@PathVariable @NotNull(message = PRODUCT_ID_NULL) Long id) {
+        boolean deactivated = productService.deactivateProduct(id);
+        return deactivated ? PRODUCT_DEACTIVATED_SUCCESS : PRODUCT_ALREADY_INACTIVE;
+    }
+
+    @GetMapping("/view-product/{productId}")
+    public ResponseEntity<List<ProductCategoryVariationVo>> viewProductVariations(@PathVariable Long productId){
+        List<ProductCategoryVariationVo> variationList = productService.viewAllVariationsGenericForProduct(productId);
+        return ResponseEntity.ok(variationList);
+    }
+
+    @GetMapping("/view-all-products")
+    public ResponseEntity<Page<ProductDetailVo>> viewAllProducts(@RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1")  int max,
+                                                                 @RequestParam(defaultValue = "0") @Min(value = 0, message = "value should be >=0")  int offset,
+                                                                 @RequestParam(defaultValue = "id") String sort,
+                                                                 @RequestParam(defaultValue = "ASC") Sort.Direction order,
+                                                                 @RequestParam(required = false) String query){
+
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(order, sort));
+
+        Page<ProductDetailVo> productsPage = productService.viewAllProducts(query,pageable);
+        return ResponseEntity.ok(productsPage);
     }
 }

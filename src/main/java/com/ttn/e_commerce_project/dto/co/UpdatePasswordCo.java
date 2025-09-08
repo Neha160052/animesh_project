@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.PASSWORD_REGEX;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class UpdatePasswordCo {
     @NotBlank(message = "{new.password.required}")
     @Size(min = 8, message = "{new.password.size}")
     @Pattern(
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$",
+            regexp = PASSWORD_REGEX,
             message = "{new.password.pattern}"
     )
     private String newPassword;

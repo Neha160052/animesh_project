@@ -101,15 +101,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void initiatePasswordReset(String email) {
         User user = userCommonService.findUserByEmail(email);
-        if(!user.isActive())
-            throw  new AccountNotActiveException(ACCOUNT_NOT_ACTIVE);
+        userCommonService.verifyUser(user.getEmail());
+        {
         VerificationToken token = tokenService.createToken(user);
-        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token), PASSWORD_RESET_SUBJECT);
+        emailService.sendLinkWithSubjectEmail(email, userCommonService.activationLink(token), PASSWORD_RESET_SUBJECT);}
     }
 
     @Override
     public void resetUserPassword(String email,String password, String confirmPassword)
     {
+        userCommonService.verifyUser(email);
         try {
             if(password.matches(confirmPassword)) {
                 userRepository.updatePassword(email, passwordEncoder.encode(password));

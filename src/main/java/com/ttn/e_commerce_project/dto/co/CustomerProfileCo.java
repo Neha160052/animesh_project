@@ -1,8 +1,11 @@
 package com.ttn.e_commerce_project.dto.co;
 
 import com.ttn.e_commerce_project.customvalidation.ValidName;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import static com.ttn.e_commerce_project.constants.UserConstants.PHONE_REGEX;
 
 @Getter
 @Setter
@@ -15,5 +18,6 @@ public class CustomerProfileCo {
      String firstName;
      @ValidName(message = "{last.name.invalid}")
      String lastName;
+     @Pattern(regexp = PHONE_REGEX, message = "{phone.number.invalid}")
      String contact;
 }

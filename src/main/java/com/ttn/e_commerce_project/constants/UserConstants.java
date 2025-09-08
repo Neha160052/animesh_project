@@ -1,12 +1,18 @@
 package com.ttn.e_commerce_project.constants;
 
 
+import java.util.Set;
+
 public final class UserConstants {
     private UserConstants() {
     }
 
     // Role
     public static final String ROLE_NOT_FOUND = "No role found for authority : %s";
+    public static final char[] ALPHABETS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+    public static final String SYSTEM_AUDITOR = "system";
+    public static final String PRODUCTS_PREFIX= "products";
+    public static final String SECONDARY_IMAGES_PREFIX= "secondary_images";
 
     // User
     public static final String USER_NOT_FOUND_BY_EMAIL = "No account found with email: ";
@@ -21,6 +27,9 @@ public final class UserConstants {
     public static final String CUSTOMER_DEACTIVATED_SUCCESSFULLY = "Customer deactivated successfully with ID: ";
     public static final String CUSTOMER_ALREADY_DEACTIVATED = "Customer was already deactivated with ID: ";
     public static final String CUSTOMER_REGISTERED_SUCCESSFULLY = "Customer registered Successfully";
+    public static final String CUSTOMER_DOES_NOT_EXIST = "Customer with the given id does not exist: ";
+    public static final String CUSTOMER_ACTIVATION_MAIL = "Dear Customer your account has been activated by the admin, now you can login";
+
 
     // Seller
     public static final String SELLER_NOT_FOUND = "Seller not found";
@@ -32,7 +41,30 @@ public final class UserConstants {
     public static final String SELLER_DEACTIVATED_SUCCESSFULLY = "Seller deactivated successfully with ID: ";
     public static final String SELLER_ALREADY_DEACTIVATED = "Seller was already deactivated with ID: ";
     public static final String SELLER_REGISTERED_SUCCESSFULLY = "Seller Registered Successfully";
+    public static final String SELLER_DOES_NOT_EXIST = "Seller with the given id does not exist: ";
+    public static final String SELLER_ACTIVATION_MAIL = "Dear Seller your account has been activated by the admin, now you can login";
 
+    //Category
+    public static final String CATEGORY_NOT_FOUND = "Category not found with id: ";
+    public static final String CATEGORY_MUST_BE_LEAF ="Category must be a leaf node";
+    public static final String CATEGORY_UPDATE_SUCCESS = "Category updated  successfully";
+    public static final String METADATA_VALUES_UPDATE_SUCCESS = "Category updated successfully";
+    //Product
+    public static final String PRODUCT_ACTIVATION_MAIL="A new Product has been registered by the seller please review and activate the same";
+    public static final String PRODUCT_SAVED_SUCCESSFULLY="Product saved successfully with product id %d";
+    public static final String PRODUCT_ALREADY_EXISTS = "Product already exists for this seller, brand, and category";
+    public static final String PRODUCT_NOT_FOUND = "Product Not found with given id";
+    public static final String PRODUCT_ID_NULL = "Product ID cannot be null";
+    public static final String PRODUCT_ACTIVATED_SUCCESS = "Product activated successfully";
+    public static final String PRODUCT_ALREADY_ACTIVE = "Product was already active";
+    public static final String PRODUCT_DEACTIVATED_SUCCESS = "Product deactivated successfully";
+    public static final String PRODUCT_ALREADY_INACTIVE = "Product was already inactive";
+    public static final String PRODUCT_IS_NOT_ACTIVE = "Product is not active";
+    public static final String PRODUCT_VARIATION_ADDED_SUCCESSFULLY = "Product variation added successfully";
+    public static final String VARIATION_DOES_NOT_BELONG = "Product variation does not belong to user";
+    public static final String PRODUCT_VARIATION_NOT_FOUND = "Product variation not found";
+    public static final String PRODUCT_NOT_ACTIVE_OR_DELETED = "Product is either not active or deleted";
+    public static final String PRODUCT_VARIATION_UPDATED_SUCCESSFULLY = "product variation updated successfully";
     // Role Prefix
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String ROLE_DOES_NOT_EXIST = "Role does not exist";
@@ -42,6 +74,17 @@ public final class UserConstants {
     public static final String INVALID_EMAIL = "enter a valid email address";
     public static final String GST_ALREADY_IN_USE = "GST already exists provide unique one";
     public static final String COMPANY_NAME_ALREADY_EXISTS = "Company name already exists provide a unique name.";
+    public static final String NAME_REGEX = "^[A-Za-z]{2,}$";
+    public static final String COMPANY_NAME_REGEX = "^[A-Za-z0-9 .,&'\\-]{2,100}$";
+    public static final String GLOBAL_LOCATION_REGEX = "^[\\p{L}.'-]+(?: [\\p{L}.'-]+)*$";
+    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,20}$";
+    public static final String PHONE_REGEX = "^(?:\\+91[6-9]\\d{9}|\\+1[2-9]\\d{2}[2-9]\\d{6})$";
+    public static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String GST_REGEX= "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9]{1}$";
+    public static final String COMPANY_CONTACT = "^[6-9]\\d{9}$";
+    public static final String ZIPCODE_REGEX = "^\\d{6}$";
+    public static final String DEFAULT_IMAGE_PATH = "Image not uploaded";
+    public static final String PRODUCT_INACTIVE_OR_DELETED = "Product is either deleted or inactive";
 
     // Account activation
     public static final String ACCOUNT_ACTIVATED = "Account activated Successfully";
@@ -77,6 +120,8 @@ public final class UserConstants {
 
     // Links
     public static final String ACTIVATION_LINK_BASE = "http://localhost:8080/activate?token=";
+    public static final String BASE_PATH = "uploads";
+    public static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "bmp");
 
 
     // Headers
@@ -99,6 +144,9 @@ public final class UserConstants {
     public static final String ADDRESS_NOT_FOUND = "Address not found";
     public static final String ADDRESS_COULD_NOT_BE_UPDATED = "Address could not be updated";
     public static final String ACCESS_DENIED = "You are not allowed to access this resource";
+    public static final String FIELD_NAME_ALREADY_EXISTS = "field name already exists";
+    public static final String ACCESS_TOKEN_EXPIRED = "access token expired";
+    public static final String PRODUCT_DOES_NOT_BELONG_TO_USER = "Product does not belong to the authenticated User";
 
     // Success Messages
     public static final String PROFILE_UPDATED_SUCCESSFULLY = "Profile updated successfully";
@@ -106,6 +154,10 @@ public final class UserConstants {
     public static final String ADDRESS_SAVED_SUCCESSFULLY = "Address saved successfully for userId: ";
     public static final String ADDRESS_DELETED_SUCCESSFULLY = "Address deleted successfully";
     public static final String ADDRESS_UPDATED_SUCCESSFULLY = "Address updated successfully";
+    public static final String METADATA_FIELD_ADDED_SUCCESSFULLY = "Metadata field created successfully with ID: %d";
+    public static final String PRODUCT_DELETED_SUCCESSFULLY = "Product deleted successfully";
+    public static final String PRODUCT_UPDATED_SUCCESSFULLY = "Product updated successfully";
+
 
 
 }

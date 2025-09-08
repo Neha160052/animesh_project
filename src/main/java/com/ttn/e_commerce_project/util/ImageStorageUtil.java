@@ -3,6 +3,7 @@ package com.ttn.e_commerce_project.util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,25 +14,24 @@ import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.Set;
 
+import static com.ttn.e_commerce_project.constants.UserConstants.*;
+import static com.ttn.e_commerce_project.constants.UserConstants.ALPHABETS;
+
 @Slf4j
 @Component
 public class ImageStorageUtil {
 
-    private static final String BASE_PATH = "uploads";
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "bmp");
 
-    public String saveImage(String userType, Long userId, MultipartFile file) throws IOException {
+    public String saveImage(String userType, String userId, MultipartFile file) throws IOException {
         // Create the subfolder for the userType (customers or sellers)
         Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
         if (!Files.exists(folder)) {
             Files.createDirectories(folder); // make directory if missing
         }
-
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || !originalFilename.contains(".")) {
             throw new IOException("File must have an extension");
         }
-
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1)
                 .toLowerCase(Locale.ROOT);
 
@@ -39,7 +39,6 @@ public class ImageStorageUtil {
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
             throw new IOException("Unsupported file type: " + extension);
         }
-
         // Final path format: uploads/{userType}/{userId}.{ext}
         Path filePath = folder.resolve(userId + "." + extension);
 
@@ -65,9 +64,27 @@ public class ImageStorageUtil {
 
         throw new FileNotFoundException("No image found for " + userType + " with id " + userId);
     }
-
+    public boolean profileImageExists(String userType, Long userId) {
+        Path folder = Paths.get(BASE_PATH, userType).toAbsolutePath().normalize();
+        for (String ext : ALLOWED_EXTENSIONS) {
+            Path filePath = folder.resolve(userId + "." + ext);
+            if (Files.exists(filePath)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public String buildProfileImageUrl(String userType, Long id) {
-        return "/" + userType + "/" + id + "/get-profile-image";
+        return UriComponentsBuilder.newInstance()
+                .path("/{userType}/{id}/get-profile-image") // Define the path template
+                .buildAndExpand(userType, id)              // Supply the variables
+                .toUriString();
     }
 
+    public String buildSecondaryImageName(Long variationId, int index) {
+        if (index < 0 || index >= ALPHABETS.length) {
+            throw new IllegalArgumentException("Index out of range (supports up to 26 images per variation)");
+        }
+        return variationId + "(" + ALPHABETS[index] + ")";
+    }
 }

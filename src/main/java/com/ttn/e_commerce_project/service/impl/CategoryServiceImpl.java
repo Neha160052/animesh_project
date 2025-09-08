@@ -1,0 +1,410 @@
+package com.ttn.e_commerce_project.service.impl;
+
+import com.ttn.e_commerce_project.dto.co.*;
+import com.ttn.e_commerce_project.dto.vo.*;
+import com.ttn.e_commerce_project.entity.category.Category;
+import com.ttn.e_commerce_project.entity.category.CategoryMetaDataField;
+import com.ttn.e_commerce_project.entity.category.CategoryMetaDataValues;
+import com.ttn.e_commerce_project.exceptionhandling.InvalidArgumentException;
+import com.ttn.e_commerce_project.exceptionhandling.ResourceNotFoundException;
+import com.ttn.e_commerce_project.respository.CategoryMetadataFieldRepository;
+import com.ttn.e_commerce_project.respository.CategoryMetadataFieldValueRepo;
+import com.ttn.e_commerce_project.respository.CategoryRepository;
+import com.ttn.e_commerce_project.respository.ProductRepository;
+import com.ttn.e_commerce_project.service.CategoryService;
+import jakarta.transaction.Transactional;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.ttn.e_commerce_project.constants.UserConstants.CATEGORY_NOT_FOUND;
+import static com.ttn.e_commerce_project.constants.UserConstants.FIELD_NAME_ALREADY_EXISTS;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+public class CategoryServiceImpl implements CategoryService {
+
+    CategoryMetadataFieldRepository categoryMetadataRepo;
+    CategoryRepository categoryRepo;
+    CategoryMetadataFieldValueRepo metadataFieldValueRepo;
+    ProductRepository productRepository;
+
+    public CategoryMetaDataField addMetaDataField(MetadataFieldCo metadataFieldCo) {
+
+        categoryMetadataRepo.findByNameIgnoreCase(metadataFieldCo.getName()).ifPresent(field -> {
+            throw new InvalidArgumentException(FIELD_NAME_ALREADY_EXISTS);
+        });
+
+        CategoryMetaDataField field = new CategoryMetaDataField();
+        field.setName(metadataFieldCo.getName());
+        return categoryMetadataRepo.save(field);
+    }
+
+    public Page<MetadataFieldVo> getAllMetadataFields(int offset, int max, String sortBy, String order, String query) {
+        Sort sort = order.equalsIgnoreCase("DESC") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(offset, max, sort);
+        Page<CategoryMetaDataField> result;
+        if (query != null && !query.trim().isEmpty())
+            result = categoryMetadataRepo.findByNameContainingIgnoreCase(query, pageable);
+        else
+            result = categoryMetadataRepo.findAll(pageable);
+        return result.map(field -> new MetadataFieldVo(field.getId(), field.getName()));
+    }
+
+
+    public CategoryVo addCategory(CategoryCo categoryCo) {
+        String name = categoryCo.getName();
+        Category parent = null;
+        if (categoryCo.getParentId() != null) {
+            parent = categoryRepo.findById(categoryCo.getParentId()).orElseThrow(() -> new ResourceNotFoundException("parent category not found"));
+        }
+        // 1. root category unique
+        if (parent == null) {
+            if (categoryRepo.existsByNameAndParentIsNull(name)) {
+                throw new InvalidArgumentException("Root category " + name + " already exists");
+            }
+        } else {
+            // tree wide uniqueness
+            Category root = findRoot(parent);
+            if (categoryRepo.existsByNameAndParent(name, parent)) {
+                throw new InvalidArgumentException("category name \t" + name + " \t already exists in tree root \t " + root.getName());
+            }
+        }
+        Category category = new Category();
+        category.setName(name);
+        category.setParent(parent);
+        category.setLeaf(true);
+
+        Category saved = categoryRepo.save(category);
+
+        if (parent != null && parent.isLeaf()) {
+            parent.setLeaf(false);
+            categoryRepo.save(parent);
+        }
+        return new CategoryVo(saved.getId(), saved.getName(), "Category created successfully");
+    }
+
+
+    private Category findRoot(Category category) {
+        return category.getParent() == null ? category : findRoot(category.getParent());
+    }
+
+    public ListCategoryVo getCategoryById(Long id) {
+
+        Category category = categoryRepo.findByIdWithParent(id)
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + id));
+
+        List<Category> childrenEntities = categoryRepo.findByParentId(id);
+
+        List<ListCategoryVo.ParentInfo> parents = new ArrayList<>();
+        Category parent = category.getParent();
+        while (parent != null) {
+            parents.add(new ListCategoryVo.ParentInfo(parent.getId(), parent.getName()));
+            parent = parent.getParent();
+        }
+        Collections.reverse(parents); // so root appears first
+
+        // build children
+        List<ListCategoryVo.ChildInfo> children = childrenEntities.stream()
+                .map(child -> new ListCategoryVo.ChildInfo(child.getId(), child.getName()))
+                .toList();
+
+
+        return new ListCategoryVo(
+                category.getId(),
+                category.getName(),
+                parents,
+                children
+        );
+    }
+
+    public Page<ListCategoryVo> getAllCategories(int max, int offset, String sort, String order, String query) {
+
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(offset, max, Sort.by(direction, sort));
+
+        Page<Category> categoryPage;
+
+        if (query != null && !query.isEmpty()) {
+            categoryPage = categoryRepo.findByNameContainingIgnoreCase(query, pageable);
+        } else {
+            categoryPage = categoryRepo.findAll(pageable);
+        }
+
+        return categoryPage.map(this::mapToVo);
+    }
+
+    private ListCategoryVo mapToVo(Category category) {
+        // Map parents up to root
+        List<ListCategoryVo.ParentInfo> parents = new ArrayList<>();
+        Category currentParent = category.getParent();
+        while (currentParent != null) {
+            parents.add(new ListCategoryVo.ParentInfo(currentParent.getId(), currentParent.getName()));
+            currentParent = currentParent.getParent();
+        }
+        Collections.reverse(parents); // optional: to start from root
+
+        // Map immediate children
+        List<ListCategoryVo.ChildInfo> children = category.getChildren().stream()
+                .map(child -> new ListCategoryVo.ChildInfo(child.getId(), child.getName()))
+                .toList();
+
+        return new ListCategoryVo(
+                category.getId(),
+                category.getName(),
+                parents,
+                children
+        );
+    }
+
+    public ResponseEntity<String> updateCategory(Long id, CategoryCo categoryCo) {
+
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND+id));
+
+        String newName = categoryCo.getName();
+
+        // Check uniqueness based on parent
+        if (category.getParent() == null) {
+            // Root category case
+            if (categoryRepo.existsByNameAndParentIsNull(newName)
+                    && !category.getName().equalsIgnoreCase(newName)) {
+                throw new InvalidArgumentException("Root category '" + newName + "' already exists");
+            }
+        } else {
+            // Child category case
+            Long parentId = category.getParent().getId();
+            if (categoryRepo.existsByNameAndParentId(newName, parentId)
+                    && !category.getName().equalsIgnoreCase(newName)) {
+                throw new InvalidArgumentException("Category name '" + newName
+                        + "' already exists under parent '" + category.getParent().getName() + "'");
+            }
+        }
+        category.setName(newName);
+
+        categoryRepo.save(category);
+
+        return ResponseEntity.ok("Category updated successfully");
+    }
+
+    public ResponseEntity<String> addMetadata(CategoryMetaDataCo metaDataCo) {
+        if (metaDataCo.getFieldValues().size() != metaDataCo.getFieldValues().stream().distinct().count()) {
+            return ResponseEntity.badRequest().body("values must be unique within the list");
+        }
+
+        Category category = categoryRepo.findById(metaDataCo.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category with the given id not found"));
+
+        if (!category.isLeaf()) {
+            throw new InvalidArgumentException(
+                    "Metadata values can only be added to leaf categories. Category '" + category.getName() + "' is not a leaf.");
+        }
+
+            CategoryMetaDataField metaDataField = categoryMetadataRepo.findById(metaDataCo.getMetaDataFieldId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Metadata field with the given fieldId not found"));
+
+            for (String value : metaDataCo.getFieldValues()) {
+                CategoryMetaDataValues metaDataValues = new CategoryMetaDataValues();
+                metaDataValues.setFieldValues(value);
+                metaDataValues.setCategory(category);
+                metaDataValues.setCategoryMetaDataField(metaDataField);
+                metadataFieldValueRepo.save(metaDataValues);
+            }
+
+            return ResponseEntity.ok("metaDataField values added successfully");
+        }
+
+
+    @Transactional
+    public void updateMetadataValues(CategoryMetaDataUpdateCo metadataUpdateCo) {
+        Long categoryId = metadataUpdateCo.getCategoryId();
+
+        // 1. Validate category
+        Category category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with given id not found"));
+
+        if (!category.isLeaf()) {
+            throw new InvalidArgumentException("Metadata can only be updated for leaf categories.");
+        }
+
+        for (FieldUpdate fieldUpdate : metadataUpdateCo.getUpdates()) {
+            Long fieldId = fieldUpdate.getMetaDataFieldId();
+            List<String> values = fieldUpdate.getValues();
+
+            // 2. Validate metadata field
+            categoryMetadataRepo.findById(fieldId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Metadata field with given id not found"));
+
+            // 3. Ensure uniqueness within the request payload
+            if (values.size() != values.stream().distinct().count()) {
+                throw new InvalidArgumentException("Duplicate values provided for field id: " + fieldId);
+            }
+
+            // 4. Fetch existing entities for this (category, field) pair
+            List<CategoryMetaDataValues> existingEntities =
+                    metadataFieldValueRepo.findByCategoryIdAndCategoryMetaDataFieldId(categoryId, fieldId);
+
+
+            for (int i = 0; i < existingEntities.size(); i++) {
+                CategoryMetaDataValues entity = existingEntities.get(i);
+                String newValue = values.get(i);
+
+                entity.setFieldValues(newValue); // update the value
+                metadataFieldValueRepo.save(entity); // Hibernate will issue UPDATE
+            }
+        }
+    }
+
+    public List<SellerListCategoryVo> getAllLeafCategories() {
+        List<Category> leafCategories = categoryRepo.findAllByIsLeafTrue();
+        return leafCategories.stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    private SellerListCategoryVo mapToDto(Category category) {
+
+        List<CategoryParentVo> parentChain = buildParentChain(category);
+        List<CategoryMetaDataValues> values = metadataFieldValueRepo.findByCategoryId(category.getId());
+
+        // group by field
+        Map<CategoryMetaDataField, List<String>> grouped = values.stream()
+                .collect(Collectors.groupingBy(
+                        CategoryMetaDataValues::getCategoryMetaDataField,
+                        Collectors.mapping(CategoryMetaDataValues::getFieldValues, Collectors.toList())
+                ));
+        List<CategoryMetadataFieldVo> metadata = grouped.entrySet().stream()
+                .map(entry -> new CategoryMetadataFieldVo(
+                        entry.getKey().getId(),
+                        entry.getKey().getName(),
+                        entry.getValue()
+                ))
+                .toList();
+
+        return new SellerListCategoryVo(category.getId(), category.getName(),
+                metadata, parentChain);
+    }
+
+    private List<CategoryParentVo> buildParentChain(Category category) {
+        List<CategoryParentVo> chain = new ArrayList<>();
+        Category parent = category.getParent();
+        while (parent != null) {
+            chain.add(new CategoryParentVo(parent.getId(), parent.getName()));
+            parent = parent.getParent();
+        }
+        Collections.reverse(chain);
+        return chain;
+    }
+
+    public List<CategoryWithChildrenVo> getCategories(Long categoryId) {
+        if (categoryId == null) {
+            // Case 1: No ID -> return root categories (as simple VOs)
+            List<Category> roots = categoryRepo.findByParentIsNull();
+            return roots.stream()
+                    .map(rootCategory -> {
+                        List<Category> children = categoryRepo.findByParentId(rootCategory.getId());
+                        return convertToVoWithChildren(rootCategory, children);
+                    })
+                    .toList();
+        } else {
+            // Case 2: ID is provided -> return that category with its immediate children
+            Category category = categoryRepo.findById(categoryId)
+                    .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + categoryId));
+
+            List<Category> children = categoryRepo.findByParentId(category.getId());
+            CategoryWithChildrenVo vo = convertToVoWithChildren(category, children);
+            return List.of(vo);
+        }
+    }
+
+    private CategoryWithChildrenVo convertToVoWithChildren(Category category, List<Category> children) {
+        CategoryWithChildrenVo vo = new CategoryWithChildrenVo();
+        vo.setId(category.getId());
+        vo.setName(category.getName());
+
+        if (children != null && !children.isEmpty()) {
+            vo.setChildren(
+                    children.stream()
+                            .map(child -> new CategoryVo(child.getId(), child.getName(),null))
+                            .toList()
+            );
+        }
+        return vo;
+    }
+
+    public FilterCategoryVo getFilterForCategory(Long categoryId)
+    {
+        Set<Long> relevantCategoryIds = getCategoryAndAllChildrenIds(categoryId);
+
+        FilterStatsVo productStats = productRepository.getFilterStatsForCategories(relevantCategoryIds);
+
+        List<CategoryMetaDataValues> rawMetadata = metadataFieldValueRepo.findByCategoryId(categoryId);
+
+        List<FilterCategoryVo.MetadataField> metadata = transformMetadata(rawMetadata);
+        return new FilterCategoryVo(metadata, productStats.getBrands(), productStats.getPriceRange());
+    }
+
+    private void populateChildren(Category category) {
+        List<Category> children = categoryRepo.findByParentId(category.getId());
+        category.setChildren(children);
+    }
+
+    private Set<Long> getCategoryAndAllChildrenIds(Long rootCategoryId) {
+        // First, ensure the root category actually exists.
+        if (!categoryRepo.existsById(rootCategoryId)) {
+            throw new ResourceNotFoundException("Category with ID " + rootCategoryId + " not found.");
+        }
+
+        Set<Long> allIds = new HashSet<>();
+        Queue<Long> queue = new LinkedList<>();
+
+        queue.add(rootCategoryId);
+        allIds.add(rootCategoryId);
+
+        while (!queue.isEmpty()) {
+            Long currentId = queue.poll();
+            List<Category> children = categoryRepo.findByParentId(currentId);
+            for (Category child : children) {
+                // The add method of a Set returns true if the element was new.
+                // This check prevents adding duplicates to the queue if there are circular references.
+                if (allIds.add(child.getId())) {
+                    queue.add(child.getId());
+                }
+            }
+        }
+        return allIds;
+    }
+    private List<FilterCategoryVo.MetadataField> transformMetadata(List<CategoryMetaDataValues> rawMetadata) {
+        if (rawMetadata == null || rawMetadata.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Using a map to group values by their field name (e.g., "RAM" -> ["8GB", "16GB"])
+        Map<String, List<String>> groupedMetadata = new LinkedHashMap<>();
+
+        for (CategoryMetaDataValues value : rawMetadata) {
+            String fieldName = value.getCategoryMetaDataField().getName();
+            String fieldValue = value.getFieldValues();
+
+            groupedMetadata.computeIfAbsent(fieldName, k -> new ArrayList<>()).add(fieldValue);
+        }
+        List<FilterCategoryVo.MetadataField> result = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : groupedMetadata.entrySet()) {
+            result.add(new FilterCategoryVo.MetadataField(entry.getKey(), entry.getValue()));
+        }
+
+        return result;
+    }
+}
+

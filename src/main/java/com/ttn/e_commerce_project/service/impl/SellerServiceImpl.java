@@ -6,7 +6,6 @@ import com.ttn.e_commerce_project.dto.co.SellerProfileCo;
 import com.ttn.e_commerce_project.dto.co.UpdatePasswordCo;
 import com.ttn.e_commerce_project.dto.vo.SellerProfileVo;
 import com.ttn.e_commerce_project.entity.address.Address;
-import com.ttn.e_commerce_project.entity.user.Customer;
 import com.ttn.e_commerce_project.entity.user.Role;
 import com.ttn.e_commerce_project.entity.user.Seller;
 import com.ttn.e_commerce_project.entity.user.User;
@@ -103,7 +102,10 @@ public class SellerServiceImpl implements SellerService {
            Seller seller = commonService.findSellerByEmail(email);
            User user = seller.getUser();
            Address address = user.getAddress().getFirst();
-           String imagePath = imageStorageUtil.buildProfileImageUrl(SELLER_USER_TYPE, user.getId());
+        String imagePath=DEFAULT_IMAGE_PATH;
+        if (imageStorageUtil.profileImageExists(SELLER_USER_TYPE, user.getId())) {
+            imagePath = imageStorageUtil.buildProfileImageUrl(SELLER_USER_TYPE, user.getId());
+        }
            return new SellerProfileVo(
                    user.getId(),
                    user.getFirstName(),
@@ -133,7 +135,6 @@ public class SellerServiceImpl implements SellerService {
 
         if (sellerProfileCo.getCompanyContact() != null) seller.setCompanyContact(sellerProfileCo.getCompanyContact().trim());
         if (sellerProfileCo.getCompanyName() != null) seller.setCompanyName(sellerProfileCo.getCompanyName().trim());
-        if (sellerProfileCo.getImage() != null) seller.setImage(sellerProfileCo.getImage().trim());
         if (sellerProfileCo.getGst() != null)
         {
             if (sellerRepository.existsByGst(sellerProfileCo.getGst())) {
