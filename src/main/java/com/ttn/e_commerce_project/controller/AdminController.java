@@ -131,8 +131,8 @@ public class AdminController {
 
     @GetMapping("/get-all-categories")
     public Page<ListCategoryVo> getAllCategories(
-            @RequestParam(defaultValue = "10") int max,
-            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") @Min(value = 1, message = "value should be >=1") int max,
+            @RequestParam(defaultValue = "0") @Min(value = 0, message = "offset must be >= 0") int offset,
             @RequestParam(defaultValue = "name") String sort,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(required = false) String query) {
