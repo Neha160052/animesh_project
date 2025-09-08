@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> , JpaSpec
     boolean existsByNameAndBrandAndCategoryAndSeller(String name, String brand, Category category, Seller seller);
     boolean existsByNameAndBrandAndCategoryAndSellerUserIdAndIdNot(String name, String brand, Category category, Long sellerId,Long productId);
     Page<Product> findBySeller(Seller seller, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.isActive = false AND p.dateCreated >= :threshold")
+    List<Product> findInactiveProductsCreatedSince(@Param("threshold") LocalDateTime threshold);
 }
